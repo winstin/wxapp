@@ -1,0 +1,10 @@
+<block wx:if="{{$taroCompReady}}">
+    <view class="{{styles.userInfo}}">
+        <view class="{{styles.rightico}}">
+            <image class="{{styles.logo}}" src="{{logo}}"></image>
+        </view>
+        <view class="{{styles.bankname}}">苏州瑞得恩自动化设备有限公司</view>
+        <view class="{{styles.banktip}}">联系人: 蔡德霖</view>
+        <view class="{{styles.bankacount}}">1074 2210 2177 51023</view>
+    </view>
+</block>

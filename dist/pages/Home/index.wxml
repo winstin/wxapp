@@ -1,0 +1,20 @@
+<block wx:if="{{$taroCompReady}}">
+    <block wx:if="{{!hasReady || loading}}">
+        <view></view>
+    </block>
+    <block wx:elif="{{!userInfo}}">
+        <view class="{{styles.index}}">
+            <at-modal compid="{{$compid__61}}">
+                <at-modal-header>请授权您的微信账号登录</at-modal-header>
+                <at-modal-content>
+                    <view class="{{styles.content}}" style="{{_$anonymousState__temp2}}">蓝海灵活用工创客应用</view>
+                    <view class="{{styles.content}}">创客可通过本应用领取、完成、管理等通过蓝海灵活用工平台的发布的任务</view>
+                </at-modal-content>
+                <at-modal-action>
+                    <button class="{{styles.authBtn}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo" bindtap="onClick" loading="{{getUserInfoLoading}}">授权登录</button>
+                </at-modal-action>
+            </at-modal>
+        </view>
+    </block>
+    <view wx:else></view>
+</block>

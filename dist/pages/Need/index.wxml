@@ -1,0 +1,17 @@
+<block wx:if="{{$taroCompReady}}">
+    <view class="{{styles.need}}">
+        <image src="{{btn_new}}" class="{{styles.addicon}}"></image>
+        <at-tabs compid="{{$compid__121}}">
+            <at-tabs-pane compid="{{$compid__122}}">
+                <scroll-view class="scrollview" scroll-y="{{true}}" scroll-with-animation="{{true}}" scroll-top="{{scrollTop}}" style="{{anonymousState__temp}}" lower-threshold="{{Threshold}}" upper-threshold="{{Threshold}}" bindscrolltoupper="onScrollToUpper" bindscroll="onScroll" data-e-scrolltoupper-so="this">
+                    <need-item wx:key="$loopState__temp3" wx:for="{{loopArray38}}" wx:for-item="item" wx:for-index="idx" compid="{{item.$compid__119}}"></need-item>
+                </scroll-view>
+            </at-tabs-pane>
+            <at-tabs-pane compid="{{$compid__123}}">
+                <scroll-view class="scrollview" scroll-y="{{true}}" scroll-with-animation="{{true}}" scroll-top="{{scrollTop}}" style="{{anonymousState__temp4}}" lower-threshold="{{Threshold}}" upper-threshold="{{Threshold}}" bindscrolltoupper="onScrollToUpper" bindscroll="onScroll" data-e-scrolltoupper-so="this">
+                    <need-item wx:key="$loopState__temp6" wx:for="{{loopArray39}}" wx:for-item="item" wx:for-index="idx" compid="{{item.$compid__120}}"></need-item>
+                </scroll-view>
+            </at-tabs-pane>
+        </at-tabs>
+    </view>
+</block>

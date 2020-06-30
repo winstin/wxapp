@@ -1,0 +1,14 @@
+@import "../../common.wxss";
+.index-modules__need___2kGCv .index-modules__addicon___13tPU {
+  position: fixed;
+  width: 64rpx;
+  height: 64rpx;
+  z-index: 9;
+  top: 12rpx;
+  right: 12rpx;
+}
+.index-modules__need___2kGCv .at-tabs__item {
+  width: 150rpx;
+  flex: inherit;
+}
+

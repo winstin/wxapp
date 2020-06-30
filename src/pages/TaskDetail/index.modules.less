@@ -1,0 +1,69 @@
+.taskDetail {
+    position: relative;
+    padding: 20px 20px;
+    .name {
+        margin-bottom: 30px;
+        color: rgba(0,0,0,0.8);
+        font-size: 34px;
+        font-weight: 600;
+    } 
+    .tit {
+        color: rgba(26,47,66,0.3);
+        font-size: 30px;
+        font-weight: 600;
+    }
+    .cont {
+        margin-bottom: 40px;
+        color: rgba(0,0,0,0.8);
+        font-size: 30px;
+        font-weight: 600;
+    }
+    .bottom {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        .bottomView {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .cost {
+                padding-left: 20px;
+                color: #062a67;
+                font-size: 34px;
+                font-weight: 700;
+            }
+            .recieve {
+                width: 220px;
+                height: 100px;
+                color: #fff;
+                background: #31cfa5;
+                text-align: center;
+                line-height: 100px;
+            }
+
+            .complete{
+                width: 220px;
+                height: 100px;
+                color: #fff;
+                background: #062A67;
+                text-align: center;
+                line-height: 100px;
+            }
+        }
+        
+    }
+
+    :global {
+        .at-modal__content {
+            min-height: auto;
+            text-align: center;
+        }
+
+        .at-modal__footer .at-modal__action > button:last-child {
+            color: #fff;
+            background: #062a67;
+        }
+
+    }
+}

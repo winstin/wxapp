@@ -1,0 +1,40 @@
+<block wx:if="{{$taroCompReady}}">
+    <view class="{{styles.factory}}">
+        <view class="{{styles.factorytop}}">
+            <view class="{{styles.topItem}}" bindtap="anonymousFunc0">综合排序
+                <view class="at-icon at-icon-chevron-down"></view>
+            </view>
+            <view class="{{styles.topItem}}" bindtap="anonymousFunc1">行业
+                <view class="at-icon at-icon-chevron-down"></view>
+            </view>
+            <view class="{{styles.topItem}}" bindtap="anonymousFunc2">筛选
+                <view class="at-icon at-icon-chevron-down"></view>
+            </view>
+        </view>
+        <block wx:if="{{sort}}">
+            <view bindtap="onClose" class="{{styles.modal}}" data-e-tap-so="this">
+                <view class="{{styles.listItem}}">
+                    <view>按照星级降序</view>
+                </view>
+                <view class="{{styles.listItem}}">
+                    <view>按照访问量降序</view>
+                </view>
+            </view>
+        </block>
+        <block wx:if="{{industry}}">
+            <view bindtap="onClose" class="{{styles.modal}}" data-e-tap-so="this">
+                <view class="{{styles.listItem}}">
+                    <view>行业1</view>
+                </view>
+                <view class="{{styles.listItem}}">
+                    <view>行业2</view>
+                </view>
+            </view>
+        </block>
+        <view class="{{styles.list}}">
+            <view class="{{styles.margintop}}"></view>
+            <factory-item wx:key="$loopState__temp2" wx:for="{{loopArray25}}" wx:for-item="item" wx:for-index="idx" compid="{{item.$compid__92}}"></factory-item>
+        </view>
+        <at-drawer compid="{{$compid__93}}"></at-drawer>
+    </view>
+</block>

@@ -1,0 +1,33 @@
+<block wx:if="{{$taroCompReady}}">
+    <view class="{{styles.list}}">
+        <view>
+            <image src="{{src}}" class="{{styles.listimg}}"></image>
+            <view class="{{styles.rateback}}">
+                <at-rate compid="{{$compid__100}}"></at-rate>
+            </view>
+        </view>
+        <view>
+            <view class="{{styles.title}}">上海嘉协精密机械有限公司</view>
+            <view class="{{styles.tips}}">
+                <image src="{{location}}" class="{{styles.icon}}"></image>
+                <view>中国，上海</view>
+            </view>
+            <view class="{{styles.tips}}">
+                <image src="{{skill}}" class="{{styles.icon}}"></image>
+                <view>机加工，塑胶成型</view>
+            </view>
+            <view class="{{styles.tips}}">
+                <image src="{{industry}}" class="{{styles.icon}}"></image>
+                <view>航天航空</view>
+            </view>
+            <view class="{{styles.tips}}">
+                <image src="{{area}}" class="{{styles.icon}}"></image>
+                <view>3,000-5,000㎡</view>
+                <view class="{{styles.tips2}}">
+                    <image src="{{staff}}" class="{{styles.icon}}"></image>
+                    <view>101-200</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</block>

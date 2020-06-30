@@ -1,0 +1,12 @@
+.index-modules__need___3z7f1 .index-modules__addicon___1dVIq {
+  position: fixed;
+  width: 64rpx;
+  height: 64rpx;
+  z-index: 9;
+  top: 12rpx;
+  right: 12rpx;
+}
+.index-modules__need___3z7f1 .at-tabs__item {
+  width: 150rpx;
+  flex: inherit;
+}

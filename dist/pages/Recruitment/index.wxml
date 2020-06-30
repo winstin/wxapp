@@ -1,0 +1,7 @@
+<block wx:if="{{$taroCompReady}}">
+    <view class="{{styles.need}}">
+        <scroll-view class="scrollview" scroll-y="{{true}}" scroll-with-animation="{{true}}" scroll-top="{{scrollTop}}" style="{{anonymousState__temp}}" lower-threshold="{{Threshold}}" upper-threshold="{{Threshold}}" bindscrolltoupper="onScrollToUpper" bindscroll="onScroll" data-e-scrolltoupper-so="this">
+            <recruitment-item wx:key="$loopState__temp3" wx:for="{{loopArray28}}" wx:for-item="item" wx:for-index="idx" compid="{{item.$compid__99}}"></recruitment-item>
+        </scroll-view>
+    </view>
+</block>

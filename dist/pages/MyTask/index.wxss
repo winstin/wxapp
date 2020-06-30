@@ -1,0 +1,40 @@
+@import "../../common.wxss";
+.index-modules__myTask___Aiz7b {
+  width: 100%;
+  height: 100%;
+}
+.index-modules__myTask___Aiz7b .index-modules__tabContent___32SOw {
+  width: auto;
+  padding: 20rpx 20rpx;
+}
+.index-modules__myTask___Aiz7b .at-tabs__underline {
+  display: none;
+}
+.index-modules__myTask___Aiz7b .at-tabs__item-underline {
+  background: #062A67;
+}
+.index-modules__myTask___Aiz7b .at-tabs__item {
+  font-size: 30rpx;
+}
+.index-modules__myTask___Aiz7b .at-tabs__item--active {
+  color: #062A67;
+}
+.index-modules__unLogin___2uTgG {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.index-modules__unLogin___2uTgG .index-modules__receiveBtn___1r_fn {
+  width: 136rpx;
+  height: 64rpx;
+  margin-top: 15rpx;
+  text-align: center;
+  line-height: 64rpx;
+  color: #fff;
+  background: #062a67;
+}
+
