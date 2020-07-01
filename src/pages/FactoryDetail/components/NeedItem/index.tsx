@@ -28,39 +28,21 @@ class IndustryItem extends Component {
     const {src} = this.props;
 
     return (
-      <View className={styles.list} onClick={()=>{
-        Taro.navigateTo({
-          url: '/pages/NeedDetail/index'
-        })
-      }}>
+      <View className={styles.list}>
         <View>
           <Image src={src} className={styles.listimg} />
         </View>
         <View >
           <View className={styles.title} >
-          寻超声波电焊机厂商
+          机加工-车削工艺
           </View>
           <View className={styles.tips} >
-          数量  20台
+          材料  不锈钢
           </View>
           <View className={styles.tips} >
-          要求  口罩耳带焊接用
+          产能  每月2000件
           </View>
-          <View className={styles.tips3} >
-            <View>
-              2020/04/15
-            </View>
-            <View className={styles.share} >
-              <View className={styles.item}>
-                <Image src={ico_share} className={styles.bottom_btn} />
-                <View>分享</View>
-              </View>
-              <View className={styles.item}> 
-                <Image src={ico_comment} className={styles.bottom_btn} />
-                <View>评论 999</View>
-              </View>
-            </View>
-          </View>
+          
         </View>
       </View>
     );

@@ -79,14 +79,14 @@ class User extends Component {
     })
   }
  
-  manageCard = () => {
+  manageCard = (url) => {
     Taro.navigateTo({
-      url: '/pages/CardManage/index'
+      url
     })
   }
 
   render() {
-    const {userInfo,makerInfo} = this.props;
+    const {userInfo} = this.props;
 
     // const token = Taro.getStorageSync('token');
     // if(!token){
@@ -105,7 +105,7 @@ class User extends Component {
     return (
       <View className={styles.user}>
         {/* 个人信息 */}
-        <View className={styles.userInfo} onClick={this.manageCard}>
+        <View className={styles.userInfo} onClick={this.manageCard.bind(this,"/pages/CardManage/index")}>
           <View className={styles.info}>
           <Image
             className={styles.avatar}
@@ -130,7 +130,7 @@ class User extends Component {
           /> */}
         </View>
 
-        <View className={styles.cardtop} onClick={this.manageCard}>
+        <View className={styles.cardtop} onClick={()=>{this.manageCard("/pages/MemberCredits/index")}}>
           <View className={styles.cardL}>
             <View className={styles.itemTitle}>会员积分</View>
           </View>
@@ -139,14 +139,18 @@ class User extends Component {
             <Image
               className={styles.arrow}
               src={arrowIcon}
-              onClick={this.goInfo}
             />
           </View>
         </View>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/PersonMemberShip/index")}}
           cardIcon={sjhy}
-          title={'升级会员'}
+          title={'升级个人会员'}
+        ></ListItem>
+        <ListItem 
+          onClick={()=>{this.manageCard("/pages/UpgradeMemberShip/index")}}
+          cardIcon={sjhy}
+          title={'升级企业会员'}
         ></ListItem>
         <ListItem 
           onClick={this.manageCard}

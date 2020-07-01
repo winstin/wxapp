@@ -23,7 +23,7 @@ class App extends Component {
 
   config: Config = {
     pages: [
-      // 'pages/CardManage/index', // 银行卡管理
+      "pages/PersonMemberShip/index",// 升级个人会员
 
       'pages/Index/index', // 主页
       'pages/Home/index', // 首页
@@ -38,9 +38,13 @@ class App extends Component {
       "pages/Factory/index",
       "pages/Need/index",
       "pages/Recruitment/index",
+      "pages/MemberCredits/index",// 会员积分
+      "pages/FactoryDetail/index",// 企业详情
+      "pages/NeedDetail/index",// 商品详情
+      "pages/UpgradeMemberShip/index",// 升级企业会员
+      // "pages/PersonMemberShip/index",// 升级个人会员
 
       
-
     ],
     debug:false,
     window: {

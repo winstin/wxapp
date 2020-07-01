@@ -1,0 +1,70 @@
+.member{
+    background: rgba(26,47,66,0.04);
+    height: 100vh;
+    .userInfo {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 20px;
+        padding-top: 90px;
+        width: 100%;
+        height: 368px;
+        background-color:#4789F2;
+        color: #fff;
+        .tips{
+            font-size: 28px;
+            margin-top: 80px;
+        }
+        .number{
+            font-size: 60px;
+            font-weight: 600;
+        }
+    }
+    .toptip{
+        padding: 16px;
+        font-size: 28px;
+        color: rgba(0,0,0,0.40);
+        background: rgba(26,47,66,0.04);  
+    }
+
+
+    .listItem {
+        display: flex;
+        align-items: center;
+        // justify-content: space-between;
+        height: 108px;
+        padding:0 40px;
+        background: #FFFFFF;
+        border-top: 1px solid  rgba(26,47,66,0.10);
+        font-size: 28px;
+        color: rgba(0,0,0,0.80);
+        .item{
+            flex:2
+        }
+        .itemlast{
+            flex:1;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .warn{
+            flex:1;
+            display: flex;
+            justify-content: flex-end;
+            color: #57D589;
+        }
+    }
+
+    :global{
+        .goback{
+            position: fixed;
+            top:20pt;
+            left: 10pt;
+            color: #fff;
+            font-size: 60px;
+            z-index: 9;
+        }
+    }
+
+}
