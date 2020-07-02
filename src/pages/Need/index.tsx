@@ -116,7 +116,11 @@ class Home extends Component {
     const Threshold = 20
     return (
       <View className={styles.need}>
-        <Image src={btn_new} className={styles.addicon} />
+        <Image src={btn_new} className={styles.addicon} onClick={()=>{
+          Taro.navigateTo({
+            url: '/pages/NeedPublish/index'
+          })
+        }}/>
         <AtTabs current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.current} index={0} >
             <ScrollView

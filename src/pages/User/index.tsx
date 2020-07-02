@@ -143,42 +143,43 @@ class User extends Component {
           </View>
         </View>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/PersonMemberShip/index")}}
+          onClick={()=>{this.manageCard("/pages/MemberShipPerson/index")}}
           cardIcon={sjhy}
           title={'升级个人会员'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/UpgradeMemberShip/index")}}
+          onClick={()=>{this.manageCard("/pages/MemberShipUpgrade/index")}}
           cardIcon={sjhy}
           title={'升级企业会员'}
         ></ListItem>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}
           title={'企业规模'}
         ></ListItem>
+        
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyCompaniestIntroduce/index")}}
           cardIcon={qygm}
           title={'企业介绍'}
         ></ListItem>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyAlbumEnterprise/index")}}
           cardIcon={qyxc}
           title={'企业相册'}
         ></ListItem>
         <ListItem 
-          onClick={this.manageCard}
+          onClick={()=>{this.manageCard("/pages/MyAlbumProduct/index")}}
           cardIcon={cpxc}
           title={'产品相册'}
         ></ListItem>

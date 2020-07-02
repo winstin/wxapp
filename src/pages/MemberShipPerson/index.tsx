@@ -1,13 +1,11 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,Image,Picker,Checkbox } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import phoneIcon from '../../assets/ico_name@3x.png';
-import ico_mobilephone from '../../assets/ico_mobilephone@3x.png';
-import ico_message from '../../assets/ico_message@3x.png';
 
 import classNames from 'classnames';
 import "taro-ui/dist/style/components/icon.scss";
@@ -84,6 +82,7 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:'', // 正面照
+    dateSel: ''
 
   }
   config: Config = {
@@ -149,8 +148,14 @@ class Home extends Component {
     console.log(value)
   }
 
+  onDateChange = e => {
+    this.setState({
+      dateSel: e.detail.value
+    })
+  }
+
   render() {
-    const {phone,code,frontFilePath} = this.state;
+    const {phone,dateSel,frontFilePath} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -185,11 +190,12 @@ class Home extends Component {
           生日
         </View>
         <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请选择您的出生日期…"  value={phone} onChange={this.phoneChange} />
+          <View>
+              <Picker value={""} mode='date' onChange={this.onDateChange}>
+                <AtInput className={styles.input} name="phone" placeholder="请选择您的出生日期…"  value={dateSel} onChange={()=>{}}/>
+              </Picker>
+          </View>
+          
         </View>
         <View className={styles.label}>
           籍贯
@@ -305,35 +311,52 @@ class Home extends Component {
         <View className={styles.label}>
           汇报对象
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入汇报对象…"  value={phone} onChange={this.phoneChange} />
+        <View className={styles.formcheckboxItem}>
+          <View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='0' checked>总经理</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='1'>CPO</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='2'>供应链总监</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='3'>运营经理</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='4'>其他</Checkbox>
+            </View>
+          </View>
         </View>
 
 
-        <View className={styles.label}>
-          汇报对象
-        </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入汇报对象…"  value={phone} onChange={this.phoneChange} />
-        </View>
 
         <View className={styles.label}>
           擅长领域
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入擅长领域…"  value={phone} onChange={this.phoneChange} />
+        <View className={styles.formcheckboxItem}>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='0' checked style="flex:1">战略采购</Checkbox>
+              <Checkbox value='0'  style="flex:1">采购寻源</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='1' style="flex:1">商务谈判</Checkbox>
+              <Checkbox value='1' style="flex:1">成本开发</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='2' style="flex:1">工艺开发</Checkbox>
+              <Checkbox value='1' style="flex:1">库存管理</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='3' style="flex:1">质量管理</Checkbox>
+              <Checkbox value='1' style="flex:1">项目管理</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='4' style="flex:1">供应商管理</Checkbox>
+              <Checkbox value='1' style="flex:1">其他</Checkbox>
+            </View>
         </View>
 
         <View className={styles.label}>
@@ -379,10 +402,27 @@ class Home extends Component {
         <View className={styles.label}>
           采购涉及品类或工艺
         </View>
-        <View className={styles.formItem}>
-          <View style='flex:1'>
-            <AtInput className={styles.input} name="phone" placeholder="请输入采购涉及品类或工艺…"  value={phone} onChange={this.phoneChange} />
-          </View>
+        <View className={styles.formcheckboxItem}>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='0' checked style="flex:1">表面处理</Checkbox>
+              <Checkbox value='0'  style="flex:1">机加工</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='1' style="flex:1">模具</Checkbox>
+              <Checkbox value='1' style="flex:1">冲压</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='2' style="flex:1">钣金</Checkbox>
+              <Checkbox value='1' style="flex:1">铸造</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              <Checkbox value='3' style="flex:1">锻造</Checkbox>
+              <Checkbox value='1' style="flex:1">五金</Checkbox>
+            </View>
+            <View className={styles.checkboxItem}>
+              {/* <Checkbox value='4' style="flex:1">供应商管理</Checkbox> */}
+              <Checkbox value='1' style="flex:1">其他</Checkbox>
+            </View>
         </View>
         <View className={styles.label}>
           推荐人

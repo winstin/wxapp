@@ -28,7 +28,11 @@ class IndustryItem extends Component {
     const {src} = this.props;
 
     return (
-      <View className={styles.list}>
+      <View className={styles.list} onClick={()=>{
+        Taro.navigateTo({
+          url: '/pages/NeedDetail/index'
+        })
+      }}>
         <View>
           <Image src={src} className={styles.listimg} />
         </View>

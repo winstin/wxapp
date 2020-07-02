@@ -23,7 +23,7 @@ class App extends Component {
 
   config: Config = {
     pages: [
-      "pages/PersonMemberShip/index",// 升级个人会员
+      // "pages/MyAlbumProduct/index",// 企业规模
 
       'pages/Index/index', // 主页
       'pages/Home/index', // 首页
@@ -41,10 +41,18 @@ class App extends Component {
       "pages/MemberCredits/index",// 会员积分
       "pages/FactoryDetail/index",// 企业详情
       "pages/NeedDetail/index",// 商品详情
-      "pages/UpgradeMemberShip/index",// 升级企业会员
-      // "pages/PersonMemberShip/index",// 升级个人会员
+      "pages/MemberShipUpgrade/index",// 升级企业会员
+      "pages/MemberShipPerson/index",// 升级个人会员
+      "pages/AlbumEnterprise/index",// 企业相册
+      "pages/AlbumProduct/index",// 产品相册
+      "pages/NeedPublish/index",// 发布需求
+      "pages/MyBaseInfo/index",// 基本信息
+      "pages/MyCompaniestIntroduce/index",// 企业介绍
+      "pages/MyContactInfo/index",// 联系信息
+      "pages/MyEnterpriseScale/index",// 企业规模
+      "pages/MyAlbumProduct/index",// 企业规模
+      "pages/MyAlbumEnterprise/index",// 企业相册
 
-      
     ],
     debug:false,
     window: {

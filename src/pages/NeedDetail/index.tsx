@@ -115,10 +115,14 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <View className={styles.userInfo} >
+        <View className={styles.userInfo} onClick={()=>{
+            Taro.navigateTo({
+              url: '/pages/AlbumProduct/index'
+            })
+          }}>
           <View className={styles.tips} style={titletop}>产品展示</View>
         </View>
-
+        
         <View className={styles.title}>
           燕窝窝马来西亚正品燕窝
         </View>
