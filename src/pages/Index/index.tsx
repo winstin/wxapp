@@ -1,8 +1,8 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Swiper, SwiperItem} from "@tarojs/components";
-import { AtTabs, AtTabsPane } from 'taro-ui'
+import { View,Image,Swiper, SwiperItem,Button} from "@tarojs/components";
+import { AtTabs, AtTabsPane, AtMessage } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import IndustryItem from './components/IndustryItem/index';
 import NeedItem from './components/NeedItem/index';
@@ -18,10 +18,10 @@ import industry7 from '../../assets/home/ico_zgc@3x.png';
 import styles from "./index.modules.less";
 import Index1 from '../../assets/Index1.jpeg';
 import Index2 from '../../assets/Index2.jpeg';
-import Index3 from '../../assets/Index3.jpeg';
 import "taro-ui/dist/style/components/tabs.scss";
 import "taro-ui/dist/style/components/rate.scss";
 import "taro-ui/dist/style/components/icon.scss";
+
 type PageStateProps = {
   userInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
@@ -29,6 +29,7 @@ type PageStateProps = {
 
 type PageOwnProps = {
   loading: boolean;
+  imgUrls:any;
 };
 
 type PageState = {};
@@ -39,10 +40,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ myindex,loading }) => {
+  const {XCX_HOME_IMG=[]} = myindex;
   return {
-    userInfo,
+    imgUrls:XCX_HOME_IMG,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -51,23 +52,30 @@ class Home extends Component {
   industryList = [
     {
       icon: industry7,
-      title:'找工厂',
-      star:2
+      title:'企业展示',
+      star:2,
+      switchUrl:'/pages/Factory/index',
     },
     {
       icon: industry5,
       title:'最新需求',
-      star:3
+      star:3,
+      switchUrl:'/pages/Need/index',
+
     },
     {
       icon: industry2,
       title:'会员审核',
-      star:4
+      star:4,
+      path:"/packageA/pages/MemberCheckList/index",
+
     },
     {
       icon: industry1,
       title:'需求审核',
-      star:5
+      star:5,
+      path:"/pages/CardManage/index",
+
     },
     {
       icon: industry4,
@@ -82,7 +90,18 @@ class Home extends Component {
     {
       icon: industry3,
       title:'签到',
-      star:5
+      star:5,
+      onClick:()=>{
+        const {dispatch} = this.props;
+        if(dispatch){
+          dispatch({
+            type: "myindex/baseMemberPoints",
+            payload: {
+              // codes:'XCX_HOME_IMG' 
+            }
+          });
+        }
+      }
     },
     {
       icon: "",
@@ -111,18 +130,18 @@ class Home extends Component {
 
   componentDidShow() {
 
-    const token = Taro.getStorageSync('token');
-    if(token){
+    // const token = Taro.getStorageSync('token');
+    // if(token){
       const {dispatch} = this.props;
       if(dispatch){
         dispatch({
-          type: "user/fetchmakerDetails",
+          type: "myindex/getBatchDictValues",
           payload: {
-            user_id:Taro.getStorageSync('user_id')
+            codes:'XCX_HOME_IMG' 
           }
         });
       }
-    }
+    // }
   }
 
   handleClick (value) {
@@ -140,12 +159,23 @@ class Home extends Component {
     console.log(e.detail)
   }
 
+  //转发
+  onShareAppMessage (res) {
+    return {
+        title: "升级会员",
+        path:'pages/MemberShipPerson/index'
+    }
+  }
+    
+
 
   render() {
     const tabList = [{ title: '企业展示' }, { title: '需求广场' }, { title: '猎聘信息' }]
-
+    const {imgUrls=[]} = this.props;
+    console.log("imgUrls",imgUrls)
     return (
       <View className={styles.home}>
+        <AtMessage />
         <Swiper
           className='test-h'
           indicatorColor='#999'
@@ -154,18 +184,14 @@ class Home extends Component {
           circular
           indicatorDots
           autoplay>
-          <SwiperItem>
-          <Image src={Index2} className={styles.SwiperItem} />
-          </SwiperItem>
-          <SwiperItem>
-          <Image
-            className={styles.SwiperItem}
-            src={Index1}
-          />
-          </SwiperItem>
-          <SwiperItem>
-          <Image src={Index3} className={styles.SwiperItem} />
-          </SwiperItem>
+          {imgUrls.map((item)=>{
+            return(
+              <SwiperItem>
+                <Image src={`http://sz-spd.cn:889/${item.label}`} className={styles.SwiperItem} />
+              </SwiperItem>
+            )
+          })}
+        
         </Swiper>
         {/* 适合行业 */}
         <View className={styles.industryList}>
@@ -174,7 +200,10 @@ class Home extends Component {
             {
               this.industryList.map((item,idx) => {
                 if (idx <= 4) {
-                  return <View className={styles.industryItem}><IndustryItem key={`industryItem${idx}`} item={item}/></View>
+                  return <View className={styles.industryItem}>
+                    <IndustryItem key={`industryItem${idx}`} item={item}/>
+                    {/* <Button openType="share" className={styles.share}>分享</Button> */}
+                  </View>
                 }
               })
             }
@@ -206,7 +235,6 @@ class Home extends Component {
             </View>
           </AtTabsPane>
         </AtTabs>
-
 
       </View>
     );

@@ -2,14 +2,9 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
-import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
+import { AtInput,AtButton,AtIcon } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
-import phoneIcon from '../../assets/ico_name@3x.png';
-import ico_mobilephone from '../../assets/ico_mobilephone@3x.png';
-import ico_message from '../../assets/ico_message@3x.png';
-
-import classNames from 'classnames';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";

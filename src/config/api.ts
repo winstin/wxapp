@@ -19,7 +19,6 @@ export const requestConfig = {
   handleUnbind: '/api/campus/parent/bind-lift', // CAMPUS-032：微信接口-解除绑定
 
 
-  weapplogin: '/api/agileworker-auth/oauth/token', // 微信登录接口
   fetchTenants: '/api/agileworker-system/tenant/select-tenants', // 获取租户信息
   fetchmakerDetails: '/api/agileworker-biz/maker/details/:user_id', // 获取用户信息
   makerIdentity: '/api/agileworker-biz/maker/identity', // 认证用户信息
@@ -32,4 +31,10 @@ export const requestConfig = {
   completedtask: '/api/agileworker-biz/task/mine/completed', // 已完成任务
   completetask: '/api/agileworker-biz/task/:taskId/complete', // 完成任务
   getOssFile: '/api/agileworker-resource/oss/get-file', // 获取文件
+
+
+  weapplogin: '/api/gate/oauth/loginWithPassword', // 微信登录接口
+  getBatchDictValues: '/api/basic/sysDictValue/getBatchDictValues', // 微信登录接口
+  baseMemberPoints:'/api/srm/baseMemberPoints/signIn', // 会员签到
+
 }

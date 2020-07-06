@@ -1,11 +1,13 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Picker,Checkbox } from "@tarojs/components";
+import { View,Picker,Checkbox,Image } from "@tarojs/components";
 import { AtInput,AtButton,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import classNames from 'classnames';
+import img_my_bg_corp from '../../assets/factory/img_djb_bg_person.png';
+
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
@@ -163,6 +165,8 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
+        <Image className={styles.bg_img} src={img_my_bg_corp} />
+
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
         </View>

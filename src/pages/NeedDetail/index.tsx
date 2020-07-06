@@ -3,11 +3,9 @@ import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
-import Index2 from '../../assets/Index2.jpeg';
 import styles from "./index.modules.less";
-import location from '../../assets/factory/ico_location@3x.png';
-import arrowIcon from '../../assets/user/ico_arrow@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
+import img_my_bg_corp from '../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
   userInfo:any;
@@ -115,6 +113,8 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
+        <Image className={styles.bg_img} src={img_my_bg_corp} />
+
         <View className={styles.userInfo} onClick={()=>{
             Taro.navigateTo({
               url: '/pages/AlbumProduct/index'

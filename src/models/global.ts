@@ -66,24 +66,27 @@ export default {
     *login({payload}, { call, put }) {
       // 先判断缓存中是否有token
       const token = Taro.getStorageSync("token");
-      // console.log("后台返回token", !token);
+      console.log("后台返回token", !token);
       
       if( !token ){
           // const code = yield call(Taro.login);
           const params = {
-              grant_type: "password", 
-              scope:"all", // 登录账号身份
-              type:"account",
+              // grant_type: "password", 
+              // scope:"all", // 登录账号身份
+              // type:"account",
               ...payload
           }
           // 获取token
-          const authRes = yield call(login,params);
-          if (authRes && authRes.tenant_id) {
+          const res = yield call(login,params);
+          const authRes = JSON.parse(res.data)
+          console.log("authRes2", authRes);
+
+          if (authRes && authRes.access_token) {
             // 存储token和userId
             Taro.setStorage({ key: 'token', data: authRes.access_token });
-            Taro.setStorage({ key: 'tenant_id', data: authRes.tenant_id });
-            Taro.setStorage({ key: 'user_id', data: authRes.user_id });
-          //   Taro.setStorage({ key: 'vbNo', data: authRes.data.vbNo })
+            // Taro.setStorage({ key: 'tenant_id', data: authRes.tenant_id });
+            // Taro.setStorage({ key: 'user_id', data: authRes.user_id });
+            // Taro.setStorage({ key: 'vbNo', data: authRes.data.vbNo })
             // yield put({
             //   type:'updateState',
             //   payload:{userInfo:authRes}

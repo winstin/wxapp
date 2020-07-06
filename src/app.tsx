@@ -23,26 +23,20 @@ class App extends Component {
 
   config: Config = {
     pages: [
-      // "pages/MyAlbumProduct/index",// 企业规模
-
+      // 'pages/Login/index', // 登录
       'pages/Index/index', // 主页
       'pages/Home/index', // 首页
       'pages/Login/index', // 登录
-      'pages/TaskHall/index',// 任务大厅
-      'pages/MyTask/index', // 我的任务
       'pages/User/index', // 个人中心
-      'pages/UserInfo/index', // 个人信息
-      'pages/UserAuth/index', // 实名认证
       'pages/CardManage/index', // 银行卡管理
-      'pages/TaskDetail/index', // 任务详情
       "pages/Factory/index",
       "pages/Need/index",
       "pages/Recruitment/index",
-      "pages/MemberCredits/index",// 会员积分
+      // "pages/MemberCredits/index",// 会员积分
       "pages/FactoryDetail/index",// 企业详情
       "pages/NeedDetail/index",// 商品详情
-      "pages/MemberShipUpgrade/index",// 升级企业会员
-      "pages/MemberShipPerson/index",// 升级个人会员
+      // "pages/MemberShipUpgrade/index",// 升级企业会员
+      // "pages/MemberShipPerson/index",// 升级个人会员
       "pages/AlbumEnterprise/index",// 企业相册
       "pages/AlbumProduct/index",// 产品相册
       "pages/NeedPublish/index",// 发布需求
@@ -50,9 +44,27 @@ class App extends Component {
       "pages/MyCompaniestIntroduce/index",// 企业介绍
       "pages/MyContactInfo/index",// 联系信息
       "pages/MyEnterpriseScale/index",// 企业规模
-      "pages/MyAlbumProduct/index",// 企业规模
-      "pages/MyAlbumEnterprise/index",// 企业相册
+      // "pages/MyAlbumProduct/index",// 企业规模
+      // "pages/MyAlbumEnterprise/index",// 企业相册
+      "pages/FactoryIntroduce/index",// 企业介绍
 
+    ],
+    subPackages:[
+      { 
+        "root":"packageA",
+        "pages":[
+          "pages/MemberCredits/index",// 会员积分
+          "pages/MemberShipUpgrade/index",// 升级企业会员
+          "pages/MemberShipPerson/index",// 升级个人会员
+          "pages/MyAlbumProduct/index",// 企业规模
+          "pages/MyAlbumEnterprise/index",// 企业相册
+          "pages/RecruitmentDetail/index",// 企业相册
+          "pages/AlbumProductList/index",// 企业相册
+          "pages/MemberCheckList/index",// 会员审核
+
+          
+        ]
+      }
     ],
     debug:false,
     window: {
@@ -72,7 +84,7 @@ class App extends Component {
         }, 
         {
           pagePath: "pages/Factory/index",
-          text: "工厂",
+          text: "企业",
           iconPath: "./assets/tabbar/tabbar_factory_b@3x.png",
           selectedIconPath: "./assets/tabbar/tabbar_factory_a@3x.png"
         },

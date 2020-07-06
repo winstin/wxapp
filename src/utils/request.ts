@@ -52,7 +52,7 @@ export class Request {
       returenData = {...returenData,...params}
     }else{
       let str = stringify(params, { addQueryPrefix: true });
-      if(returnUrl.includes('/agileworker-auth/oauth/token')){
+      if(returnUrl.includes('/gate/oauth/loginWithPassword')){
         str = stringify(returenData, { addQueryPrefix: true });
       }
       returnUrl=returnUrl+str;
@@ -90,10 +90,20 @@ export class Request {
     // console.log('-------res:',res);
     // console.log('-------opts:',opts);
     // 登陆失效 
-    if (res.data.responseCode === "402") { 
+    if (res.data.statusCode === "402") { 
       await this.login(); 
       const token = Taro.getStorageSync('token');
       return this.request({...opts,header:{Authorization: `bearer ${token}`}});
+    }
+
+    if (res.data.statusCode === "500") { 
+      Taro.showToast({
+        title: res.data.message,
+      })
+      // Taro.atMessage({
+      //   'message': res.data.message,
+      //   'type': 'error',
+      // })
     }
 
     // 请求成功
@@ -142,7 +152,7 @@ export class Request {
       // })
 
       const data = {
-        responseCode: '200',
+        statusCode: '200',
         data: {
           access_token: 'token',
           userId: '',
@@ -150,7 +160,7 @@ export class Request {
         }
       }
 
-      if (data.responseCode !== "200" || !data.data || !data.data.access_token) {
+      if (data.statusCode !== "200" || !data.data || !data.data.access_token) {
         reject()
         return
       }
@@ -189,8 +199,8 @@ export class Request {
       const requestParams = token ? {..._opts,header:{'Blade-Auth': `bearer ${token}`}} : {..._opts,header:{Authorization: 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0'}};
       const res = await this.request(requestParams)
       // createLogger({ title: 'request', req: _opts, res: res })
-      const {code} = res;
-      if(code === 401){
+      const {status} = res;
+      if(status === 401){
         Taro.clearStorage();
         Taro.navigateTo({ url: "/pages/Login/index" });
       }

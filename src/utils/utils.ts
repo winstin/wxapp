@@ -1,3 +1,4 @@
+import Taro from "@tarojs/taro";
 
 /**
  * 手机号正则
@@ -18,3 +19,18 @@ export default {
     phoneReg,
     isPhoneAvailable,
 };
+
+
+export function isLogined() {
+  const token = Taro.getStorageSync('token');
+  if(!token){
+    Taro.reLaunch({
+      url: "/pages/Login/index"
+    })
+    return true
+  }
+
+  return false
+
+}
+

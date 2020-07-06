@@ -81,7 +81,7 @@ class Home extends Component {
     industry:false
   }
   config: Config = {
-    navigationBarTitleText: "找工厂",
+    navigationBarTitleText: "企业展示",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
     

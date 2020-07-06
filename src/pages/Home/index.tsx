@@ -55,7 +55,7 @@ class Index extends PureComponent {
     // const token = Taro.getStorageSync('token');
     // console.log(userInfo)
     if (userInfo) {
-      Taro.reLaunch({ url: "/pages/Index/index" });
+      Taro.reLaunch({ url: "/pages/Login/index" });
 
       // if (token) {
       //   // 重定向到需要显示的页面
@@ -71,7 +71,7 @@ class Index extends PureComponent {
     // const token = Taro.getStorageSync('token');
 
     if (userInfo) {
-      Taro.reLaunch({ url: "/pages/Index/index" });
+      Taro.reLaunch({ url: "/pages/Login/index" });
 
       // if (token) {
       //   // 重定向到需要显示的页面
@@ -128,8 +128,8 @@ class Index extends PureComponent {
           >
             <AtModalHeader>请授权您的微信账号登录</AtModalHeader>
             <AtModalContent>
-              <View className={styles.content} style={{marginBottom:10}}>蓝海灵活用工创客应用</View>
-              <View className={styles.content}>创客可通过本应用领取、完成、管理等通过蓝海灵活用工平台的发布的任务</View>
+              <View className={styles.content} style={{marginBottom:10}}>机械荟应用</View>
+              <View className={styles.content}>用户可通过本应用申请企业会员，个人会员，发布需求等</View>
             </AtModalContent>
             <AtModalAction>
               <Button

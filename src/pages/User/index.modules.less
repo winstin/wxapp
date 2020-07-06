@@ -6,8 +6,8 @@
         justify-content: space-between;
         padding: 20px 20px;
         height: 440px;
-        background: url('../../assets/user/img_my_bg_corp.png') no-repeat center;
-        background-size: 100% 100%;
+        // background: url('../../assets/user/img_my_bg_corp.png') no-repeat center;
+        // background-size: 100% 100%;
         .info {
             display: flex;
             align-items: center;
@@ -62,6 +62,19 @@
             height: 36px;
         }
         
+    }
+
+    .bg_img {
+        width: 100%;
+        height: 440px;
+        position: absolute;//脱离标准文档流
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        // border-radius: 20rpx;
+
     }
 
     .cardtop {
@@ -128,4 +141,29 @@
 .arrow {
     width: 18px;
     height: 36px;
+}
+
+.loginBtn{
+    border-top: 1px solid #e5e5e5;
+    padding: 60px 120px;
+    .loginout{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin: 0 auto;
+        padding: 0 32rpx;
+        height: 92rpx;
+        color: #fff;
+        font-size: 32rpx;
+        line-height: 90rpx;
+        text-align: center;
+        border-radius: 8rpx;
+        border: 1PX solid #F75B5C;
+        background: #F75B5C;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+    }
 }

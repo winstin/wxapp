@@ -26,13 +26,17 @@ class IndustryItem extends Component {
     const {src} = this.props;
 
     return (
-      <View className={styles.list}>
+      <View className={styles.list} onClick={()=>{
+        Taro.navigateTo({
+          url: '/packageA/pages/RecruitmentDetail/index'
+        })
+      }}>
         {/* <View>
           <Image src={src} className={styles.listimg} />
         </View> */}
         <View >
           <View className={styles.title} >
-          寻超声波电焊机厂商
+          上海嘉协精密机械有限公司招聘
           </View>
           {/* <View className={styles.tips} >
           数量  20台

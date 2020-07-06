@@ -118,7 +118,7 @@ class Home extends Component {
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
         <View className={styles.userInfo}  onClick={()=>{
             Taro.navigateTo({
-              url: '/pages/EnterpriseAlbum/index'
+              url: '/pages/AlbumEnterprise/index'
             })
           }}>
 
@@ -134,7 +134,11 @@ class Home extends Component {
               <View>中国，上海  成立于 2009 年 10 月</View>
             </View>
 
-            <View className={styles.locationItem}>
+            <View className={styles.locationItem} onClick={()=>{
+              Taro.navigateTo({
+                url: '/pages/FactoryIntroduce/index'
+              })
+            }}>
               <View>详情</View>
               <Image
                 className={styles.arrow}

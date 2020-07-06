@@ -111,7 +111,9 @@
             // justify-content: space-around;
             margin: 20px 0;
             .industryItem{
-                flex:1
+                flex:1;
+                position: relative;
+               
             }
         }
 
@@ -213,4 +215,16 @@
 .bottom_btn{
     width: 28px;
     height: 28px;
+}
+
+.share{
+    position: absolute;
+    top:0;
+    opacity: 0;
+}
+.unshare{
+    position: absolute;
+    top:0;
+    opacity: 0;
+    z-index: -1;
 }

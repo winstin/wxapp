@@ -75,6 +75,18 @@ export const completetask = (params)=>{
 }
 
 
+// 首页轮播图
+export const getBatchDictValues = (params)=>{
+  return Api.getBatchDictValues(params);
+}
+
+
+// 首页签到
+export const baseMemberPoints = (params)=>{
+  return Api.baseMemberPoints(params,'POST');
+}
+
+
 
 
 

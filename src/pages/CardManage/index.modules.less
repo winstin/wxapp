@@ -3,10 +3,23 @@
     padding: 20px 20px;
     width: 686px;
     height: 380px;
-    background: url('../../assets/user/img_my_bg_corp.png') no-repeat center;
-    background-size: 100% 100%;
+    // background: url('../../assets/user/img_my_bg_corp.png') no-repeat center;
+    // background-size: 100% 100%;
     border-radius: 20px;
     margin: 32px auto;
+    //背景图z-index:1
+    .bg_img {
+        width: 100%;
+        height: auto;
+        position: absolute;//脱离标准文档流
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        border-radius: 20rpx;
+
+    }
     .rightico{
         display: flex;
         align-items: center;

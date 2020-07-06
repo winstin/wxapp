@@ -5,6 +5,7 @@ import { View,Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import logo from '../../assets/logo.png';
 import styles from "./index.modules.less";
+import img_my_bg_corp from '../../assets/user/img_my_bg_corp.png';
 
 type PageStateProps = {
   userInfo:any;
@@ -103,6 +104,7 @@ class Home extends Component {
   render() {
     return (
       <View className={styles.userInfo} >
+          <Image className={styles.bg_img} src={img_my_bg_corp} />
           <View className={styles.rightico} >
             <Image
               className={styles.logo}
