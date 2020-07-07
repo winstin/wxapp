@@ -36,5 +36,12 @@ export const requestConfig = {
   weapplogin: '/api/gate/oauth/loginWithPassword', // 微信登录接口
   getBatchDictValues: '/api/basic/sysDictValue/getBatchDictValues', // 微信登录接口
   baseMemberPoints:'/api/srm/baseMemberPoints/signIn', // 会员签到
+  getsysMenu:'/api/basic/sysMenu/xcx-menu', // 获取有权限的小程序菜单
+  getCorporate:'/api/srm/corporate/show-list', // 工厂展示--首页
+  getJxhReq:'/api/srm/jxhReq/show-list', // 需求展示--首页
+  getPortalNotice:'/api/srm/portalNotice/cooperated-list', // 猎聘信息--首页
+  getBatchDictValueByCode:'/api/basic/sysDictValue/getBatchDictValueByCode', // # 企业行业列表
+
+  getCorporateList:'/api/srm/corporate/corporate-list', // 工厂展示
 
 }

@@ -1,8 +1,0 @@
-<block wx:if="{{$taroCompReady}}">
-    <view class="{{styles.industryItem}}">
-        <view class="{{styles.iconView}}">
-            <image src="{{item.icon}}" class="{{styles.icon}}"></image>
-        </view>
-        <view class="{{styles.itemTitle}}">{{item.title}}</view>
-    </view>
-</block>

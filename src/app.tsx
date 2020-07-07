@@ -28,7 +28,7 @@ class App extends Component {
       'pages/Home/index', // 首页
       'pages/Login/index', // 登录
       'pages/User/index', // 个人中心
-      'pages/CardManage/index', // 银行卡管理
+      // 'pages/CardManage/index', // 银行卡管理
       "pages/Factory/index",
       "pages/Need/index",
       "pages/Recruitment/index",
@@ -40,10 +40,10 @@ class App extends Component {
       "pages/AlbumEnterprise/index",// 企业相册
       "pages/AlbumProduct/index",// 产品相册
       "pages/NeedPublish/index",// 发布需求
-      "pages/MyBaseInfo/index",// 基本信息
-      "pages/MyCompaniestIntroduce/index",// 企业介绍
-      "pages/MyContactInfo/index",// 联系信息
-      "pages/MyEnterpriseScale/index",// 企业规模
+      // "pages/MyBaseInfo/index",// 基本信息
+      // "pages/MyCompaniestIntroduce/index",// 企业介绍
+      // "pages/MyContactInfo/index",// 联系信息
+      // "pages/MyEnterpriseScale/index",// 企业规模
       // "pages/MyAlbumProduct/index",// 企业规模
       // "pages/MyAlbumEnterprise/index",// 企业相册
       "pages/FactoryIntroduce/index",// 企业介绍
@@ -61,8 +61,12 @@ class App extends Component {
           "pages/RecruitmentDetail/index",// 企业相册
           "pages/AlbumProductList/index",// 企业相册
           "pages/MemberCheckList/index",// 会员审核
+          "pages/MyBaseInfo/index",// 基本信息
+          "pages/MyCompaniestIntroduce/index",// 企业介绍
+          "pages/MyContactInfo/index",// 联系信息
+          "pages/MyEnterpriseScale/index",// 企业规模
+          'pages/CardManage/index', // 银行卡管理
 
-          
         ]
       }
     ],

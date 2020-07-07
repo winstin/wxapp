@@ -8,7 +8,7 @@ import ico_share from '../../../../assets/need/ico_share@3x.png';
 
 
 type PageOwnProps = {
-  src?:any
+  data?:any
 };
 
 type PageState = {};
@@ -25,8 +25,8 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src} = this.props;
-
+    const {data} = this.props;
+    const {companyName,qty,reqDesc,createdDate,drawings} = data;
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
@@ -34,22 +34,23 @@ class IndustryItem extends Component {
         })
       }}>
         <View>
-          <Image src={src} className={styles.listimg} />
+          <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
         </View>
         <View >
           <View className={styles.title} >
-          寻超声波电焊机厂商
+          {companyName}
           </View>
           <View className={styles.tips} >
-          数量  20台
+          数量  {qty}台
           </View>
           <View className={styles.tips} >
-          要求  口罩耳带焊接用
+          要求  {reqDesc}
+          </View>
+          <View className={styles.tips} >
+            {createdDate}
           </View>
           <View className={styles.tips3} >
-            <View>
-              2020/04/15
-            </View>
+            <View/>
             <View className={styles.share} >
               <View className={styles.item}>
                 <Image src={ico_share} className={styles.bottom_btn} />

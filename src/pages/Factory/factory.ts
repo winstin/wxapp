@@ -1,10 +1,10 @@
 import Taro from "@tarojs/taro";
-import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporate,getJxhReq,getPortalNotice,getBatchDictValueByCode } from '@/services/fetch';
+import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode } from '@/services/fetch';
 /**
  * 登录页面
  */
 export default {
-  namespace: "myindex",
+  namespace: "factory",
   state: {
     XCX_HOME_IMG:[],// 首页轮播图片
     sysMenu:[],// 首页菜单
@@ -72,12 +72,14 @@ export default {
 
 
     // 工厂首页
-    *getCorporate({payload}, { put,call }) {
-      const res = yield call(getCorporate,payload);
-      yield put({
-        type:'updateState',
-        payload:{corporateData:res.data.records}
-      })
+    *getCorporateList({payload}, { put,call }) {
+      const res = yield call(getCorporateList,payload);
+
+      return res.data.records;
+      // yield put({
+      //   type:'updateState',
+      //   payload:{corporateData:res.data.records}
+      // })
     },
 
     // 首页需求

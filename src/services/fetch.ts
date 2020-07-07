@@ -86,6 +86,34 @@ export const baseMemberPoints = (params)=>{
   return Api.baseMemberPoints(params,'POST');
 }
 
+// 首页菜单
+export const getsysMenu = (params)=>{
+  return Api.getsysMenu(params);
+}
+// 首页工厂
+export const getCorporate = (params)=>{
+  return Api.getCorporate(params);
+}
+// 首页需求
+export const getJxhReq = (params)=>{
+  return Api.getJxhReq(params);
+}
+
+// 猎聘信息
+export const getPortalNotice = (params)=>{
+  return Api.getPortalNotice(params);
+}
+
+// 字典信息
+export const getBatchDictValueByCode = (params)=>{
+  return Api.getBatchDictValueByCode(params);
+}
+
+// 工厂展示
+export const getCorporateList = (params)=>{
+  return Api.getCorporateList(params);
+}
+
 
 
 

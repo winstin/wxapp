@@ -45,7 +45,7 @@ class IndustryItem extends Component {
 
       }}>
         <View className={styles.iconView}>
-          {item.icon && <AtBadge value={10} maxValue={99}>
+          {item && item.icon && <AtBadge value={10} maxValue={99}>
             <Image src={item.icon} className={styles.icon} />
           </AtBadge>}
         </View>

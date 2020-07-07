@@ -1,8 +1,0 @@
-<block wx:if="{{$taroCompReady}}">
-    <view class="{{styles.list}}">
-        <view>
-            <view class="{{styles.title}}">寻超声波电焊机厂商</view>
-            <view class="{{styles.tips}}">发布日期：2020/04/15</view>
-        </view>
-    </view>
-</block>

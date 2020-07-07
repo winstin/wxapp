@@ -6,7 +6,7 @@ import styles from "../../index.modules.less";
 
 
 type PageOwnProps = {
-  src?:any
+  data?:any
 };
 
 type PageState = {};
@@ -23,7 +23,8 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src} = this.props;
+    const {data} = this.props;
+    const {title,createdDate} = data;
 
     return (
       <View className={styles.list} onClick={()=>{
@@ -36,7 +37,7 @@ class IndustryItem extends Component {
         </View> */}
         <View >
           <View className={styles.title} >
-          上海嘉协精密机械有限公司招聘
+          {title}
           </View>
           {/* <View className={styles.tips} >
           数量  20台
@@ -45,7 +46,7 @@ class IndustryItem extends Component {
           要求  口罩耳带焊接用
           </View> */}
           <View className={styles.tips} >
-          发布日期：2020/04/15
+          发布日期：{createdDate}
           </View>
         </View>
       </View>

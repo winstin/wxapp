@@ -8,10 +8,11 @@ import industry from '../../../../assets/factory/ico_industry@3x.png';
 import skill from '../../../../assets/factory/ico_skill@3x.png';
 import staff from '../../../../assets/factory/ico_staff@3x.png';
 import location from '../../../../assets/factory/ico_location@3x.png';
+import Index2 from '../../../../assets/Index2.jpeg';
 
 type PageOwnProps = {
   src?:any;
-  rate?:any
+  data?:any
 };
 
 type PageState = {};
@@ -22,10 +23,10 @@ interface IndustryItem {
   props: IProps;
 }
 
-
 class IndustryItem extends Component {
   render() {
-    const {src,rate} = this.props;
+    const {data}:any = this.props;
+    const {star,name,address,introduction,factoryArea,staffAmount,productTech} = data;
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
@@ -33,33 +34,33 @@ class IndustryItem extends Component {
         })
       }}>
         <View>
-          <Image src={src} className={styles.listimg} />
+          <Image src={Index2} className={styles.listimg} />
           <View className={styles.rateback}>
-            <AtRate value={rate} size={10}/>
+            <AtRate value={star} size={10}/>
           </View>
         </View>
         <View >
           <View className={styles.title}>
-          上海嘉协精密机械有限公司
+          {name}
           </View>
           <View className={styles.tips}>
             <Image src={location} className={styles.icon} />
-            <View>中国，上海</View>
+            <View>{address}</View>
           </View>
           <View className={styles.tips}>
             <Image src={skill} className={styles.icon} />
-            <View>机加工，塑胶成型</View>
+            <View>{productTech}</View>
           </View>
           <View className={styles.tips}>
             <Image src={industry} className={styles.icon} />
-            <View>航天航空</View>
+            <View>{introduction}</View>
           </View>
           <View className={styles.tips}>
             <Image src={area} className={styles.icon} />
-            <View>3,000-5,000㎡</View>
+            <View>{factoryArea||"不详"}</View>
             <View className={styles.tips2}>
               <Image src={staff} className={styles.icon} />
-              <View>101-200</View>
+              <View>{staffAmount||"不详"}</View>
             </View>
           </View>
         </View>

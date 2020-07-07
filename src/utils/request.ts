@@ -93,7 +93,7 @@ export class Request {
     if (res.data.statusCode === "402") { 
       await this.login(); 
       const token = Taro.getStorageSync('token');
-      return this.request({...opts,header:{Authorization: `bearer ${token}`}});
+      return this.request({...opts,header:{Authorization: `Bearer ${token}`}});
     }
 
     if (res.data.statusCode === "500") { 
@@ -196,7 +196,7 @@ export class Request {
 
       const token = Taro.getStorageSync('token')
       // header中添加token
-      const requestParams = token ? {..._opts,header:{'Blade-Auth': `bearer ${token}`}} : {..._opts,header:{Authorization: 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0'}};
+      const requestParams = token ? {..._opts,header:{'Authorization': `Bearer ${token}`}} : {..._opts,header:{Authorization: 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0'}};
       const res = await this.request(requestParams)
       // createLogger({ title: 'request', req: _opts, res: res })
       const {status} = res;

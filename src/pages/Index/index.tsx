@@ -8,8 +8,6 @@ import IndustryItem from './components/IndustryItem/index';
 import NeedItem from './components/NeedItem/index';
 import FactoryItem from './components/FactoryItem/index';
 import RecruitmentItem from './components/RecruitmentItem/index';
-import industry1 from '../../assets/home/ico_jzbf.png';
-import industry2 from '../../assets/home/ico_hysh@3x.png';
 import industry3 from '../../assets/home/ico_qd@3x.png';
 import industry4 from '../../assets/home/ico_yqqy@3x.png';
 import industry5 from '../../assets/home/ico_zxxq@3x.png';
@@ -17,7 +15,6 @@ import industry6 from '../../assets/home/ico_yqhy@3x.png';
 import industry7 from '../../assets/home/ico_zgc@3x.png';
 import styles from "./index.modules.less";
 import Index1 from '../../assets/Index1.jpeg';
-import Index2 from '../../assets/Index2.jpeg';
 import "taro-ui/dist/style/components/tabs.scss";
 import "taro-ui/dist/style/components/rate.scss";
 import "taro-ui/dist/style/components/icon.scss";
@@ -30,6 +27,10 @@ type PageStateProps = {
 type PageOwnProps = {
   loading: boolean;
   imgUrls:any;
+  sysMenu:any;
+  corporateData:any;
+  portalNotice:any;
+  jxhReqData:any
 };
 
 type PageState = {};
@@ -41,9 +42,13 @@ interface Home {
 }
 
 @connect(({ myindex,loading }) => {
-  const {XCX_HOME_IMG=[]} = myindex;
+  const {XCX_HOME_IMG=[],sysMenu=[],corporateData=[],portalNotice=[],jxhReqData=[]} = myindex;
   return {
     imgUrls:XCX_HOME_IMG,
+    sysMenu,
+    corporateData,
+    portalNotice,
+    jxhReqData,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -61,20 +66,6 @@ class Home extends Component {
       title:'最新需求',
       star:3,
       switchUrl:'/pages/Need/index',
-
-    },
-    {
-      icon: industry2,
-      title:'会员审核',
-      star:4,
-      path:"/packageA/pages/MemberCheckList/index",
-
-    },
-    {
-      icon: industry1,
-      title:'需求审核',
-      star:5,
-      path:"/pages/CardManage/index",
 
     },
     {
@@ -103,19 +94,6 @@ class Home extends Component {
         }
       }
     },
-    {
-      icon: "",
-      title:''
-    },
-    {
-      icon: "",
-      title:''
-    },
-    {
-      icon: "",
-      title:''
-    },
-
   ]
 
   state = {
@@ -129,25 +107,56 @@ class Home extends Component {
   };
 
   componentDidShow() {
-
-    // const token = Taro.getStorageSync('token');
-    // if(token){
-      const {dispatch} = this.props;
-      if(dispatch){
+    const token = Taro.getStorageSync('token');
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "myindex/getBatchDictValues",
+        payload: {
+          codes:'XCX_HOME_IMG' 
+        }
+      });
+      if(token){
         dispatch({
-          type: "myindex/getBatchDictValues",
+          type: "myindex/getsysMenu",
           payload: {
-            codes:'XCX_HOME_IMG' 
+            platformType:'2' 
           }
         });
+        this.fetchList(0);
       }
-    // }
+    }
   }
 
   handleClick (value) {
+    this.fetchList(value);
     this.setState({
       current: value
     })
+  }
+
+  fetchList = (type)=>{
+
+    let dispatchType = ""
+    if(type===0){
+      dispatchType= "myindex/getCorporate";
+    }
+    if(type===1){
+      dispatchType= "myindex/getJxhReq";
+    }
+    if(type===2){
+      dispatchType= "myindex/getPortalNotice";
+    }
+
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: dispatchType,
+        payload: {
+          // codes:'XCX_HOME_IMG' 
+        }
+      });
+    }
   }
 
   onScrollToUpper() {}
@@ -163,7 +172,7 @@ class Home extends Component {
   onShareAppMessage (res) {
     return {
         title: "升级会员",
-        path:'pages/MemberShipPerson/index'
+        path:'/packageA/pages/MemberShipPerson/index'
     }
   }
     
@@ -171,8 +180,8 @@ class Home extends Component {
 
   render() {
     const tabList = [{ title: '企业展示' }, { title: '需求广场' }, { title: '猎聘信息' }]
-    const {imgUrls=[]} = this.props;
-    console.log("imgUrls",imgUrls)
+    const {imgUrls=[],sysMenu,corporateData,portalNotice,jxhReqData} = this.props;
+    // console.log("sysMenu",sysMenu)
     return (
       <View className={styles.home}>
         <AtMessage />
@@ -196,7 +205,7 @@ class Home extends Component {
         {/* 适合行业 */}
         <View className={styles.industryList}>
           {/* <Image src={industry} className={styles.moduleTitle} /> */}
-          <View className={styles.industryView} style={{marginBottom:'20px'}}>
+          <View className={styles.industryView}>
             {
               this.industryList.map((item,idx) => {
                 if (idx <= 4) {
@@ -208,30 +217,28 @@ class Home extends Component {
               })
             }
           </View>
-          <View className={styles.industryView}>
+          {sysMenu.length>0 && <View className={styles.industryView}  style={{marginTop:'20px'}}>
             {
-              this.industryList.map((item,idx) => {
-                if (idx > 4) {
-                  return <View className={styles.industryItem}><IndustryItem key={`industryItem${idx}`} item={item}/></View>
-                }
+              sysMenu.map((item,idx) => {
+                return <View className={styles.industryItem}><IndustryItem key={`industryItem${idx}`} item={item}/></View>
               })
             }
-          </View>
+          </View>}
         </View>
         <AtTabs current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.current} index={0} >
-            <View style='background-color:#fff;padding:0pt 16pt' >
-              { this.industryList.map((item,idx) => (<FactoryItem src={Index2} key={`FactoryItem${idx}`} rate={item.star}/>))}
+            <View style='background-color:#fff' >
+              { corporateData && corporateData.map((item,idx) => (<FactoryItem data={item} key={`FactoryItem${idx}`}/>))}
             </View>
           </AtTabsPane>
           <AtTabsPane current={this.state.current} index={1}>
-            <View style='background-color:#fff;padding:0pt 16pt' >
-              { this.industryList.map((item,idx) => (<NeedItem key={`NeedItem${idx}`}  src={Index1}/>))}
+            <View style='background-color:#fff' >
+              { jxhReqData.map((item,idx) => (<NeedItem key={`NeedItem${idx}`}  data={item}/>))}
             </View>
           </AtTabsPane>
           <AtTabsPane current={this.state.current} index={2}>
-            <View style='background-color:#fff;padding:0pt 16pt' >
-              { this.industryList.map((item,idx) => (<RecruitmentItem key={`NeedItem${idx}`}/>))}
+            <View style='background-color:#fff' >
+              { portalNotice.map((item,idx) => (<RecruitmentItem key={`NeedItem${idx}`} data={item}/>))}
             </View>
           </AtTabsPane>
         </AtTabs>

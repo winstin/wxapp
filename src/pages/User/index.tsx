@@ -162,17 +162,17 @@ class User extends Component {
           title={'升级企业会员'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyBaseInfo/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyContactInfo/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyEnterpriseScale/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}
           title={'企业规模'}
         ></ListItem>
