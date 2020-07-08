@@ -84,6 +84,7 @@ class Home extends Component {
     sort:false,
     industry:false,
     corporateData:[],
+    haveMore:true,
     industryObject:{
       label:'行业',
       value:''
@@ -129,9 +130,12 @@ class Home extends Component {
         payload: {
           isAsc:false,
           current:page,
-          industryType:industryObject.value
+          // industryType:industryObject.value
         }
       }).then((e)=>{
+        if(e.length<20){
+          this.state.haveMore = false;
+        }
         this.state.current = page + 1;
         this.setState({
           corporateData:page===1?e:corporateData.concat(e)
@@ -144,31 +148,13 @@ class Home extends Component {
 
   onScrollToUpper() {
     console.log("onScrollToUpper");
-    const {dispatch} = this.props;
-    if(dispatch){
-      Taro.showToast({
-        icon:'loading',
-        title: "加载中",
-        duration:500
-      })
-      dispatch({
-        type: "factory/getCorporateList",
-        payload: {
-          isAsc:false,
-          current:1,
-        }
-      }).then((e)=>{
-        this.state.current = 2;
-        this.setState({
-          corporateData:e
-        })
-      });
-    }
+    this.fetchList(1)
   }
 
   // or 使用箭头函数
   onScrollToLower = () => {
     console.log("滚动到底部")
+    if(!this.state.haveMore) return
     this.fetchList(this.state.current)
   }
 
@@ -180,9 +166,7 @@ class Home extends Component {
 
   render() {
     const {sort,industry,corporateData,industryObject} = this.state;
-
     const {INDUSTRY_TYPE} = this.props;
-
     const JSX = INDUSTRY_TYPE.map((item)=>(
       <View className={styles.listItem} onClick={()=>{
         this.setState({

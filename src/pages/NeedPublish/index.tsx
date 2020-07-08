@@ -35,40 +35,6 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -79,7 +45,10 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:[], // 正面照
-
+    photos:[],
+    reqDesc:'',
+    qty:'',
+    itemName:''
   }
   config: Config = {
     navigationBarTitleText: "发布需求",
@@ -126,11 +95,39 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        const {frontFilePath}:any = this.state;
+        const {frontFilePath,photos}:any = this.state;
         frontFilePath.push(tempFilePaths[0])
-        this.setState({
-          frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+            photos.push({
+              ...dataJson.data
+            })
+            this.setState({
+              photos:JSON.parse(JSON.stringify(photos)),
+              frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+      
       }
     })
   }
@@ -147,8 +144,32 @@ class Home extends Component {
     console.log(value)
   }
 
+  Change = (type,value) => {
+    this.setState({
+      [`${type}`]: value
+    })
+  }
+
+  submit = () =>{
+    const {dispatch} = this.props;
+    const {photos,reqDesc,qty,itemName} = this.state;
+
+    if(dispatch){
+      dispatch({
+        type: "need/addjxhReq",
+        payload:  {
+          drawings:photos,
+          reqDesc,
+          qty,
+          itemName
+        }
+      });
+    }
+  }
+
+
   render() {
-    const {phone,frontFilePath} = this.state;
+    const {frontFilePath,reqDesc,qty,itemName} = this.state;
 
     return (
       <View className={styles.needdetail}>
@@ -157,20 +178,20 @@ class Home extends Component {
           产品描述
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="itemName" placeholder="请输入产品描述…"  value={itemName} onChange={(e)=>{this.Change('itemName',e)}} />
         </View>
         <View className={styles.label}>
           需求数量
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入需求数量…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="qty" placeholder="请输入需求数量…"  value={qty} onChange={(e)=>{this.Change('qty',e)}} />
         </View>
 
         <View className={styles.label}>
           要求
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入要求…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="reqDesc" placeholder="请输入要求…"  value={reqDesc} onChange={(e)=>{this.Change('reqDesc',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -193,7 +214,7 @@ class Home extends Component {
           }
           
         </View>
-        <AtButton type='primary' className={styles.loginBtn} >发布</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
       
       </View>
 

@@ -14,7 +14,6 @@ import industry5 from '../../assets/home/ico_zxxq@3x.png';
 import industry6 from '../../assets/home/ico_yqhy@3x.png';
 import industry7 from '../../assets/home/ico_zgc@3x.png';
 import styles from "./index.modules.less";
-import Index1 from '../../assets/Index1.jpeg';
 import "taro-ui/dist/style/components/tabs.scss";
 import "taro-ui/dist/style/components/rate.scss";
 import "taro-ui/dist/style/components/icon.scss";
@@ -30,7 +29,9 @@ type PageOwnProps = {
   sysMenu:any;
   corporateData:any;
   portalNotice:any;
-  jxhReqData:any
+  jxhReqData:any;
+  dataCount:any;
+  Signin:any
 };
 
 type PageState = {};
@@ -42,13 +43,15 @@ interface Home {
 }
 
 @connect(({ myindex,loading }) => {
-  const {XCX_HOME_IMG=[],sysMenu=[],corporateData=[],portalNotice=[],jxhReqData=[]} = myindex;
+  const {XCX_HOME_IMG=[],sysMenu=[],corporateData=[],portalNotice=[],jxhReqData=[],dataCount,Signin} = myindex;
   return {
     imgUrls:XCX_HOME_IMG,
     sysMenu,
     corporateData,
     portalNotice,
     jxhReqData,
+    dataCount,
+    Signin,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -123,6 +126,20 @@ class Home extends Component {
             platformType:'2' 
           }
         });
+        dispatch({
+          type: "myindex/getTodoList",
+          payload: {
+            // platformType:'2' 
+          }
+        });
+
+        dispatch({
+          type: "myindex/getcheckSignin",
+          payload: {
+            // platformType:'2' 
+          }
+        });
+        
         this.fetchList(0);
       }
     }
@@ -180,8 +197,8 @@ class Home extends Component {
 
   render() {
     const tabList = [{ title: '企业展示' }, { title: '需求广场' }, { title: '猎聘信息' }]
-    const {imgUrls=[],sysMenu,corporateData,portalNotice,jxhReqData} = this.props;
-    // console.log("sysMenu",sysMenu)
+    const {imgUrls=[],sysMenu,corporateData,portalNotice,jxhReqData,dataCount,Signin} = this.props;
+    console.log("Signin",Signin)
     return (
       <View className={styles.home}>
         <AtMessage />
@@ -210,7 +227,7 @@ class Home extends Component {
               this.industryList.map((item,idx) => {
                 if (idx <= 4) {
                   return <View className={styles.industryItem}>
-                    <IndustryItem key={`industryItem${idx}`} item={item}/>
+                    <IndustryItem key={`industryItem${idx}`} item={item} dataCount={dataCount} Signin={Signin}/>
                     {/* <Button openType="share" className={styles.share}>分享</Button> */}
                   </View>
                 }
@@ -220,7 +237,7 @@ class Home extends Component {
           {sysMenu.length>0 && <View className={styles.industryView}  style={{marginTop:'20px'}}>
             {
               sysMenu.map((item,idx) => {
-                return <View className={styles.industryItem}><IndustryItem key={`industryItem${idx}`} item={item}/></View>
+                return <View className={styles.industryItem}><IndustryItem key={`industryItem${idx}`} item={item} dataCount={dataCount}/></View>
               })
             }
           </View>}

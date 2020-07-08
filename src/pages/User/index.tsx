@@ -60,15 +60,15 @@ class User extends Component {
 
     const token = Taro.getStorageSync('token');
     if(token){
-      const {dispatch} = this.props;
-      if(dispatch){
-        dispatch({
-          type: "user/fetchmakerDetails",
-          payload: {
-            user_id:Taro.getStorageSync('user_id')
-          }
-        });
-      }
+      // const {dispatch} = this.props;
+      // if(dispatch){
+      //   dispatch({
+      //     type: "user/fetchmakerDetails",
+      //     payload: {
+      //       user_id:Taro.getStorageSync('user_id')
+      //     }
+      //   });
+      // }
     }
     
   }

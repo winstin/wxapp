@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporate,getJxhReq,getPortalNotice,getBatchDictValueByCode } from '@/services/fetch';
+import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporate,getJxhReq,getPortalNotice,getBatchDictValueByCode,getTodoList,getcheckSignin } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -11,7 +11,9 @@ export default {
     corporateData:[],// 工厂首页
     jxhReqData:[],
     portalNotice:[],
-    INDUSTRY_TYPE:[]
+    INDUSTRY_TYPE:[],
+    dataCount:{},
+    Signin:true
   },
 
   effects: {
@@ -33,6 +35,10 @@ export default {
           'message': '签到成功',
           'type': 'success',
         })
+        yield put({
+          type:'updateState',
+          payload:{Signin:false}
+        })
       }else{
         Taro.atMessage({
           'message': message,
@@ -40,6 +46,16 @@ export default {
         })
       }
     },
+
+    *getTodoList({payload}, { put,call }) {
+      const res = yield call(getTodoList,payload);
+      console.log(res)
+      yield put({
+        type:'updateState',
+        payload:{dataCount:res.data}
+      })
+    },
+    
 
     // 获取首页菜单
     *getsysMenu({payload}, { put,call }) {
@@ -49,8 +65,8 @@ export default {
         if(item.name==="会员审核"){
           path="/packageA/pages/MemberCheckList/index";
         }
-        if(item.name==="查询会员"){
-          path="/packageA/pages/MemberCheckList/index";
+        if(item.name==="需求审核"){
+          path="/packageA/pages/NeedCheckList/index";
         }
         return {
           icon: `http://sz-spd.cn:889/${item.remarks}`,
@@ -106,6 +122,17 @@ export default {
         payload:{INDUSTRY_TYPE:res.data}
       })
     },
+
+    // 猎聘信息
+    *getcheckSignin({payload}, { put,call }) {
+      const res = yield call(getcheckSignin,payload);
+      yield put({
+        type:'updateState',
+        payload:{Signin:res.data}
+      })
+    },
+
+    
 
 
     

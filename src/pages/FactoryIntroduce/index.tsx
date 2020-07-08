@@ -7,7 +7,7 @@ import styles from "./index.modules.less";
 import Index2 from '../../assets/Index2.jpeg';
 
 type PageStateProps = {
-  userInfo:any;
+  corporateDetail:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -23,10 +23,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ factory,loading }) => {
+  const {corporateDetail={}} = factory;
   return {
-    userInfo,
+    corporateDetail,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -81,6 +81,23 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    console.log(this.$router.params);
+    this.fetchList()
+  }
+
+  fetchList = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      // Taro.showToast({
+      //   icon:'loading',
+      //   title: "加载中",
+      //   duration:500
+      // })
+      dispatch({
+        type: "factory/getcorporateDetail",
+        payload: this.$router.params
+      });
+    }
   }
 
   handleClick (value) {
@@ -103,24 +120,24 @@ class Home extends Component {
   }
 
   render() {
+
+    const {name,productTech,countryName,provinceName,factoryArea,staffAmount,referrerOpinion,products,id} = this.props.corporateDetail;
+
     return (
       <View className={styles.needdetail}>
         <View className={styles.title}>
-          上海嘉协精密机械有限公司
+          {name}
         </View>
         <View className={styles.list}>
         <View>
           <Image src={Index2} className={styles.listimg} />
         </View>
         <View >
+          <View className={styles.tips} >
+            主要工艺
+          </View>
           <View className={styles.title} >
-            寻超声波电焊机厂商
-          </View>
-          <View className={styles.tips} >
-          数量  20台
-          </View>
-          <View className={styles.tips} >
-          要求  口罩耳带焊接用
+            {productTech}
           </View>
         </View>
       </View>
@@ -136,19 +153,8 @@ class Home extends Component {
             </View>
           </View>
           <View className={styles.tips2} >
-            <View className={styles.label} >
-            品类
-            </View>
             <View className={styles.conenttext} >
-            燕窝
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            简介
-            </View>
-            <View className={styles.conenttext} >
-            适合孕妇、老人长期使用
+            {referrerOpinion}
             </View>
           </View>
         </View>
@@ -163,18 +169,26 @@ class Home extends Component {
           </View>
           <View className={styles.tips2} >
             <View className={styles.label} >
-            品类
+            国家地区
             </View>
             <View className={styles.conenttext} >
-            燕窝
+            {countryName}，{provinceName}
             </View>
           </View>
           <View className={styles.tips2} >
             <View className={styles.label} >
-            简介
+            工厂面积
             </View>
             <View className={styles.conenttext} >
-            适合孕妇、老人长期使用
+            {factoryArea}
+            </View>
+          </View>
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            雇员数量
+            </View>
+            <View className={styles.conenttext} >
+            {staffAmount}
             </View>
           </View>
         </View>
@@ -188,21 +202,12 @@ class Home extends Component {
             </View>
           </View>
           <View className={styles.tips2} >
-            <View className={styles.label} >
-            品类
-            </View>
+           
             <View className={styles.conenttext} >
-            燕窝
+            {referrerOpinion}
             </View>
           </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            简介
-            </View>
-            <View className={styles.conenttext} >
-            适合孕妇、老人长期使用
-            </View>
-          </View>
+          
         </View>
        
       

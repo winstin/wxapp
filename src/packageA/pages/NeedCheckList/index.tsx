@@ -4,10 +4,9 @@ import Taro, { Component, Config } from "@tarojs/taro";
 import { View,ScrollView,Image } from "@tarojs/components";
 import { AtTabs, AtTabsPane  } from 'taro-ui'
 import { connect } from "@tarojs/redux";
-import NeedItem from '../Index/components/NeedItem/index';
+import NeedItem from './components/NeedItem/index';
+import NoneData from '../../../pages/Index/components/NoneData';
 import styles from "./index.modules.less";
-import Index2 from '../../assets/Index2.jpeg';
-import btn_new from '../../assets/need/btn_new@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/tabs.scss";
 
@@ -28,49 +27,14 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ need,loading }) => {
-  const {userInfo={}} = need;
+@connect(({ needcheck,loading }) => {
+  const {userInfo={}} = needcheck;
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     activeCurrent:0,
@@ -89,7 +53,6 @@ class Home extends Component {
     navigationBarTitleText: "最新需求",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
-    
   };
 
   componentDidShow() {
@@ -118,7 +81,7 @@ class Home extends Component {
         duration:500
       })
       dispatch({
-        type: "need/getjxhReqList",
+        type: "needcheck/getauditList",
         payload: {
           isAsc:false,
           current:page,
@@ -147,7 +110,7 @@ class Home extends Component {
         duration:500
       })
       dispatch({
-        type: "need/getMyjxhReqList",
+        type: "needcheck/getauditedList",
         payload: {
           isAsc:false,
           current:page,
@@ -193,7 +156,7 @@ class Home extends Component {
 
 
   render() {
-    const tabList = [{ title: '最新需求' }, { title: '我的需求' }];
+    const tabList = [{ title: '待审核' }, { title: '已审核' }];
     const scrollStyle = {
       height: '100vh',
       backgroundColor:"#fff",
@@ -202,13 +165,9 @@ class Home extends Component {
     const Threshold = 20
     return (
       <View className={styles.need}>
-        <Image src={btn_new} className={styles.addicon} onClick={()=>{
-          Taro.navigateTo({
-            url: '/pages/NeedPublish/index'
-          })
-        }}/>
         <AtTabs current={this.state.activeCurrent} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.activeCurrent} index={0} >
+            {this.state.jxhReqData.length===0 && <NoneData/>}
             <ScrollView
               className='scrollview'
               scrollY
@@ -228,6 +187,7 @@ class Home extends Component {
 
           </AtTabsPane>
           <AtTabsPane current={this.state.activeCurrent} index={1}>
+            {this.state.myjxhReqData.length===0 && <NoneData/>}
             <ScrollView
               className='scrollview'
               scrollY

@@ -3,6 +3,9 @@ import login from '../pages/Login/login';
 import user from '../pages/User/user';
 import myindex from '../pages/Index/myindex';
 import factory from '../pages/Factory/factory';
+import need from '../pages/Need/need';
+import needcheck from '../packageA/pages/NeedCheckList/needcheck';
+import membercheck from '../packageA/pages/MemberCheckList/membercheck';
 
 
 export default [
@@ -10,5 +13,8 @@ export default [
   login,
   user,
   myindex,
-  factory
+  factory,
+  need,
+  needcheck,
+  membercheck
 ]

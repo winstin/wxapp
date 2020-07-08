@@ -35,8 +35,8 @@ interface Login {
 })
 class Login extends Component {
   state = {
-    phone: 'jxhadmin',
-    code: 'jxhadmin',
+    phone: '100321',
+    code: 'spd2019',
     isOpened: false,
     tenantInfo:{
       tenantId:'',

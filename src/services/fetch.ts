@@ -90,6 +90,12 @@ export const baseMemberPoints = (params)=>{
 export const getsysMenu = (params)=>{
   return Api.getsysMenu(params);
 }
+
+// 待办事项数量
+export const getTodoList = (params)=>{
+  return Api.getTodoList(params);
+}
+
 // 首页工厂
 export const getCorporate = (params)=>{
   return Api.getCorporate(params);
@@ -114,6 +120,75 @@ export const getCorporateList = (params)=>{
   return Api.getCorporateList(params);
 }
 
+// 最新需求
+export const getjxhReqList = (params)=>{
+  return Api.getjxhReqList(params);
+}
+
+// 我的需求
+export const getMyjxhReqList = (params)=>{
+  return Api.getMyjxhReqList(params);
+}
+
+export const getauditList = (params)=>{
+  return Api.getauditList(params);
+}
+export const getauditedList = (params)=>{
+  return Api.getauditedList(params);
+}
+
+export const getcheckSignin = (params)=>{
+  return Api.getcheckSignin(params);
+}
+
+export const getcorporateDetail = (params)=>{
+  return Api.getcorporateDetail(params);
+}
+
+export const getbaseVendorAlbum = (params)=>{
+  return Api.getbaseVendorAlbum(params);
+}
+
+export const getsrmbaseVendorAlbum = (params)=>{
+  return Api.getsrmbaseVendorAlbum(params);
+}
+
+export const addbaseVendorAlbum = (params)=>{
+  return Api.addbaseVendorAlbum(params,'POST');
+}
+
+
+export const registerCorporate = (params)=>{
+  return Api.registerCorporate(params,'POST');
+}
+
+export const registerBaseMember = (params)=>{
+  return Api.registerBaseMember(params,'POST');
+}
+
+export const getjxhReqDetail = (params)=>{
+  return Api.getjxhReqDetail(params);
+}
+
+export const passAudit = (params)=>{
+  return Api.passAudit(params,'POST');
+}
+
+export const rejectpassAudit = (params)=>{
+  return Api.rejectpassAudit(params,'POST');
+}
+
+export const getbaseMemberauditList = (params)=>{
+  return Api.getbaseMemberauditList(params);
+}
+
+export const getcorporateauditList = (params)=>{
+  return Api.getcorporateauditList(params);
+}
+
+export const addjxhReq = (params)=>{
+  return Api.addjxhReq(params,'POST');
+}
 
 
 

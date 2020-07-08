@@ -2,8 +2,7 @@ import { ComponentClass } from "react";
 import Taro, { Component } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
-import ico_comment from '../../../../assets/need/ico_comment@3x.png';
-import ico_share from '../../../../assets/need/ico_share@3x.png';
+import img_vip_corp from '../../../../../assets/img_vip_corp@3x.png';
 
 
 
@@ -26,39 +25,35 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {companyName,qty,reqDesc,createdDate,drawings} = data;
+
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
-          url: '/pages/NeedDetail/index'
+          url: '/packageA/pages/RecruitmentDetail/index'
         })
       }}>
-        <View>
-          <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
-        </View>
-        <View style='flex:1'>
+        <View style={{flex:1}}>
           <View className={styles.title} >
-          {companyName}
+            {data.name}
+            <Image src={img_vip_corp} className={styles.listimg} />
           </View>
-          <View className={styles.tips} >
-          数量  {qty}台
+        
+          <View className={styles.tips3}>
+            <View>
+            联系人：{data.linkman}/{data.linkmanPhone}
+            </View>
           </View>
-          <View className={styles.tips} >
-          要求  {reqDesc}
-          </View>
-          <View className={styles.tips} >
-            {createdDate}
-          </View>
+
           <View className={styles.tips3} >
-            <View/>
+            <View>
+            日期：{data.referrerDate}
+            </View>
             <View className={styles.share} >
               <View className={styles.item}>
-                <Image src={ico_share} className={styles.bottom_btn} />
-                <View>分享</View>
+                
               </View>
               <View className={styles.item}> 
-                <Image src={ico_comment} className={styles.bottom_btn} />
-                <View>评论 999</View>
+                <View>{data.linkman}</View>
               </View>
             </View>
           </View>

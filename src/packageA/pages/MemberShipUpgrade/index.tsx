@@ -84,7 +84,12 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:'', // 正面照
-
+    name:'',
+    businessLicenseNo:'',
+    introduction:'',
+    account:'',
+    referrerName:'',
+    drawingVo:{}
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -116,10 +121,9 @@ class Home extends Component {
     Taro.navigateBack()
   }
 
-  // 手机号输入框
-  phoneChange = (value) => {
+  Change = (type,value) => {
     this.setState({
-      phone: value
+      [`${type}`]: value
     })
   }
 
@@ -132,9 +136,35 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        this.setState({
-          reverseFilePath: tempFilePaths[0]
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+
+            this.setState({
+              drawingVo:dataJson.data,
+              frontFilePath: tempFilePaths[0]
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+        
       }
     })
   }
@@ -149,8 +179,32 @@ class Home extends Component {
     console.log(value)
   }
 
+  submit = () =>{
+    const {dispatch} = this.props;
+    const {name,businessLicenseNo,introduction,account,referrerName,drawingVo}:any = this.state;
+
+    if(dispatch){
+      dispatch({
+        type: "factory/registerCorporate",
+        payload:  {
+          name,businessLicenseNo,introduction,
+          linkman:account,
+          linkmanPhone:account,
+          referrerName,drawingVo,
+          isTop:'1'
+        }
+      }).then((e)=>{
+        Taro.showToast({
+          'title': '注册成功',
+        });
+        Taro.navigateBack()
+      });
+    }
+  }
+
+
   render() {
-    const {phone,code,frontFilePath} = this.state;
+    const {name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -173,7 +227,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司名称…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.Change('name',e)}} />
         </View>
         <View className={styles.label}>
           税务登记号
@@ -183,7 +237,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入统一税务登记号…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="businessLicenseNo" placeholder="请输入统一税务登记号…"  value={businessLicenseNo} onChange={(e)=>{this.Change('businessLicenseNo',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -212,7 +266,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业介绍…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="introduction" placeholder="请输入企业介绍…"  value={introduction} onChange={(e)=>{this.Change('introduction',e)}} />
         </View>
         <View className={styles.label}>
           登记人姓名
@@ -223,7 +277,7 @@ class Home extends Component {
               className={styles.itemIcon}
               src={phoneIcon}
             />
-            <AtInput className={styles.input} name="phone" placeholder="请输入登记人姓名…"  value={phone} onChange={this.phoneChange} />
+            <AtInput className={styles.input} name="referrerName" placeholder="请输入登记人姓名…"  value={referrerName} onChange={(e)=>{this.Change('referrerName',e)}} />
           </View>
           <View className={styles.codeBtn} >
               <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
@@ -240,7 +294,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={ico_mobilephone}
           />
-          <AtInput className={styles.input} name="phone" placeholder="请输入手机号码…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="account" placeholder="请输入手机号码…"  value={account} onChange={(e)=>{this.Change('account',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -252,12 +306,12 @@ class Home extends Component {
             className={styles.itemIcon}
             src={ico_message}
           />
-          <AtInput className={styles.input} name="password" type='password' placeholder="请输入短信验证码…"  value={code} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="password" type='password' placeholder="请输入短信验证码…"  value={code} onChange={(e)=>{this.Change('name',e)}} />
           </View>
           <View className={styles.codeBtn} >发送验证码</View>
         </View>
 
-        <AtButton type='primary' className={styles.loginBtn} >注册</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>注册</AtButton>
       
       </View>
 

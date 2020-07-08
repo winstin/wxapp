@@ -1,5 +1,5 @@
 .need{
-    background: rgba(26,47,66,0.04);
+
     .addicon{
         position: fixed;
         width: 64px;
@@ -10,21 +10,14 @@
 
     }
 
-    .toptag{
-        height: 116px;
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        background-color: #fff;
-        border-top: 1px solid rgba(26,47,66,0.10);
-    }
-
     :global{
         .at-tabs__item{
             width:150px;
             flex:inherit
         }
     }
+
+
     
 }
 
@@ -32,20 +25,19 @@
     display: flex;
     align-items: center;
     // height: 270px;
-    padding: 32px 0px;
+    padding: 32px;
     background-color: '#fff';
     border-bottom:1px solid rgba(26,47,66,0.10);
     .listimg{
-        width: 132px;
-        height: 40px;
-        margin-left: 32px;
+        display: block;
+        width: 144px;
+        height: 144px;
     }
     .title{
         margin-left: 26px;
         font-size: 32px;
         color: rgba(0,0,0,0.80);
-        display: flex;
-        align-items: center;
+        padding-bottom: 16px;
     }
     .tips{
         display: flex;
@@ -65,7 +57,6 @@
         display: flex;
         align-items: center;
         margin-left: 28px;
-        margin-top: 16px;
         font-size: 28px;
         color: rgba(0,0,0,0.40);
         .icon{
@@ -73,19 +64,14 @@
             height: 28px;
             padding-right: 16px;
         }
-
-        .tag{
-            margin-right: 16px;
-        }
     }
 
     .tips3{
         display: flex;
         align-items: center;
         justify-content: space-between;
-        // width: 100%;
-        padding-top: 16px;
-        margin: 0px 28px;
+        width: 100%;
+        margin-left: 28px;
         font-size: 28px;
         color: rgba(0,0,0,0.40);
         .icon{

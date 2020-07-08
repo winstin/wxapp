@@ -43,5 +43,30 @@ export const requestConfig = {
   getBatchDictValueByCode:'/api/basic/sysDictValue/getBatchDictValueByCode', // # 企业行业列表
 
   getCorporateList:'/api/srm/corporate/corporate-list', // 工厂展示
+  getjxhReqList:'/api/srm/jxhReq/req-list', // 最新需求
+  getMyjxhReqList:'/api/srm/jxhReq/my-req-list', // 我的需求
+  getTodoList:'/api/srm/to-do/list', // 待办事项数量
+  getauditList:'/api/srm/jxhReq/audit-list', // 待办事项数量
+  getauditedList:'/api/srm/jxhReq/audited-list', // 待办事项数量
+  getcheckSignin:'/api/srm/baseMemberPoints/checkSignin', // 待办事项数量
+  getcorporateDetail:'/api/srm/corporate/get', // 企业明细
+  getbaseVendorAlbum:'/api/srm/baseVendorAlbum/allList', // 企业相册
+  getsrmbaseVendorAlbum:'/api/srm/baseVendorAlbum/get', // 产品说明
 
+  addbaseVendorAlbum:'/api/srm/baseVendorAlbum/add', // 企业相册添加
+  registerCorporate:'/api/srm/corporate/register', // 企业注册
+  registerBaseMember:'/api/srm/baseMember/register', // 个人注册
+  passAudit:'/api/srm/jxhReq/audit-pass-update', // 通过需求
+  rejectpassAudit:'/api/srm/jxhReq/audit-reject-update', // 作废需求
+  addjxhReq:'/api/srm/jxhReq/add', // 发布需求
+
+  
+
+  getjxhReqDetail:'/api/srm/jxhReq/get', // 需求明细
+  getbaseMemberauditList:'/api/srm/baseMember/audit-list', // 个人会员
+  getcorporateauditList:'/api/srm/corporate/audit-list', // 企业会员
+
+  
+
+  
 }

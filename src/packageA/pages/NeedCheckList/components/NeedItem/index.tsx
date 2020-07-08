@@ -24,30 +24,30 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-
+    const {companyName,qty,reqDesc,createdDate,drawings} = data;
     return (
       <View className={styles.list} onClick={()=>{
-        // Taro.navigateTo({
-        //   url: '/pages/NeedDetail/index'
-        // })
         Taro.navigateTo({
-          url: `/pages/NeedDetail/index?id=${data.id}`
+          url: `/packageA/pages/NeedCheck/index?id=${data.id}`
         })
+        
       }}>
         <View>
-          <Image src={`http://sz-spd.cn:889/${data.photoCover}`} className={styles.listimg} />
+          <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
         </View>
         <View >
           <View className={styles.title} >
-          {data.name}
+          {companyName}
           </View>
           <View className={styles.tips} >
-          {data.intro}
+          数量  {qty}台
           </View>
           <View className={styles.tips} >
-          {data.desc}
+          要求  {reqDesc}
           </View>
-          
+          <View className={styles.tips} >
+            {createdDate}
+          </View>
         </View>
       </View>
     );

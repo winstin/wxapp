@@ -82,9 +82,13 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:[], // 正面照
+    photos:[],
     frontPagePath:"",
-    selector: ['美国', '中国', '巴西', '日本'],
-    selectorChecked: '美国',
+    photoCover:'',
+    intro:'',
+    desc:'',
+    selector: ['产品相册', '企业相册', '设备相册', '工艺相册'],
+    selectorChecked: '产品相册',
 
   }
   config: Config = {
@@ -132,11 +136,47 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        const {frontFilePath}:any = this.state;
-        frontFilePath.push(tempFilePaths[0])
-        this.setState({
-          frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+        const {frontFilePath,photos,intro}:any = this.state;
+        frontFilePath.push(tempFilePaths[0]);
+
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+            photos.push({
+              "vendorId":1140906925177778177,
+              "vendorCode":"101295",
+              'photo':dataJson.data.url,
+              "vendorName":"徐州智瑞工程机械有限公司",
+              "photoName":"图片名称",
+              "type":"process",
+              intro,
+            })
+            this.setState({
+              photos:JSON.parse(JSON.stringify(photos)),
+              frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+
+        
       }
     })
   }
@@ -150,9 +190,35 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        this.setState({
-          frontPagePath: tempFilePaths[0]
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+            
+            this.setState({
+              photoCover:dataJson.data.url,
+              frontPagePath: tempFilePaths[0]
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+        
       }
     })
   }
@@ -181,8 +247,36 @@ class Home extends Component {
     })
   }
 
+  submit = () =>{
+    const {dispatch} = this.props;
+    const {intro,desc,photoCover,photos}:any = this.state;
+
+    if(dispatch){
+      dispatch({
+        type: "factory/addbaseVendorAlbum",
+        payload:  {
+          "vendorId":1140906925177778177,
+          "vendorCode":"101295",
+          "vendorName":"徐州智瑞工程机械有限公司",
+          "type":"process",
+          "name":intro,
+          "category":intro,
+          intro,
+          desc,
+          photoCover,
+          photos
+        }
+      }).then((e)=>{
+        Taro.showToast({
+          'title': '新增成功',
+        });
+        Taro.navigateBack()
+      });
+    }
+  }
+
   render() {
-    const {phone,frontFilePath,frontPagePath} = this.state;
+    const {intro,desc,frontFilePath,frontPagePath} = this.state;
 
     return (
       <View className={styles.needdetail}>
@@ -224,14 +318,14 @@ class Home extends Component {
           简介
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入相册简介…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="intro" placeholder="请输入相册简介…"  value={intro} onChange={(e)=>{this.setState({intro:e})}} />
         </View>
 
         <View className={styles.label}>
           描述
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入相册描述…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="desc" placeholder="请输入相册描述…"  value={desc} onChange={(e)=>{this.setState({desc:e})}} />
         </View>
 
         <View className={styles.label}>
@@ -254,7 +348,7 @@ class Home extends Component {
           }
           
         </View>
-        <AtButton type='primary' className={styles.loginBtn} >发布</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
       
       </View>
 

@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode } from '@/services/fetch';
+import { registerBaseMember,registerCorporate,addbaseVendorAlbum,getsrmbaseVendorAlbum,getbaseVendorAlbum,getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode,getcorporateDetail } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -11,7 +11,10 @@ export default {
     corporateData:[],// 工厂首页
     jxhReqData:[],
     portalNotice:[],
-    INDUSTRY_TYPE:[]
+    INDUSTRY_TYPE:[],
+    corporateDetail:{},
+    albums:[],
+    srmalbums:{}
   },
 
   effects: {
@@ -109,7 +112,65 @@ export default {
       })
     },
 
+    // 猎聘信息
+    *getcorporateDetail({payload}, { put,call }) {
+      const res = yield call(getcorporateDetail,payload);
+      yield put({
+        type:'updateState',
+        payload:{corporateDetail:res.data}
+      })
+    },
 
+    // 企业相册
+    *getbaseVendorAlbum({payload}, { put,call }) {
+      const res = yield call(getbaseVendorAlbum,payload);
+      yield put({
+        type:'updateState',
+        payload:{albums:res.data}
+      })
+    },
+
+    
+    // 产品说明
+    *getsrmbaseVendorAlbum({payload}, { put,call }) {
+      const res = yield call(getsrmbaseVendorAlbum,payload);
+      yield put({
+        type:'updateState',
+        payload:{srmalbums:res.data}
+      })
+    },
+
+
+    // 产品说明
+    *addbaseVendorAlbum({payload}, { put,call }) {
+      const res = yield call(addbaseVendorAlbum,payload);
+      // yield put({
+      //   type:'updateState',
+      //   payload:{srmalbums:res.data}
+      // })
+    },
+
+    // 产品说明
+    *registerCorporate({payload}, { put,call }) {
+      const res = yield call(registerCorporate,payload);
+      // yield put({
+      //   type:'updateState',
+      //   payload:{srmalbums:res.data}
+      // })
+    },
+
+    *registerBaseMember({payload}, { put,call }) {
+      const res = yield call(registerBaseMember,payload);
+      // yield put({
+      //   type:'updateState',
+      //   payload:{srmalbums:res.data}
+      // })
+    },
+    
+    
+
+    
+    
     
     
 

@@ -30,11 +30,11 @@ class IndustryItem extends Component {
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
-          url: '/pages/FactoryDetail/index'
+          url: `/pages/FactoryDetail/index?id=${data.id}`
         })
       }}>
         <View>
-          <Image src={Index2} className={styles.listimg} />
+          <Image src={data.logo?`http://sz-spd.cn:889/${data.logo}`:Index2} className={styles.listimg} />
           <View className={styles.rateback}>
             <AtRate value={star} size={10}/>
           </View>

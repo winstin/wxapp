@@ -9,7 +9,7 @@ import "taro-ui/dist/style/components/tag.scss";
 import Index2 from '../../assets/Index2.jpeg';
 
 type PageStateProps = {
-  userInfo:any;
+  albums:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -25,84 +25,16 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ factory,loading }) => {
+  const {albums=[]} = factory;
   return {
-    userInfo,
+    albums,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  
-
   state = {
     activeIndex: 0,
-    industryList :[
-      {
-        title:'全部',
-        star:70,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'公司介绍',
-        star:3,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'设备',
-        star:10,
-        imageUrls:[
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'技术工艺',
-        star:15,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'设备检测',
-        star:5,
-        imageUrls:[
-          Index2,
-        ]
-      },
-      {
-        title:'邀请好友',
-        star:5,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'签到',
-        star:5,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-    ]
   }
   config: Config = {
     navigationBarTitleText: "企业相册",
@@ -111,6 +43,23 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    console.log(this.$router.params);
+    this.fetchList()
+  }
+
+  fetchList = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      // Taro.showToast({
+      //   icon:'loading',
+      //   title: "加载中",
+      //   duration:500
+      // })
+      dispatch({
+        type: "factory/getbaseVendorAlbum",
+        payload: this.$router.params
+      });
+    }
   }
 
   handleClick (value) {
@@ -168,12 +117,12 @@ class Home extends Component {
 
   render() {
 
-    const {activeIndex,industryList} = this.state;
-
+    const {activeIndex} = this.state;
+    const {albums} = this.props;
     return (
       <View className={styles.album}>
           <View className={styles.taglabel} >
-            { industryList.map((item,idx) => (
+            { albums.map((item,idx) => (
                 <AtTag 
                   className={styles.tag}
                   name={`tag${idx}`} 
@@ -182,19 +131,20 @@ class Home extends Component {
                   type='primary' 
                   active={idx===activeIndex} 
                   onClick={this.onClick.bind(this,idx)}>
-                  {item.title}
+                  {item.typeName}({item.total})
                 </AtTag>
             ))}
           </View>
         <View className={styles.taglabel} >
-          {industryList[activeIndex].imageUrls.map((item,idx) => (
+          {albums[activeIndex] && albums[activeIndex].photos.map((item,idx) => (
                  <Image
                  className={styles.myphoto}
-                 src={item}
+                 src={`http://sz-spd.cn:889/${item.photo}`}
                  onClick={()=>{
+                  const photos = albums[activeIndex].photos.map((m)=>(`http://sz-spd.cn:889/${m.photo}`))
                   Taro.previewImage({
-                    current: item, // 当前显示图片的http链接
-                    urls: industryList[activeIndex].imageUrls, // 需要预览的图片http链接列表
+                    current: `http://sz-spd.cn:889/${item.photo}`, // 当前显示图片的http链接
+                    urls: photos, // 需要预览的图片http链接列表
                     success:(e)=>{
                       console.log(e)
                     },

@@ -2,11 +2,13 @@ import { ComponentClass } from "react";
 import Taro, { Component } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
+import img_vip_person from '../../../../../assets/img_vip_person@3x.png';
+import { AtTag  } from 'taro-ui'
 
 
 
 type PageOwnProps = {
-  src?:any
+  data?:any
 };
 
 type PageState = {};
@@ -23,34 +25,42 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src} = this.props;
-
+    const {data} = this.props;
+    const selfIntroList = data.selfIntro && data.selfIntro.split(" ")||[];
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
           url: '/packageA/pages/RecruitmentDetail/index'
         })
       }}>
-        {/* <View>
-          <Image src={src} className={styles.listimg} />
-        </View> */}
         <View style={{flex:1}}>
-          <View className={styles.title} >
-            苏州宝时得科技有限公司
-          </View>
-          
           <View className={styles.tips3} >
-            <View>
-            联系人：谢若美/15923457890
-            </View>
-            <View className={styles.share} >
+              <View className={styles.title} style="margin-left:0px">
+                {data.name}
+                <Image src={img_vip_person} className={styles.listimg} />
+              </View>
+              <View className={styles.share} >
               <View className={styles.item}>
-                <View>4月15日</View>
+                <View>{data.birthday}</View>
               </View>
               <View className={styles.item}> 
-                <View>王芹悦</View>
+                <View>{data.nickname}</View>
               </View>
             </View>
+          </View>
+          <View className={styles.tips3} >
+            <View className={styles.title} style="margin-left:0px">
+              {data.company}
+            </View>
+          </View>
+          <View className={styles.tips2}>
+              {selfIntroList.map((item)=>(<View className={styles.tag}><AtTag 
+                name='tag-1' 
+                type='primary' 
+                
+              >
+                {item}
+              </AtTag></View>))}
           </View>
         </View>
       </View>

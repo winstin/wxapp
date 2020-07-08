@@ -82,7 +82,21 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:'', // 正面照
-    dateSel: ''
+    dateSel: '',
+    "name":"",
+    "nickname":"",
+    "account":"",
+    "photo":"", 
+    "sex":"male",
+    "birthday":"",
+    "native_place":"", 
+    "education":"",
+    "school":"",
+    "email":"",
+    "telephoe":"", 
+    "qq":"",
+    "referrerName":"",
+    "wx_id":""
 
   }
   config: Config = {
@@ -115,10 +129,9 @@ class Home extends Component {
     Taro.navigateBack()
   }
 
-  // 手机号输入框
-  phoneChange = (value) => {
+  Change = (type,value) => {
     this.setState({
-      phone: value
+      [`${type}`]: value
     })
   }
 
@@ -131,9 +144,35 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        this.setState({
-          reverseFilePath: tempFilePaths[0]
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+
+            this.setState({
+              photo:dataJson.data.url,
+              frontFilePath: tempFilePaths[0]
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+        
       }
     })
   }
@@ -145,17 +184,40 @@ class Home extends Component {
   }
 
   onClick = (value)=>{
-    console.log(value)
+    console.log(value);
+    this.setState({sex:value})
   }
 
   onDateChange = e => {
     this.setState({
-      dateSel: e.detail.value
+      birthday: e.detail.value
     })
   }
 
+  submit = () =>{
+    const {dispatch} = this.props;
+    const {photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex} = this.state;
+
+    if(dispatch){
+      dispatch({
+        type: "factory/registerCorporate",
+        payload:  {
+          photo,name,
+          nickname:name,
+          account:telephoe,
+          birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex
+        }
+      }).then((e)=>{
+        Taro.showToast({
+          'title': '注册成功',
+        });
+        Taro.navigateBack()
+      });
+    }
+  }
+
   render() {
-    const {phone,dateSel,frontFilePath} = this.state;
+    const {phone,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,frontFilePath,sex} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -179,11 +241,11 @@ class Home extends Component {
               className={styles.itemIcon}
               src={phoneIcon}
             />
-            <AtInput className={styles.input} name="phone" placeholder="请输入登记人姓名…"  value={phone} onChange={this.phoneChange} />
+            <AtInput className={styles.input} name="name" placeholder="请输入登记人姓名…"  value={name} onChange={(e)=>{this.Change('name',e)}} />
           </View>
           <View className={styles.codeBtn} >
-              <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
-              <AtTag  circle>女士</AtTag>
+              <AtTag name='tag-1'  circle  type='primary' active={sex==='male'} onClick={this.onClick.bind(this,"male")}>先生</AtTag>
+              <AtTag  circle type='primary' active={sex==='female'} onClick={this.onClick.bind(this,'female')}>女士</AtTag>
           </View>
 
         </View>
@@ -194,7 +256,9 @@ class Home extends Component {
         <View className={styles.formItem}>
           <View>
               <Picker value={""} mode='date' onChange={this.onDateChange}>
-                <AtInput className={styles.input} name="phone" placeholder="请选择您的出生日期…"  value={dateSel} onChange={()=>{}}/>
+                <AtInput className={styles.input} name="birthday" placeholder="请选择您的出生日期…"  value={birthday} onChange={(e)=>{
+                  this.Change('birthday',e)
+                  }}/>
               </Picker>
           </View>
           
@@ -207,7 +271,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请选择您的籍贯…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="native_place" placeholder="请选择您的籍贯…"  value={native_place} onChange={(e)=>{this.Change('native_place',e)}} />
         </View>
 
         
@@ -219,7 +283,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请选择您的最高学历…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="education" placeholder="请选择您的最高学历…"  value={education} onChange={(e)=>{this.Change('education',e)}} />
         </View>
         
         <View className={styles.label}>
@@ -230,7 +294,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的毕业院校…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="school" placeholder="请输入您的毕业院校…"  value={school} onChange={(e)=>{this.Change('school',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -241,7 +305,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的电子邮箱…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="email" placeholder="请输入您的电子邮箱…"  value={email} onChange={(e)=>{this.Change('email',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -252,7 +316,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的手机号…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="telephoe" placeholder="请输入您的手机号…"  value={telephoe} onChange={(e)=>{this.Change('telephoe',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -263,7 +327,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的微信号…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="wx_id" placeholder="请输入您的微信号…"  value={wx_id} onChange={(e)=>{this.Change('wx_id',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -274,7 +338,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的QQ号…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="qq" placeholder="请输入您的QQ号…"  value={qq} onChange={(e)=>{this.Change('qq',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -285,7 +349,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的公司…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入您的公司…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -296,7 +360,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的职位…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入您的职位…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -307,7 +371,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入通讯地址…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入通讯地址…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -369,7 +433,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司行业…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入公司行业…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
         
         <View className={styles.label}>
@@ -380,7 +444,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司性质…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入公司性质…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -391,14 +455,14 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司规模…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入公司规模…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
           采购部门规模
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入采购部门规模…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="phone" placeholder="请输入采购部门规模…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -430,7 +494,7 @@ class Home extends Component {
           推荐人
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入推荐人…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="referrerName" placeholder="请输入推荐人…"  value={referrerName} onChange={(e)=>{this.Change('referrerName',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -452,7 +516,7 @@ class Home extends Component {
           
         </View>
 
-        <AtButton type='primary' className={styles.loginBtn} >注册</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>注册</AtButton>
       
       </View>
 

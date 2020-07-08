@@ -8,7 +8,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import img_my_bg_corp from '../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
-  userInfo:any;
+  srmalbums:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -24,49 +24,14 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ factory,loading }) => {
+  const {srmalbums={}} = factory;
   return {
-    userInfo,
+    srmalbums,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -82,7 +47,23 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    console.log(this.$router.params);
+    this.fetchList()
+  }
+
+  fetchList = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      // Taro.showToast({
+      //   icon:'loading',
+      //   title: "加载中",
+      //   duration:500
+      // })
+      dispatch({
+        type: "factory/getsrmbaseVendorAlbum",
+        payload:  this.$router.params
+      });
+    }
   }
 
   handleClick (value) {
@@ -110,6 +91,8 @@ class Home extends Component {
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
 
+    const {name,desc,intro,category} = this.props.srmalbums;
+
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
@@ -124,7 +107,7 @@ class Home extends Component {
         </View>
         
         <View className={styles.title}>
-          燕窝窝马来西亚正品燕窝
+          {name}
         </View>
 
         <View className={styles.content} >
@@ -139,7 +122,7 @@ class Home extends Component {
             品类
             </View>
             <View className={styles.conenttext} >
-            燕窝
+            {category}
             </View>
           </View>
           <View className={styles.tips2} >
@@ -147,7 +130,7 @@ class Home extends Component {
             简介
             </View>
             <View className={styles.conenttext} >
-            适合孕妇、老人长期使用
+            {intro}
             </View>
           </View>
         </View>
@@ -158,6 +141,13 @@ class Home extends Component {
               商品详情
             </View>
           </View>
+          <View className={styles.tips2} >
+           
+            <View className={styles.conenttext} >
+            {desc}
+            </View>
+          </View>
+         
           
         </View>
       
