@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { passAudit,rejectpassAudit,getjxhReqDetail,getbaseMemberauditList,getcorporateauditList } from '@/services/fetch';
+import { passAudit,rejectpassAudit,getjxhReqDetail,getbaseMemberauditList,getcorporateauditList,auditbasemember,rejectbasemember,auditcorporate,rejectcorporate } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -12,7 +12,7 @@ export default {
     auditList:[],
     portalNotice:[],
     INDUSTRY_TYPE:[],
-    jxhReqDetail:{}
+    memberCheckDetail:{}
   },
 
   effects: {
@@ -28,10 +28,7 @@ export default {
     *getcorporateauditList({payload}, { put,call }) {
       const res = yield call(getcorporateauditList,payload);
       return res.data.records;
-      // yield put({
-      //   type:'updateState',
-      //   payload:{jxhReqData:res.data.records}
-      // })
+
     },
 
     // 详情
@@ -58,6 +55,54 @@ export default {
       //   type:'updateState',
       //   payload:{jxhReqDetail:res.data}
       // })
+    },
+
+    // 发布需求
+    *auditbasemember({payload}, { put,call }) {
+      const res = yield call(auditbasemember,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '通过',
+      });
+      Taro.navigateBack()
+
+
+    },
+
+    // 发布需求
+    *rejectbasemember({payload}, { put,call }) {
+      const res = yield call(rejectbasemember,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '拒绝成功',
+      });
+      Taro.navigateBack()
+
+
+    },
+
+    // 发布需求
+    *auditcorporate({payload}, { put,call }) {
+      const res = yield call(auditcorporate,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '通过',
+      });
+      Taro.navigateBack()
+
+
+    },
+
+    // 发布需求
+    *rejectcorporate({payload}, { put,call }) {
+      const res = yield call(rejectcorporate,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '拒绝成功',
+      });
+      Taro.navigateBack()
+
+
     },
 
     

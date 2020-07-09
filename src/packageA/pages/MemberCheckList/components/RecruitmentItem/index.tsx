@@ -4,11 +4,15 @@ import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
 import img_vip_person from '../../../../../assets/img_vip_person@3x.png';
 import { AtTag  } from 'taro-ui'
+import { connect } from "@tarojs/redux";
+import { AnyAction } from 'redux';
 
 
 
 type PageOwnProps = {
-  data?:any
+  data?:any;
+  loading:any;
+  dispatch?<K = any>(action: AnyAction): K;
 };
 
 type PageState = {};
@@ -19,7 +23,11 @@ interface IndustryItem {
   props: IProps;
 }
 
-
+@connect(({ membercheck,loading }) => {
+  return {
+    loading: loading.effects['parent/getStudentList'],
+  }
+})
 class IndustryItem extends Component {
 
 
@@ -28,10 +36,20 @@ class IndustryItem extends Component {
     const {data} = this.props;
     const selfIntroList = data.selfIntro && data.selfIntro.split(" ")||[];
     return (
-      <View className={styles.list} onClick={()=>{
-        Taro.navigateTo({
-          url: '/packageA/pages/RecruitmentDetail/index'
-        })
+      <View className={styles.list} onClick={async ()=>{
+        const {dispatch} = this.props;
+        if(dispatch){
+          await dispatch({
+            type: "membercheck/updateState",
+            payload: {
+              memberCheckDetail: data,
+            }
+          })
+          Taro.navigateTo({
+            url: '/packageA/pages/MemberCheckDetail/index?type=person'
+          })
+        }
+        
       }}>
         <View style={{flex:1}}>
           <View className={styles.tips3} >

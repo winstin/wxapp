@@ -191,6 +191,32 @@ export const addjxhReq = (params)=>{
 }
 
 
+export const auditbasemember = (params)=>{
+  return Api.auditbasemember(params,'POST');
+}
+export const rejectbasemember = (params)=>{
+  return Api.rejectbasemember(params,'POST');
+}
+export const auditcorporate = (params)=>{
+  return Api.auditcorporate(params,'POST');
+}
+export const rejectcorporate = (params)=>{
+  return Api.rejectcorporate(params,'POST');
+}
+
+export const getMyInfo = (params)=>{
+  return Api.getMyInfo(params);
+}
+
+export const getUserInfo = (params)=>{
+  return Api.getUserInfo(params);
+}
+
+export const getMypointslist = (params)=>{
+  return Api.getMypointslist(params);
+}
+
+
 
 
 

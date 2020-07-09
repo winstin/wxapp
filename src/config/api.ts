@@ -66,7 +66,15 @@ export const requestConfig = {
   getbaseMemberauditList:'/api/srm/baseMember/audit-list', // 个人会员
   getcorporateauditList:'/api/srm/corporate/audit-list', // 企业会员
 
-  
+  auditbasemember:'/api/srm/baseMember/audit-basemember', // 个人会员审核通过
+  rejectbasemember:'/api/srm/baseMember/reject-basemember', // 个人会员审核通过
+  auditcorporate:'/api/srm/corporate/audit-corporate', // 企业会员审核通过
+  rejectcorporate:'/api/srm/corporate/reject-corporate', // 企业会员审核通过
+
+  getMyInfo:'/api/srm/baseMember/my-info', // 我的信息
+  getUserInfo:'/api/gate/oauth/user', // 用户信息
+
+  getMypointslist:'/api/srm/baseMemberPoints/my-points-list', // 积分列表
 
   
 }

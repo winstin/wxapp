@@ -31,7 +31,7 @@ class IndustryItem extends Component {
         //   url: '/pages/NeedDetail/index'
         // })
         Taro.navigateTo({
-          url: `/pages/NeedDetail/index?id=${data.id}`
+          url: `/packageA/pages/ProductDetail/index?id=${data.id}`
         })
       }}>
         <View>

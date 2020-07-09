@@ -11,7 +11,7 @@ import "taro-ui/dist/style/components/tag.scss";
 import img_my_bg_corp from '../../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
-  userInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -27,49 +27,15 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {myInfo={}} = user;
   return {
-    userInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -93,7 +59,15 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "user/getMyInfo",
+        payload: {
+          // user_id:Taro.getStorageSync('user_id')
+        }
+      });
+    }
   }
 
   handleClick (value) {
@@ -161,11 +135,12 @@ class Home extends Component {
   }
 
   render() {
-    const {phone,dateSel} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
+    const {myInfo={scale:{}}} = this.props;
+    const {staffAmount,factoryArea,annualSale,registCapital,annualValue} = myInfo.scale;
 
     return (
       <View className={styles.needdetail}>
@@ -181,14 +156,14 @@ class Home extends Component {
           注册资本
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="code" placeholder="请输入注册资本…" disabled={true} value={"101295"} onChange={()=>{}}/>
+          <AtInput className={styles.input} name="registCapital" placeholder="请输入注册资本…" disabled={true} value={registCapital} onChange={()=>{}}/>
         </View>
 
         <View className={styles.label}>
           实缴资本
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入实收资本…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="registCapital" placeholder="请输入实收资本…"  value={registCapital} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
@@ -196,9 +171,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-                <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
-              </Picker>
+              <AtInput className={styles.input} name="factoryArea" placeholder=""  value={factoryArea} onChange={()=>{}}/>
           </View>
         </View>
 
@@ -208,9 +181,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-                <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
-              </Picker>
+              <AtInput className={styles.input} name="staffAmount" placeholder=""  value={staffAmount} onChange={()=>{}}/>
           </View>
         </View>
 
@@ -221,9 +192,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-                <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
-              </Picker>
+            <AtInput className={styles.input} name="annualValue" placeholder=""  value={annualValue} onChange={()=>{}}/>
           </View>
         </View>
 
@@ -233,9 +202,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-                <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
-              </Picker>
+            <AtInput className={styles.input} name="annualSale" placeholder=""  value={annualSale} onChange={()=>{}}/>
           </View>
         </View>
 

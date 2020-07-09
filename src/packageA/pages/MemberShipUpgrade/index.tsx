@@ -280,8 +280,8 @@ class Home extends Component {
             <AtInput className={styles.input} name="referrerName" placeholder="请输入登记人姓名…"  value={referrerName} onChange={(e)=>{this.Change('referrerName',e)}} />
           </View>
           <View className={styles.codeBtn} >
-              <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
-              <AtTag  circle>女士</AtTag>
+              {/* <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
+              <AtTag  circle>女士</AtTag> */}
           </View>
 
         </View>
@@ -306,7 +306,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={ico_message}
           />
-          <AtInput className={styles.input} name="password" type='password' placeholder="请输入短信验证码…"  value={code} onChange={(e)=>{this.Change('name',e)}} />
+          <AtInput className={styles.input} name="password" type='password' placeholder="请输入短信验证码…"  value={code} onChange={(e)=>{this.Change('password',e)}} />
           </View>
           <View className={styles.codeBtn} >发送验证码</View>
         </View>

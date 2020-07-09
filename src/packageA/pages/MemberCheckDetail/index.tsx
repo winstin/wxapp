@@ -2,7 +2,7 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View,Image,Picker } from "@tarojs/components";
-import { AtInput,AtButton,AtIcon,AtRadio } from 'taro-ui'
+import { AtInput,AtButton,AtIcon,AtRadio,AtTextarea } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import classNames from 'classnames';
@@ -11,8 +11,10 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 import "taro-ui/dist/style/components/radio.scss";
+import "taro-ui/dist/style/components/textarea.scss";
+
 type PageStateProps = {
-  jxhReqDetail:any;
+  memberCheckDetail:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -28,10 +30,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ needcheck,loading }) => {
-  const {jxhReqDetail={}} = needcheck;
+@connect(({ membercheck,loading }) => {
+  const {memberCheckDetail={}} = membercheck;
   return {
-    jxhReqDetail,
+    memberCheckDetail,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -50,6 +52,7 @@ class Home extends Component {
     frontPagePath:"",
     selector: ['显示', '不显示'],
     selectorChecked: '显示',
+    referrerOpinion:''
 
   }
   config: Config = {
@@ -60,24 +63,15 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log(this.$router.params);
-    this.fetchList()
+    var pages = Taro.getCurrentPages();
+    var prevPage = pages[pages.length - 2]; //上一个页面
+    //直接调用上一个页面的setState()方法，把数据存到上一个页面中去
+    prevPage.$component.setState({
+      reload:true,
+      type:this.$router.params.type 
+    })
   }
 
-  fetchList = ()=>{
-    const {dispatch} = this.props;
-    if(dispatch){
-      // Taro.showToast({
-      //   icon:'loading',
-      //   title: "加载中",
-      //   duration:500
-      // })
-      dispatch({
-        type: "needcheck/getjxhReqDetail",
-        payload: this.$router.params
-      });
-    }
-  }
 
 
   handleClick (value) {
@@ -172,43 +166,40 @@ class Home extends Component {
 
   submit = (type) =>{
     const {dispatch} = this.props;
-    const {reqDesc,qty,itemName,drawings,id} = this.props.jxhReqDetail;
-
+    const {id} = this.props.memberCheckDetail;
+    let dispatchType;
+    if(this.$router.params.type === "person"){
+      dispatchType = type==="agree"?"membercheck/auditbasemember":"membercheck/rejectbasemember"
+    }else{
+      dispatchType = type==="agree"?"membercheck/auditcorporate":"membercheck/rejectcorporate"
+    }
+    
     if(dispatch){
       dispatch({
-        type: type==="agree"?"needcheck/passAudit":"needcheck/rejectpassAudit",
+        type: dispatchType,
         payload: {
           id,
-          reqDesc,
-          qty,
-          itemName,
-          drawings,
-          isTop:"1",
-          isShowDrawing:this.state.selectorChecked==="显示"?'1':'0'
+          referrerOpinion:this.state.referrerOpinion
         }
-      }).then(()=>{
-        Taro.showToast({
-          'title': '操作成功',
-        });
-        Taro.navigateBack()
-      });
+      })
     }
   }
 
   render() {
     // const {phone,frontFilePath,frontPagePath} = this.state;
-    const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing} = this.props.jxhReqDetail;
-    if(status==='2'){
-      this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示'
+    console.log('memberCheckDetail',this.props.memberCheckDetail)
+    const {name,createdDate,status,referrerOpinion} = this.props.memberCheckDetail;
+    if(status!=='2'){
+      this.state.referrerOpinion = referrerOpinion
     }
     return (
       <View className={styles.needdetail}>
         <View className={styles.toplabel}>
           <View className={styles.leftlabel}>
-            发布人
+            申请人
           </View>
           <View className={styles.text}>
-            {reqName}
+            {name}
           </View>
         </View>
         <View className={styles.toplabel}>
@@ -220,68 +211,33 @@ class Home extends Component {
           </View>
         </View>
         <View className={styles.margin20}/>
-        <View className={styles.label}>
+        {/* <View className={styles.label}>
           产品描述
         </View>
         <View className={styles.formItem}>
           {itemName}
-          {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
-        </View>
+        </View> */}
 
         <View className={styles.label}>
-          需求数量
+          审核理由
         </View>
         <View className={styles.formItem}>
-          {qty}
-          {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
-        </View>
-
-        <View className={styles.label}>
-          要求
-        </View>
-        <View className={styles.formItem}>
-          {reqDesc}
-          {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
-        </View>
-
-        <View className={styles.label}>
-          产品图片库
-        </View>
-        <View className={styles.formImageItem}>
-          {
-            drawings.map((item,index)=>(
-              <View className={styles.imageView}>
-                <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this,index)}></AtIcon>
-                <Image mode="scaleToFill" src={`http://sz-spd.cn:889/${item.url}`} className={styles.image} />
-              </View>
-            ))
-          }
-          {
-          //   <View className={styles.uploadBtn} onClick={this.chooseImageReverse}>
-          //   <View className={styles.addIcon}>+</View>
-          //   {/* <View className={styles.btnTitle}>点击上传</View> */}
-          // </View>
-          }
-        </View>
-
-        <View className={styles.label}>
-          是否显示图纸
-        </View>
-        <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-          <View className={styles.formItem}>
-            <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
-            </View>
-            <Image
-              className={styles.arrow}
-              src={arrowIcon}
+          <View className={styles.formItemwidth}>
+            <AtTextarea
+              className={styles.textarea}
+              value={this.state.referrerOpinion}
+              onChange={(e)=>{this.setState({referrerOpinion:e})}}
+              maxLength={200}
+              placeholder='请输入审核理由…'
             />
-            {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
-        </Picker>
-        {status!=='2'&&<View className={styles.bottom}>
+        </View>
+
+      
+        {status==='2'&&
+        <View className={styles.bottom}>
           <View className={classNames(styles.loginout,styles.agree)} onClick={()=>{this.submit('agree')}}>通过</View>
-          <View className={styles.loginout} onClick={()=>{this.submit('reject')}}>作废</View>
+          <View className={styles.loginout} onClick={()=>{this.submit('reject')}}>拒绝</View>
         </View>}
       
       </View>

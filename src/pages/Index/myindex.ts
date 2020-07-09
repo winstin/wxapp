@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporate,getJxhReq,getPortalNotice,getBatchDictValueByCode,getTodoList,getcheckSignin } from '@/services/fetch';
+import { getBatchDictValues,baseMemberPoints,getsysMenu,getCorporate,getJxhReq,getPortalNotice,getBatchDictValueByCode,getTodoList,getcheckSignin,getUserInfo } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -13,7 +13,8 @@ export default {
     portalNotice:[],
     INDUSTRY_TYPE:[],
     dataCount:{},
-    Signin:true
+    Signin:true,
+    userInfo:{}
   },
 
   effects: {
@@ -112,6 +113,8 @@ export default {
         type:'updateState',
         payload:{portalNotice:res.data.records}
       })
+
+      return res.data.records;
     },
 
     // 猎聘信息
@@ -129,6 +132,15 @@ export default {
       yield put({
         type:'updateState',
         payload:{Signin:res.data}
+      })
+    },
+
+    // 猎聘信息
+    *getUserInfo({payload}, { put,call }) {
+      const res = yield call(getUserInfo,payload);
+      yield put({
+        type:'updateState',
+        payload:{userInfo:res.data}
       })
     },
 

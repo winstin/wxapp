@@ -14,7 +14,7 @@ import "taro-ui/dist/style/components/textarea.scss";
 import img_my_bg_corp from '../../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
-  userInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,10 +30,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {myInfo={}} = user;
   return {
-    userInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -94,7 +94,15 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "user/getMyInfo",
+        payload: {
+          // user_id:Taro.getStorageSync('user_id')
+        }
+      });
+    }
   }
 
   handleClick (value) {
@@ -161,6 +169,8 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
+    const {myInfo={introduce:{}}} = this.props;
+    const {introduction} = myInfo.introduce;
 
     return (
       <View className={styles.needdetail}>
@@ -213,7 +223,7 @@ class Home extends Component {
           <View className={styles.formItemwidth}>
             <AtTextarea
               className={styles.textarea}
-              value={phone}
+              value={introduction}
               onChange={()=>{}}
               maxLength={200}
               placeholder='请输入企业简介…'

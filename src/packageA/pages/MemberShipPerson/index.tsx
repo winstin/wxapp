@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Picker,Checkbox } from "@tarojs/components";
+import { View,Image,Picker,Checkbox,CheckboxGroup } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
@@ -14,6 +14,13 @@ import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
   userInfo:any;
+  SKILLED_FIELD:any;
+  EDUCATION_LEVEL:any;
+  PROCUREMENT_CATEGORY_PROCESSES:any;
+  PURCHASE_SIZE:any;
+  STAFF_AMOUNT:any;
+  INDUSTRY_TYPE:any;
+  COMPANY_PROPERTY:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -29,10 +36,18 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ global,loading }) => {    
+  const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
+  ,COMPANY_PROPERTY=[]} = global;
   return {
     userInfo,
+    SKILLED_FIELD,
+    EDUCATION_LEVEL,
+    PROCUREMENT_CATEGORY_PROCESSES,
+    PURCHASE_SIZE,
+    STAFF_AMOUNT,
+    COMPANY_PROPERTY,
+    INDUSTRY_TYPE,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -96,7 +111,15 @@ class Home extends Component {
     "telephoe":"", 
     "qq":"",
     "referrerName":"",
-    "wx_id":""
+    "wx_id":"",
+    "skilledField": "",
+    "companyType": "",
+    "companyProperty": "",
+    "industryType": "",
+    "industryRanking": "",
+    "companyScale" :"",
+    "dptScale": "",
+    "purType": ""
 
   }
   config: Config = {
@@ -131,7 +154,7 @@ class Home extends Component {
 
   Change = (type,value) => {
     this.setState({
-      [`${type}`]: value
+      [`${type}`]: value.join(",")
     })
   }
 
@@ -194,9 +217,19 @@ class Home extends Component {
     })
   }
 
+  onChange = (type,e)=>{
+    console.log(type,e);
+    this.setState({
+      [`${type}`]:e.detail.value
+    })
+  }
+
   submit = () =>{
     const {dispatch} = this.props;
-    const {photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex} = this.state;
+    const {
+      photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
+      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType
+    } = this.state;
 
     if(dispatch){
       dispatch({
@@ -205,7 +238,8 @@ class Home extends Component {
           photo,name,
           nickname:name,
           account:telephoe,
-          birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex
+          birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex,
+          skilledField,industryType,companyProperty,companyScale,dptScale,purType
         }
       }).then((e)=>{
         Taro.showToast({
@@ -217,7 +251,7 @@ class Home extends Component {
   }
 
   render() {
-    const {phone,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,frontFilePath,sex} = this.state;
+    const {phone,name,birthday,native_place,school,email,telephoe,qq,referrerName,wx_id,frontFilePath,sex} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -278,13 +312,18 @@ class Home extends Component {
         <View className={styles.label}>
           学历
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="education" placeholder="请选择您的最高学历…"  value={education} onChange={(e)=>{this.Change('education',e)}} />
+        <View className={styles.formcheckboxItem}>
+            <CheckboxGroup onChange={(e)=>{this.onChange("education",e)}}>
+            {
+              this.props.EDUCATION_LEVEL && this.props.EDUCATION_LEVEL.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
+       
         
         <View className={styles.label}>
           毕业院校
@@ -403,92 +442,91 @@ class Home extends Component {
           擅长领域
         </View>
         <View className={styles.formcheckboxItem}>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='0' checked style="flex:1">战略采购</Checkbox>
-              <Checkbox value='0'  style="flex:1">采购寻源</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='1' style="flex:1">商务谈判</Checkbox>
-              <Checkbox value='1' style="flex:1">成本开发</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='2' style="flex:1">工艺开发</Checkbox>
-              <Checkbox value='1' style="flex:1">库存管理</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='3' style="flex:1">质量管理</Checkbox>
-              <Checkbox value='1' style="flex:1">项目管理</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='4' style="flex:1">供应商管理</Checkbox>
-              <Checkbox value='1' style="flex:1">其他</Checkbox>
-            </View>
+            <CheckboxGroup onChange={(e)=>{this.onChange("skilledField",e)}}>
+            {
+              this.props.SKILLED_FIELD && this.props.SKILLED_FIELD.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
 
         <View className={styles.label}>
           公司行业
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司行业…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+        <View className={styles.formcheckboxItem}>
+            <CheckboxGroup onChange={(e)=>{this.onChange("industryType",e)}}>
+            {
+              this.props.INDUSTRY_TYPE && this.props.INDUSTRY_TYPE.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
         
         <View className={styles.label}>
           公司性质
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司性质…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+        <View className={styles.formcheckboxItem}>
+            <CheckboxGroup onChange={(e)=>{this.onChange("companyProperty",e)}}>
+            {
+              this.props.COMPANY_PROPERTY && this.props.COMPANY_PROPERTY.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
 
         <View className={styles.label}>
           公司规模
         </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司规模…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+        <View className={styles.formcheckboxItem}>
+            <CheckboxGroup onChange={(e)=>{this.onChange("companyScale",e)}}>
+            {
+              this.props.STAFF_AMOUNT && this.props.STAFF_AMOUNT.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
 
         <View className={styles.label}>
           采购部门规模
         </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入采购部门规模…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+        
+        <View className={styles.formcheckboxItem}>
+            <CheckboxGroup onChange={(e)=>{this.onChange("dptScale",e)}}>
+            {
+              this.props.PURCHASE_SIZE && this.props.PURCHASE_SIZE.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
 
         <View className={styles.label}>
           采购涉及品类或工艺
         </View>
         <View className={styles.formcheckboxItem}>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='0' checked style="flex:1">表面处理</Checkbox>
-              <Checkbox value='0'  style="flex:1">机加工</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='1' style="flex:1">模具</Checkbox>
-              <Checkbox value='1' style="flex:1">冲压</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='2' style="flex:1">钣金</Checkbox>
-              <Checkbox value='1' style="flex:1">铸造</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='3' style="flex:1">锻造</Checkbox>
-              <Checkbox value='1' style="flex:1">五金</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              {/* <Checkbox value='4' style="flex:1">供应商管理</Checkbox> */}
-              <Checkbox value='1' style="flex:1">其他</Checkbox>
-            </View>
+            <CheckboxGroup onChange={(e)=>{this.onChange("purType",e)}}>
+            {
+              this.props.PROCUREMENT_CATEGORY_PROCESSES && this.props.PROCUREMENT_CATEGORY_PROCESSES.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                </View>
+              ))
+            }
+            </CheckboxGroup>
         </View>
         <View className={styles.label}>
           推荐人

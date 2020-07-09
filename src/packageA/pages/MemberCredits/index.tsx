@@ -1,13 +1,13 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,ScrollView } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
 
 type PageStateProps = {
-  userInfo:any;
+  mypointslist:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -23,10 +23,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {mypointslist={}} = user;
   return {
-    userInfo,
+    mypointslist,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -71,7 +71,10 @@ class Home extends Component {
     current: 0,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    haveMore:true,
+    mypointslist:[],
+
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -81,8 +84,31 @@ class Home extends Component {
   };
 
   componentDidShow() {
-
+    console.log(this.$router.params);
+    this.fetchList()
   }
+
+  fetchList = (page=1)=>{
+    const {dispatch} = this.props;
+    const { mypointslist } = this.state;
+    if(dispatch){
+      dispatch({
+        type: "user/getMypointslist",
+        payload: {
+          current:page
+        }
+      }).then((e)=>{
+        if(e.length<20){
+          this.state.haveMore = false;
+        }
+        this.state.current = page + 1;
+        this.setState({
+          mypointslist:page===1?e:mypointslist.concat(e)
+        })
+      });;
+    }
+  }
+
 
   handleClick (value) {
     this.setState({
@@ -90,13 +116,16 @@ class Home extends Component {
     })
   }
 
-  onScrollToUpper() {}
+  onScrollToUpper() {
+    console.log("onScrollToUpper");
+    // this.fetchList(1)
+  }
 
   // or 使用箭头函数
-  // onScrollToUpper = () => {}
-
-  onScroll(e){
-    console.log(e.detail)
+  onScrollToLower = () => {
+    console.log("滚动到底部")
+    if(!this.state.haveMore) return
+    this.fetchList(this.state.current)
   }
 
   back=()=>{
@@ -104,6 +133,12 @@ class Home extends Component {
   }
 
   render() {
+    const scrollStyle = {
+      height: '100vh',
+      backgroundColor:"#fff",
+    }
+    const scrollTop = 0
+    const Threshold = 20
     return (
       <View className={styles.member}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back}></View>
@@ -114,29 +149,31 @@ class Home extends Component {
         <View className={styles.toptip} >
           积分明细
         </View>
-
-        <View className={styles.listItem}>
-          <View className={styles.item}>
-            2020/06/26
-          </View>
-          <View className={styles.item}>
-            打卡
-          </View>
-          <View className={styles.itemlast}>
-            +5
-          </View>
-        </View>
-        <View className={styles.listItem}>
-          <View className={styles.item}>
-            2020/06/26
-          </View>
-          <View className={styles.item}>
-            跨越直播
-          </View>
-          <View className={styles.warn}>
-            -10
-          </View>
-        </View>
+        <ScrollView
+          className='scrollview'
+          scrollY
+          scrollWithAnimation
+          scrollTop={scrollTop}
+          style={scrollStyle}
+          lowerThreshold={Threshold}
+          upperThreshold={Threshold}
+          onScrollToLower={this.onScrollToLower}
+          onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
+          // onScroll={this.onScroll}
+        >
+          { this.state.mypointslist.map((item:any,idx) => ( 
+          <View className={styles.listItem}>
+            <View className={styles.item}>
+              {item.createdDate}
+            </View>
+            <View className={styles.item}>
+              {item.type}
+            </View>
+            <View className={styles.warn}>
+              +{item.points}
+            </View>
+          </View>))}
+        </ScrollView>
       </View>
 
     );

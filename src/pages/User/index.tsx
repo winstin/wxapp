@@ -20,6 +20,7 @@ import { AtButton } from "taro-ui";
 type PageStateProps = {
   userInfo:any;
   makerInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -37,10 +38,11 @@ interface User {
 
 @connect(({ global,user,loading }) => {
   const {userInfo={}} = global;
-  const { makerInfo } = user;
+  const { makerInfo,myInfo={} } = user;
   return {
     userInfo,
     makerInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -69,6 +71,16 @@ class User extends Component {
       //     }
       //   });
       // }
+
+      const {dispatch} = this.props;
+      if(dispatch){
+        dispatch({
+          type: "user/getMyInfo",
+          payload: {
+            // user_id:Taro.getStorageSync('user_id')
+          }
+        });
+      }
     }
     
   }
@@ -93,7 +105,7 @@ class User extends Component {
   }
 
   render() {
-    const {userInfo} = this.props;
+    const {userInfo,myInfo} = this.props;
 
     const token = Taro.getStorageSync('token');
     // if(!token){
@@ -144,7 +156,7 @@ class User extends Component {
             <View className={styles.itemTitle}>会员积分</View>
           </View>
           <View className={styles.cardL}>
-            <View className={styles.vipNumber}>2000</View>
+            <View className={styles.vipNumber}>{myInfo.total}</View>
             <Image
               className={styles.arrow}
               src={arrowIcon}
@@ -178,7 +190,7 @@ class User extends Component {
         ></ListItem>
         
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyCompaniestIntroduce/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyCompaniestIntroduce/index")}}
           cardIcon={qygm}
           title={'企业介绍'}
         ></ListItem>

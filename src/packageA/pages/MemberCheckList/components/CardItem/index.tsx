@@ -3,11 +3,14 @@ import Taro, { Component } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
 import img_vip_corp from '../../../../../assets/img_vip_corp@3x.png';
-
+import { connect } from "@tarojs/redux";
+import { AnyAction } from 'redux';
 
 
 type PageOwnProps = {
-  data?:any
+  data?:any;
+  loading:any
+  dispatch?<K = any>(action: AnyAction): K;
 };
 
 type PageState = {};
@@ -18,19 +21,31 @@ interface IndustryItem {
   props: IProps;
 }
 
-
+@connect(({ membercheck,loading }) => {
+  return {
+    loading: loading.effects['parent/getStudentList'],
+  }
+})
 class IndustryItem extends Component {
-
-
   render() {
 
     const {data} = this.props;
 
     return (
-      <View className={styles.list} onClick={()=>{
-        Taro.navigateTo({
-          url: '/packageA/pages/RecruitmentDetail/index'
-        })
+      <View className={styles.list} onClick={async ()=>{
+        const {dispatch} = this.props;
+        if(dispatch){
+          await dispatch({
+            type: "membercheck/updateState",
+            payload: {
+              memberCheckDetail: data,
+            }
+          })
+          Taro.navigateTo({
+            url: '/packageA/pages/MemberCheckDetail/index'
+          })
+        }
+       
       }}>
         <View style={{flex:1}}>
           <View className={styles.title} >

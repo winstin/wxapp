@@ -26,11 +26,11 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {companyName,qty,reqDesc,createdDate,drawings} = data;
+    const {companyName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs} = data;
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
-          url: '/pages/NeedDetail/index'
+          url: `/pages/NeedDetail/index?id=${id}`
         })
       }}>
         <View>
@@ -58,7 +58,7 @@ class IndustryItem extends Component {
               </View>
               <View className={styles.item}> 
                 <Image src={ico_comment} className={styles.bottom_btn} />
-                <View>评论 999</View>
+                <View>评论 {jxhReqMsgs.length}</View>
               </View>
             </View>
           </View>

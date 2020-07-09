@@ -5,10 +5,10 @@ import { View,Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
-import img_my_bg_corp from '../../assets/factory/img_djb_bg_person.png';
-
+import ico_comment from '../../assets/need/ico_comment@3x.png';
+import ico_share from '../../assets/need/ico_share@3x.png';
 type PageStateProps = {
-  srmalbums:any;
+  jxhReqDetail:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -24,10 +24,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ factory,loading }) => {
-  const {srmalbums={}} = factory;
+@connect(({ needcheck,loading }) => {
+  const {jxhReqDetail={}} = needcheck;
   return {
-    srmalbums,
+    jxhReqDetail,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -40,10 +40,10 @@ class Home extends Component {
     industry:false
   }
   config: Config = {
-    navigationBarTitleText: "会员积分",
+    navigationBarTitleText: "需求详情",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
-    navigationStyle:"custom",
+    // navigationStyle:"custom",
   };
 
   componentDidShow() {
@@ -60,8 +60,11 @@ class Home extends Component {
       //   duration:500
       // })
       dispatch({
-        type: "factory/getsrmbaseVendorAlbum",
-        payload:  this.$router.params
+        type: "needcheck/getjxhReqDetail",
+        // payload:  this.$router.params,
+        payload:{
+          id:'1278941345442643969'
+        }
       });
     }
   }
@@ -87,68 +90,67 @@ class Home extends Component {
 
   render() {
 
-    const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
-    const topstyle = `top:${MenuButtonBounding.top}px;`;
-    const titletop = `margin-top:${MenuButtonBounding.top}px;`
-
-    const {name,desc,intro,category} = this.props.srmalbums;
+    const {name,desc,intro,category,reqName,createdDate,companyName,qty,reqDesc,drawings,id,jxhReqMsgs} = this.props.jxhReqDetail;
 
     return (
       <View className={styles.needdetail}>
-        <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={img_my_bg_corp} />
-
-        <View className={styles.userInfo} onClick={()=>{
-            Taro.navigateTo({
-              url: '/pages/AlbumProduct/index'
-            })
-          }}>
-          <View className={styles.tips} style={titletop}>产品展示</View>
-        </View>
-        
-        <View className={styles.title}>
-          {name}
-        </View>
-
-        <View className={styles.content} >
-          <View className={styles.tips} >
-            <View className={styles.tipicon} />
-            <View className={styles.tipstext} >
-              商品参数
-            </View>
+         <View className={styles.toplabel}>
+          <View className={styles.leftlabel}>
+            发布人
           </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            品类
-            </View>
-            <View className={styles.conenttext} >
-            {category}
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            简介
-            </View>
-            <View className={styles.conenttext} >
-            {intro}
-            </View>
+          <View className={styles.text}>
+            {reqName}
           </View>
         </View>
-        <View className={styles.content} >
-          <View className={styles.tips} >
-            <View className={styles.tipicon} />
-            <View className={styles.tipstext} >
-              商品详情
+        <View className={styles.toplabel}>
+          <View className={styles.leftlabel}>
+            发布日期
+          </View>
+          <View className={styles.text}>
+            {createdDate}
+          </View>
+        </View>
+        <View className={styles.list}>
+          <View>
+            <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
+          </View>
+          <View style='flex:1'>
+            <View className={styles.title} >
+            {companyName}
+            </View>
+            <View className={styles.tips} >
+            数量  {qty}台
+            </View>
+            <View className={styles.tips} >
+            要求  {reqDesc}
+            </View>
+            <View className={styles.tips} >
+              {createdDate}
+            </View>
+            <View className={styles.tips3} >
+              <View/>
+              <View className={styles.share} >
+                <View className={styles.item}>
+                  <Image src={ico_share} className={styles.bottom_btn} />
+                  <View>分享</View>
+                </View>
+                <View className={styles.item}> 
+                  <Image src={ico_comment} className={styles.bottom_btn} />
+                  <View>评论 {jxhReqMsgs.length}</View>
+                </View>
+              </View>
             </View>
           </View>
-          <View className={styles.tips2} >
-           
-            <View className={styles.conenttext} >
-            {desc}
-            </View>
-          </View>
-         
-          
+        </View>
+        <View className={styles.comment}>
+          {
+            jxhReqMsgs.map((item)=>(
+              <View className={styles.commentbg}>
+                <View className={styles.commentatorTitle}>{item.commentatorTitle}</View>
+                <View className={styles.msg}>{item.msg}</View>
+              </View>
+            ))
+          }
         </View>
       
       </View>

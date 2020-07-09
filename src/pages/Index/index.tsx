@@ -134,6 +134,13 @@ class Home extends Component {
         });
 
         dispatch({
+          type: "myindex/getUserInfo",
+          payload: {
+            // name:'100321' 
+          }
+        });
+
+        dispatch({
           type: "myindex/getcheckSignin",
           payload: {
             // platformType:'2' 

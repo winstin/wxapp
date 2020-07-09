@@ -34,9 +34,14 @@ interface Home {
 
 @connect(({ factory,loading }) => {
   const {userInfo={},INDUSTRY_TYPE=[],corporateData} = factory;
+  let newtype = JSON.parse(JSON.stringify(INDUSTRY_TYPE))
+  newtype.unshift({
+    label:'行业不限',
+    value:''
+  })
   return {
     userInfo,
-    INDUSTRY_TYPE,
+    INDUSTRY_TYPE:newtype,
     corporateData,
     loading: loading.effects['parent/getStudentList'],
   }
@@ -78,6 +83,21 @@ class Home extends Component {
     },
   ]
 
+  sortArr = [
+    {
+      key:'',
+      value:'不限'
+    },
+    {
+      key:'star',
+      value:'按照星级降序'
+    },
+    {
+      key:'pv',
+      value:'按照访问量降序'
+    }
+  ]
+
   state = {
     current: 1,
     show:false,
@@ -86,8 +106,12 @@ class Home extends Component {
     corporateData:[],
     haveMore:true,
     industryObject:{
-      label:'行业',
+      label:'行业不限',
       value:''
+    },
+    sortObject:{
+      key:'',
+      value:'综合排序'
     }
   }
   config: Config = {
@@ -118,20 +142,26 @@ class Home extends Component {
 
   fetchList = (page=1)=>{
     const {dispatch} = this.props;
-    const { corporateData,industryObject } = this.state;
+    const { corporateData,industryObject,sortObject } = this.state;
     if(dispatch){
       Taro.showToast({
         icon:'loading',
         title: "加载中",
         duration:500
       })
+      const payload:any = {
+        isAsc:false,
+        current:page,
+      }
+      if(industryObject.value){
+        payload.industryType=industryObject.value
+      }
+      if(sortObject.key){
+        payload.orderByField=sortObject.key
+      }
       dispatch({
         type: "factory/getCorporateList",
-        payload: {
-          isAsc:false,
-          current:page,
-          // industryType:industryObject.value
-        }
+        payload 
       }).then((e)=>{
         if(e.length<20){
           this.state.haveMore = false;
@@ -165,7 +195,7 @@ class Home extends Component {
 
 
   render() {
-    const {sort,industry,corporateData,industryObject} = this.state;
+    const {sort,industry,corporateData,industryObject,sortObject} = this.state;
     const {INDUSTRY_TYPE} = this.props;
     const JSX = INDUSTRY_TYPE.map((item)=>(
       <View className={styles.listItem} onClick={()=>{
@@ -192,7 +222,7 @@ class Home extends Component {
           <View className={styles.topItem} onClick={()=>{
               this.setState({sort:true,show:false,industry:false})
             }}>
-              综合排序
+              {sortObject.value}
               <View className='at-icon at-icon-chevron-down'></View>
           </View>
           <View className={styles.topItem} onClick={()=>{this.setState({industry:true,show:false,sort:false})}}>
@@ -206,12 +236,23 @@ class Home extends Component {
         </View>
 
         {sort && <View onClick={this.onClose.bind(this)} className={styles.modal}>
-            <View className={styles.listItem}>
-              <View>按照星级降序</View>
+        
+        {
+          this.sortArr.map((item)=>(
+            <View className={styles.listItem} onClick={()=>{
+              this.setState({
+                sortObject:{
+                  key:item.key,
+                  value:item.value
+                }
+              },()=>{
+                this.fetchList(1)
+              })
+            }}>
+              <View>{item.value}</View>
             </View>
-            <View className={styles.listItem}>
-              <View>按照访问量降序</View>
-            </View>
+          ))
+        }
         </View>}
 
         {industry && <View onClick={this.onClose.bind(this)} className={styles.modal}>

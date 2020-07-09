@@ -13,7 +13,7 @@ import "taro-ui/dist/style/components/tag.scss";
 import img_my_bg_corp from '../../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
-  userInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -29,10 +29,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {myInfo={}} = user;
   return {
-    userInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -96,7 +96,15 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "user/getMyInfo",
+        payload: {
+          // user_id:Taro.getStorageSync('user_id')
+        }
+      });
+    }
   }
 
   handleClick (value) {
@@ -169,6 +177,8 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
+    const {myInfo={contact:{}}} = this.props;
+    const {companyTel,legalPerson,countryName,provinceName,cityName,address,zipCode,linkman,linkmanPhone,email} = myInfo.contact;
 
     return (
       <View className={styles.needdetail}>
@@ -187,14 +197,14 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业电话…"  value={phone} onChange={()=>{}} />
+          <AtInput className={styles.input} name="companyTel" placeholder="请输入企业电话…"  value={companyTel} onChange={()=>{}} />
         </View>
 
         <View className={styles.label}>
           法人
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="code" placeholder="请输入法人…" value={phone} onChange={()=>{}}/>
+          <AtInput className={styles.input} name="legalPerson" placeholder="请输入法人…" value={legalPerson} onChange={()=>{}}/>
         </View>
 
         <View className={styles.label}>
@@ -202,16 +212,14 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
-                <AtInput className={styles.input} name="phone" placeholder="请选择您的出生日期…"  value={this.state.selectorChecked} onChange={()=>{}}/>
-              </Picker>
+              <AtInput className={styles.input} name="countryName" placeholder=""  value={countryName} onChange={()=>{}}/>
           </View>
         </View>
         <View className={styles.label}>
           省份
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入省份…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="provinceName" placeholder="请输入省份…"  value={provinceName} onChange={this.phoneChange} />
         </View>
 
 
@@ -219,7 +227,7 @@ class Home extends Component {
           城市
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入城市…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="cityName" placeholder="请输入城市…"  value={cityName} onChange={this.phoneChange} />
         </View>
 
 
@@ -227,34 +235,34 @@ class Home extends Component {
           详细地址
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入详细地址…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="address" placeholder="请输入详细地址…"  value={address} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
           邮编
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入邮编…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="zipCode" placeholder="请输入邮编…"  value={zipCode} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
           联系人
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入联系人…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="linkman" placeholder="请输入联系人…"  value={linkman} onChange={this.phoneChange} />
         </View>
         <View className={styles.label}>
           联系电话
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入联系电话…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="linkmanPhone" placeholder="请输入联系电话…"  value={linkmanPhone} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
           电子邮箱
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入电子邮箱…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="email" placeholder="请输入电子邮箱…"  value={email} onChange={this.phoneChange} />
         </View>
 
 

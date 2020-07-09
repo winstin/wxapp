@@ -14,6 +14,7 @@ import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
   userInfo:any;
+  ALBUM_TYPE:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -29,10 +30,13 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ myindex,global,loading }) => {
+  const {userInfo={}} = myindex;
+  const {ALBUM_TYPE=[]} = global;
+  
   return {
     userInfo,
+    ALBUM_TYPE,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -87,8 +91,8 @@ class Home extends Component {
     photoCover:'',
     intro:'',
     desc:'',
-    selector: ['产品相册', '企业相册', '设备相册', '工艺相册'],
-    selectorChecked: '产品相册',
+    selector: this.props.ALBUM_TYPE,
+    selectorChecked: {label:'产品'},
 
   }
   config: Config = {
@@ -127,6 +131,7 @@ class Home extends Component {
     })
   }
 
+
   chooseImageReverse = () => {
     Taro.chooseImage({
       count: 1,
@@ -136,7 +141,7 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        const {frontFilePath,photos,intro}:any = this.state;
+        const {frontFilePath,photos,intro,selectorChecked}:any = this.state;
         frontFilePath.push(tempFilePaths[0]);
 
         Taro.uploadFile({
@@ -150,14 +155,13 @@ class Home extends Component {
           success: (res) => {
             const data = res.data;
             const dataJson = JSON.parse(data);
+            const { userInfo } = this.props;
             console.log('-------success--dataJson:',dataJson);
             photos.push({
-              "vendorId":1140906925177778177,
-              "vendorCode":"101295",
+              "vendorId":userInfo.supplierId,
               'photo':dataJson.data.url,
-              "vendorName":"徐州智瑞工程机械有限公司",
-              "photoName":"图片名称",
-              "type":"process",
+              "photoName":dataJson.data.name,
+              "type":selectorChecked.value,
               intro,
             })
             this.setState({
@@ -242,23 +246,22 @@ class Home extends Component {
   }
 
   onPickerChange = e => {
+    console.log(e)
     this.setState({
       selectorChecked: this.state.selector[e.detail.value]
     })
   }
 
   submit = () =>{
-    const {dispatch} = this.props;
-    const {intro,desc,photoCover,photos}:any = this.state;
+    const {dispatch,userInfo} = this.props;
+    const {intro,desc,photoCover,photos,selectorChecked}:any = this.state;
 
     if(dispatch){
       dispatch({
         type: "factory/addbaseVendorAlbum",
         payload:  {
-          "vendorId":1140906925177778177,
-          "vendorCode":"101295",
-          "vendorName":"徐州智瑞工程机械有限公司",
-          "type":"process",
+          "vendorId":userInfo.supplierId,
+          "type":selectorChecked.value,
           "name":intro,
           "category":intro,
           intro,
@@ -301,10 +304,10 @@ class Home extends Component {
         <View className={styles.label}>
           相册分类
         </View>
-        <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
+        <Picker value={this.state.selectorChecked.label} mode='selector' range={this.state.selector}  range-key='label' onChange={this.onPickerChange}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked.label} onChange={()=>{}}/>
             </View>
             <Image
               className={styles.arrow}

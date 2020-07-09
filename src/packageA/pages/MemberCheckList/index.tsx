@@ -96,7 +96,18 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    this.fetchList()
+    const pages = Taro.getCurrentPages()
+    const currPage = pages[pages.length - 1]  // 当前页
+    // console.log(currPage.$component)  // data中会含有testdata
+    if(currPage.$component.state.reload){
+      if(currPage.$component.state.type === "person"){
+        this.fetchList();
+      }else{
+        this.fetchcorpList();
+      }
+    }else{
+      this.fetchList();
+    }
   }
 
   // 最新需求

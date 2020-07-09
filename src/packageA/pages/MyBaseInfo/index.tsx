@@ -14,7 +14,7 @@ import "taro-ui/dist/style/components/tag.scss";
 // import "taro-ui/dist/style/components/input.scss";
 
 type PageStateProps = {
-  userInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,49 +30,15 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {myInfo={}} = user;
   return {
-    userInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -94,7 +60,15 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+      const {dispatch} = this.props;
+      if(dispatch){
+        dispatch({
+          type: "user/getMyInfo",
+          payload: {
+            // user_id:Taro.getStorageSync('user_id')
+          }
+        });
+      }
   }
 
   handleClick (value) {
@@ -157,10 +131,11 @@ class Home extends Component {
 
   render() {
     const {phone,dateSel} = this.state;
-
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
-    // const titletop = `margin-top:${MenuButtonBounding.top}px;`
+
+    const {myInfo={basic:{}}} = this.props;
+    const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic} = myInfo.basic;
 
     return (
       <View className={styles.needdetail}>
@@ -175,18 +150,16 @@ class Home extends Component {
           公司名称
         </View>
         <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入公司名称…"  value={phone} onChange={()=>{}} />
+          <View className={styles.flex}>
+          <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={()=>{}} />
+          </View>
         </View>
 
         <View className={styles.label}>
           公司平台代码
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="code" placeholder="请输入公司平台代码…" disabled={true} value={"101295"} onChange={()=>{}}/>
+          <AtInput className={styles.input} name="code" placeholder="请输入公司平台代码…" disabled={true} value={code} onChange={()=>{}}/>
         </View>
 
         <View className={styles.label}>
@@ -200,7 +173,7 @@ class Home extends Component {
           统一税务登记号
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入统一税务登记号…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="businessLicenseNo" placeholder="请输入统一税务登记号…"  value={businessLicenseNo} onChange={this.phoneChange} />
         </View>
 
 
@@ -216,27 +189,27 @@ class Home extends Component {
           企业类型
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业类型…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="companyTypeName" placeholder="请输入企业类型…"  value={companyTypeName} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
           企业性质
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业性质…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="companyPropertyname" placeholder="请输入企业性质…"  value={companyPropertyname} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
           行业类型
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业性质…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="industryTypeName" placeholder="请输入企业性质…"  value={industryTypeName} onChange={this.phoneChange} />
         </View>
         <View className={styles.label}>
           行业排名
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入企业性质…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="industryRankingName" placeholder="请输入企业性质…"  value={industryRankingName} onChange={this.phoneChange} />
         </View>
 
         <View className={styles.label}>
@@ -267,7 +240,7 @@ class Home extends Component {
         <View className={styles.formItem}>
           <View>
               <Picker value={""} mode='date' onChange={this.onDateChange}>
-                <AtInput className={styles.input} name="phone" placeholder="请选择您的出生日期…"  value={dateSel} onChange={()=>{}}/>
+                <AtInput className={styles.input} name="licenseDate" placeholder="请选择您的出生日期…"  value={licenseDate} onChange={()=>{}}/>
               </Picker>
           </View>
           

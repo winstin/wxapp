@@ -37,6 +37,8 @@ class Login extends Component {
   state = {
     phone: '100321',
     code: 'spd2019',
+    // phone: 'jxhadmin',
+    // code: 'jxhadmin',
     isOpened: false,
     tenantInfo:{
       tenantId:'',
