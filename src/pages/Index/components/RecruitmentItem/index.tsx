@@ -24,13 +24,14 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {title,createdDate} = data;
+    const {title,createdDate,id} = data;
 
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
-          url: '/packageA/pages/RecruitmentDetail/index'
+          url: `/packageA/pages/RecruitmentDetail/index?id=${id}`
         })
+        
       }}>
         {/* <View>
           <Image src={src} className={styles.listimg} />

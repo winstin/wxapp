@@ -105,21 +105,21 @@ class Home extends Component {
     "sex":"male",
     "birthday":"",
     "native_place":"", 
-    "education":"",
+    "education":[],
     "school":"",
     "email":"",
     "telephoe":"", 
     "qq":"",
     "referrerName":"",
     "wx_id":"",
-    "skilledField": "",
-    "companyType": "",
-    "companyProperty": "",
-    "industryType": "",
-    "industryRanking": "",
-    "companyScale" :"",
-    "dptScale": "",
-    "purType": ""
+    "skilledField": [],
+    "companyType": [],
+    "companyProperty": [],
+    "industryType": [],
+    "industryRanking": [],
+    "companyScale" :[],
+    "dptScale": [],
+    "purType": []
 
   }
   config: Config = {
@@ -154,7 +154,7 @@ class Home extends Component {
 
   Change = (type,value) => {
     this.setState({
-      [`${type}`]: value.join(",")
+      [`${type}`]: value
     })
   }
 
@@ -233,13 +233,21 @@ class Home extends Component {
 
     if(dispatch){
       dispatch({
-        type: "factory/registerCorporate",
+        type: "factory/registerBaseMember",
         payload:  {
           photo,name,
           nickname:name,
           account:telephoe,
-          birthday,native_place,education,school,email,telephoe,qq,referrerName,wx_id,sex,
-          skilledField,industryType,companyProperty,companyScale,dptScale,purType
+          birthday,
+          native_place,
+          education:education.join(','),
+          school,email,telephoe,qq,referrerName,wx_id,sex,
+          skilledField:skilledField.join(','),
+          industryType:industryType.join(','),
+          companyProperty:companyProperty.join(','),
+          companyScale:companyScale.join(','),
+          dptScale:dptScale.join(','),
+          purType:purType.join(',')
         }
       }).then((e)=>{
         Taro.showToast({

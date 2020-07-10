@@ -69,7 +69,7 @@
     padding: 32px;
     margin-top: 32px;
     background-color: #fff;
-    border-bottom:1px solid rgba(26,47,66,0.10);
+    // border-bottom:1px solid rgba(26,47,66,0.10);
     .listimg{
         display: block;
         width: 144px;
@@ -176,7 +176,20 @@
 .comment{
     background: #fff;
     padding: 32px;
-    .commentInfo{
+    position: relative;
+    .d3{
+        position: absolute;
+        top:-8px;
+        right: 60px;
+        width: 0; 
+        height: 0;
+        border-width: 20px;
+        border-style: solid;
+        border-color: transparent transparent rgba(26,47,66,0.06) transparent;
+    }
+    .commentbg{
+        padding: 10px 20px;
+        background: rgba(26,47,66,0.06);
         .commentatorTitle{
             display: inline;
             font-size: 24px;
@@ -188,4 +201,24 @@
             color: rgba(0,0,0,0.40);
         }
     }
+
+    .commentmsg{
+        border:1px solid rgba(26,47,66,0.10);
+        padding: 20px;
+        flex:1;
+        // display: flex;
+        // align-items: center;
+    }
+}
+
+.flex{
+    display: flex;
+    font-size: 28px;
+}
+
+.sharebtn{
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    opacity: 0;
 }

@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist } from '@/services/fetch';
+import { updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist } from '@/services/fetch';
 
 /**
  * 登录页面
@@ -69,12 +69,29 @@ export default {
     *getMypointslist({payload}, { put,call }) {
       const res = yield call(getMypointslist,payload);
       console.log(res)
-      return res.data && res.data.records
+      let result = {};
+      if(res.data){
+        result = {
+          records:res.data.list.records,
+          total:res.data.total
+        }
+      }
+      return result
       // yield put({
       //   type:'updateState',
       //   payload:{mypointslist:res.data}
       // })
     },
+
+    *updatebaseMember({payload}, { put,call }) {
+      const res = yield call(updatebaseMember,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '更新成功',
+      });
+      Taro.navigateBack()
+    },
+    
     
     
     
@@ -84,7 +101,7 @@ export default {
     // 更新基础数据
     updateState(state, { payload }) {
       return { ...state, ...payload };
-    }
+    },
   },
 
 };

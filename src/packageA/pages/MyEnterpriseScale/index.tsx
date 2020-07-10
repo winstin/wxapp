@@ -89,13 +89,6 @@ class Home extends Component {
     Taro.navigateBack()
   }
 
-  // 手机号输入框
-  phoneChange = (value) => {
-    this.setState({
-      phone: value
-    })
-  }
-
   chooseImageReverse = () => {
     Taro.chooseImage({
       count: 1,
@@ -134,6 +127,30 @@ class Home extends Component {
     })
   }
 
+  infoChange = (value,type) => {
+    const {dispatch,myInfo} = this.props;
+    myInfo.scale[`${type}`] = value;
+    if(dispatch){
+      dispatch({
+        type: "user/updateState",
+        payload: myInfo
+      });
+    }
+  }
+
+  submit = ()=>{
+    const {dispatch,myInfo} = this.props;
+    const {introduce,basic,contact,scale} = myInfo;
+    if(dispatch){
+      dispatch({
+        type: "user/updatebaseMember",
+        payload: {
+          ...introduce,...basic,...contact,...scale
+        }
+      });
+    }
+  }
+
   render() {
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
@@ -145,7 +162,7 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={img_my_bg_corp} />
+        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${myInfo.basic.photoCover}`} />
 
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
@@ -156,14 +173,14 @@ class Home extends Component {
           注册资本
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="registCapital" placeholder="请输入注册资本…" disabled={true} value={registCapital} onChange={()=>{}}/>
+          <AtInput className={styles.input} name="registCapital" placeholder="请输入注册资本…" disabled={true} value={registCapital} onChange={(e)=>{this.infoChange(e,'registCapital')}}/>
         </View>
 
         <View className={styles.label}>
           实缴资本
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="registCapital" placeholder="请输入实收资本…"  value={registCapital} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="registCapital" placeholder="请输入实收资本…"  value={registCapital} onChange={(e)=>{this.infoChange(e,'introduction')}} />
         </View>
 
         <View className={styles.label}>
@@ -171,7 +188,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <AtInput className={styles.input} name="factoryArea" placeholder=""  value={factoryArea} onChange={()=>{}}/>
+              <AtInput className={styles.input} name="factoryArea" placeholder=""  value={factoryArea} onChange={(e)=>{this.infoChange(e,'factoryArea')}}/>
           </View>
         </View>
 
@@ -181,7 +198,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-              <AtInput className={styles.input} name="staffAmount" placeholder=""  value={staffAmount} onChange={()=>{}}/>
+              <AtInput className={styles.input} name="staffAmount" placeholder=""  value={staffAmount} onChange={(e)=>{this.infoChange(e,'staffAmount')}}/>
           </View>
         </View>
 
@@ -192,7 +209,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-            <AtInput className={styles.input} name="annualValue" placeholder=""  value={annualValue} onChange={()=>{}}/>
+            <AtInput className={styles.input} name="annualValue" placeholder=""  value={annualValue} onChange={(e)=>{this.infoChange(e,'annualValue')}}/>
           </View>
         </View>
 
@@ -202,11 +219,11 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View>
-            <AtInput className={styles.input} name="annualSale" placeholder=""  value={annualSale} onChange={()=>{}}/>
+            <AtInput className={styles.input} name="annualSale" placeholder=""  value={annualSale} onChange={(e)=>{this.infoChange(e,'annualSale')}}/>
           </View>
         </View>
 
-        <AtButton type='primary' className={styles.loginBtn} >保存</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>保存</AtButton>
       
       </View>
 

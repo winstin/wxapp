@@ -5,16 +5,15 @@ import { View,Image,Picker } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
-
 import classNames from 'classnames';
-import arrowIcon from '../../../assets/user/ico_arrow@3x.png';
-
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
   userInfo:any;
+  ALBUM_TYPE:any;
+  srmalbums:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,49 +29,21 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ myindex,global,factory,loading }) => {
+  const {userInfo={}} = myindex;
+  const {ALBUM_TYPE=[]} = global;
+  const {srmalbums={}} = factory;
+
+  
   return {
     userInfo,
+    ALBUM_TYPE,
+    srmalbums,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -83,10 +54,15 @@ class Home extends Component {
     phone:"",
     code:'',
     frontFilePath:[], // 正面照
+    photos:[],
     frontPagePath:"",
-    selector: ['美国', '中国', '巴西', '日本'],
-    selectorChecked: '美国',
-
+    photoCover:'',
+    intro:'',
+    desc:'',
+    category:'',
+    selector: this.props.ALBUM_TYPE,
+    selectorChecked: {label:'产品',value:'product'},
+    isLoaded:false
   }
   config: Config = {
     navigationBarTitleText: "产品相册",
@@ -96,6 +72,29 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    console.log(this.$router.params);
+    if(this.$router.params.id){
+      this.fetchList()
+    }
+  }
+
+  fetchList = async ()=>{
+    const {dispatch} = this.props;
+    if(dispatch&& !this.state.isLoaded){
+      await dispatch({
+        type: "factory/getsrmbaseVendorAlbum",
+        payload:  this.$router.params
+      });
+
+      const {intro,desc,category,photoCover,photos} = this.props.srmalbums;
+      const frontFilePath = photos.map((item)=>`http://sz-spd.cn:889/${item.photo}`)
+      this.setState({
+        intro,desc,category,photoCover,photos,
+        frontPagePath:`http://sz-spd.cn:889/${photoCover}`,
+        frontFilePath,
+        isLoaded:true
+      })
+    }
   }
 
   handleClick (value) {
@@ -124,6 +123,7 @@ class Home extends Component {
     })
   }
 
+
   chooseImageReverse = () => {
     Taro.chooseImage({
       count: 1,
@@ -133,11 +133,46 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        const {frontFilePath}:any = this.state;
-        frontFilePath.push(tempFilePaths[0])
-        this.setState({
-          frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+        const {frontFilePath,photos,intro,selectorChecked}:any = this.state;
+        frontFilePath.push(tempFilePaths[0]);
+
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            const { userInfo } = this.props;
+            console.log('-------success--dataJson:',dataJson);
+            photos.push({
+              "vendorId":userInfo.supplierId,
+              'photo':dataJson.data.url,
+              "photoName":dataJson.data.name,
+              "type":selectorChecked.value,
+              intro,
+            })
+            this.setState({
+              photos:JSON.parse(JSON.stringify(photos)),
+              frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+
+        
       }
     })
   }
@@ -151,24 +186,53 @@ class Home extends Component {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        this.setState({
-          frontPagePath: tempFilePaths[0]
+        Taro.uploadFile({
+          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          header: {
+            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'content-type': 'multipart/form-data',
+          },
+          success: (res) => {
+            const data = res.data;
+            const dataJson = JSON.parse(data);
+            console.log('-------success--dataJson:',dataJson);
+            
+            this.setState({
+              photoCover:dataJson.data.url,
+              frontPagePath: tempFilePaths[0]
+            })
+            
+          },
+          fail: (res: any) => {
+            Taro.showToast({
+              title: '上传失败'
+            })
+          },
+          complete: (res: any) => {
+            console.log('-----complete:',res);
+          }
         })
+        
       }
     })
   }
 
   deleteFont = (index) => {
-    const {frontFilePath}:any = this.state;
-    frontFilePath.splice(index,1)
+    const {frontFilePath,photos}:any = this.state;
+    frontFilePath.splice(index,1);
+    photos.splice(index,1);
     this.setState({
-      frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+      frontFilePath: JSON.parse(JSON.stringify(frontFilePath)),
+      photos:JSON.parse(JSON.stringify(photos))
     })
   }
 
   deleteFontpage = () => {
     this.setState({
-      frontPagePath: ""
+      frontPagePath: "",
+      photoCover:""
     })
   }
 
@@ -177,13 +241,36 @@ class Home extends Component {
   }
 
   onPickerChange = e => {
+    console.log(e)
     this.setState({
       selectorChecked: this.state.selector[e.detail.value]
     })
   }
 
+  submit = () =>{
+    const {dispatch,userInfo} = this.props;
+    const {intro,desc,photoCover,photos,selectorChecked,category}:any = this.state;
+    
+    if(dispatch){
+      dispatch({
+        type: this.$router.params.id?"factory/updatebaseVendorAlbum":"factory/addbaseVendorAlbum",
+        payload:  {
+          "id":this.$router.params.id,
+          "vendorId":userInfo.supplierId,
+          "type":selectorChecked.value,
+          "name":intro,
+          intro,
+          desc,
+          photoCover,
+          category,
+          photos
+        }
+      });
+    }
+  }
+
   render() {
-    const {phone,frontFilePath,frontPagePath} = this.state;
+    const {intro,desc,frontFilePath,frontPagePath,category} = this.state;
 
     return (
       <View className={styles.needdetail}>
@@ -199,7 +286,7 @@ class Home extends Component {
           {
           !frontPagePath && <View className={styles.uploadBtn} onClick={this.chooseImageFontpage}>
             <View className={styles.addIcon}>+</View>
-            <View className={styles.btnTitle}>点击上传产品封面图片</View>
+            <View className={styles.btnTitle}>点击上传封面图片</View>
           </View>
           }
           
@@ -208,49 +295,42 @@ class Home extends Component {
         <View className={styles.label}>
           相册分类
         </View>
-        <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
+        {/* <Picker value={this.state.selectorChecked.label} mode='selector' range={this.state.selector}  range-key='label' onChange={this.onPickerChange}> */}
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
+              {this.state.selectorChecked.label}
             </View>
-            <Image
+            {/* <Image
               className={styles.arrow}
               src={arrowIcon}
-            />
+            /> */}
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
-        </Picker>
-
-        <View className={styles.label}>
-          产品名称
-        </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入产品名称…"  value={phone} onChange={this.phoneChange} />
-        </View>
+        {/* </Picker> */}
 
         <View className={styles.label}>
           品类
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入品类…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="category" placeholder="请输入相册品类…"  value={category} onChange={(e)=>{this.setState({category:e})}} />
         </View>
 
         <View className={styles.label}>
           简介
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入简介…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="intro" placeholder="请输入相册简介…"  value={intro} onChange={(e)=>{this.setState({intro:e})}} />
         </View>
 
         <View className={styles.label}>
           描述
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="phone" placeholder="请输入描述…"  value={phone} onChange={this.phoneChange} />
+          <AtInput className={styles.input} name="desc" placeholder="请输入相册描述…"  value={desc} onChange={(e)=>{this.setState({desc:e})}} />
         </View>
 
         <View className={styles.label}>
-          产品图片库
+          图片库
         </View>
         <View className={styles.formImageItem}>
           {
@@ -269,7 +349,7 @@ class Home extends Component {
           }
           
         </View>
-        <AtButton type='primary' className={styles.loginBtn} >新增产品</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
       
       </View>
 

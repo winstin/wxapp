@@ -129,19 +129,15 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
-    const {name,countryName,provinceName,referrerOpinion,products,id} = this.props.corporateDetail;
+    const {name,countryName,provinceName,referrerOpinion,products,id,photoCover} = this.props.corporateDetail;
     return (
       <View className={styles.factorydetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
+        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${photoCover.trim()}`} />
         <View className={styles.userInfo}  onClick={()=>{
-            // Taro.navigateTo({
-            //   url: '/pages/AlbumEnterprise/index'
-            // })
             Taro.navigateTo({
               url: `/pages/AlbumEnterprise/index?vendorId=${id}`
             })
-           
-            
           }}>
 
           <View className={styles.tips} style={titletop} >企业展示</View>

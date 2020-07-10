@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { registerBaseMember,registerCorporate,addbaseVendorAlbum,getsrmbaseVendorAlbum,getbaseVendorAlbum,getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode,getcorporateDetail } from '@/services/fetch';
+import { delbaseVendorAlbum,updatebaseVendorAlbum,getbaseVendorAlbumList,registerBaseMember,registerCorporate,addbaseVendorAlbum,getsrmbaseVendorAlbum,getbaseVendorAlbum,getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode,getcorporateDetail } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -144,11 +144,38 @@ export default {
     // 产品说明
     *addbaseVendorAlbum({payload}, { put,call }) {
       const res = yield call(addbaseVendorAlbum,payload);
+      Taro.showToast({
+        'title': '新增成功',
+      });
+      Taro.navigateBack()
       // yield put({
       //   type:'updateState',
       //   payload:{srmalbums:res.data}
       // })
     },
+    // 产品说明
+    *updatebaseVendorAlbum({payload}, { put,call }) {
+      const res = yield call(updatebaseVendorAlbum,payload);
+      Taro.showToast({
+        'title': '更新成功',
+      });
+      Taro.navigateBack()
+      // yield put({
+      //   type:'updateState',
+      //   payload:{srmalbums:res.data}
+      // })
+    },
+
+    *delbaseVendorAlbum({payload}, { put,call }) {
+      const res = yield call(delbaseVendorAlbum,payload);
+      Taro.showToast({
+        'title': '删除成功',
+      });
+    },
+
+    
+
+    
 
     // 产品说明
     *registerCorporate({payload}, { put,call }) {
@@ -166,6 +193,17 @@ export default {
       //   payload:{srmalbums:res.data}
       // })
     },
+
+    *getbaseVendorAlbumList({payload}, { put,call }) {
+      const res = yield call(getbaseVendorAlbumList,payload);
+      return res.data.records;
+      // yield put({
+      //   type:'updateState',
+      //   payload:{srmalbums:res.data}
+      // })
+    },
+
+    
     
     
 

@@ -13,8 +13,10 @@ import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
+  myInfo:any;
   userInfo:any;
   ALBUM_TYPE:any;
+  albums:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,52 +32,20 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ myindex,global,loading }) => {
-  const {userInfo={}} = myindex;
+@connect(({ factory,myindex,global,user,loading }) => {
+  const { myInfo={} } = user;
   const {ALBUM_TYPE=[]} = global;
-  
+  const {userInfo={}} = myindex;
+  const {albums=[]} = factory
   return {
+    myInfo,
     userInfo,
     ALBUM_TYPE,
+    albums,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -91,9 +61,10 @@ class Home extends Component {
     photoCover:'',
     intro:'',
     desc:'',
+    albumId:'',
     selector: this.props.ALBUM_TYPE,
-    selectorChecked: {label:'产品'},
-
+    selectorChecked: {label:'公司',value:'company'},
+    isadded:false,
   }
   config: Config = {
     navigationBarTitleText: "企业相册",
@@ -103,7 +74,50 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    console.log(this.$router.params,this.props.userInfo);
+    if(this.props.myInfo.albums>0){
+      this.fetchList()
+    }
+    
   }
+
+  fetchList = ()=>{
+    const {dispatch,userInfo} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "factory/getbaseVendorAlbum",
+        payload: {
+          vendorId:userInfo.supplierId
+        }
+      }).then(()=>{
+        this.albumsChange()
+      });
+    }
+  }
+
+  albumsChange = () =>{
+      const {albums} = this.props;
+      const {selectorChecked} = this.state;
+      this.state.isadded = false;
+      albums.forEach(item => {
+        if(item.type === selectorChecked.value){
+          const {intro,desc,photoCover,photos,id } = item;
+          const frontFilePath = photos.map((item)=>`http://sz-spd.cn:889/${item.photo}`)
+          this.setState({
+            name:intro,
+            category:intro,
+            intro,
+            desc,
+            photoCover,
+            photos,
+            frontFilePath,
+            isadded:true,
+            albumId:id
+          })
+        }
+      });
+  }
+
 
   handleClick (value) {
     this.setState({
@@ -248,18 +262,27 @@ class Home extends Component {
   onPickerChange = e => {
     console.log(e)
     this.setState({
-      selectorChecked: this.state.selector[e.detail.value]
+      selectorChecked: this.state.selector[e.detail.value],
+      name:'',
+      category:'',
+      intro:'',
+      desc:'',
+      photoCover:'',
+      photos:''
+    },()=>{
+      this.albumsChange()
     })
   }
 
   submit = () =>{
     const {dispatch,userInfo} = this.props;
-    const {intro,desc,photoCover,photos,selectorChecked}:any = this.state;
+    const {albumId,intro,desc,photoCover,photos,selectorChecked,isadded}:any = this.state;
 
     if(dispatch){
       dispatch({
-        type: "factory/addbaseVendorAlbum",
+        type: isadded?"factory/updatebaseVendorAlbum":"factory/addbaseVendorAlbum",
         payload:  {
+          id:albumId,
           "vendorId":userInfo.supplierId,
           "type":selectorChecked.value,
           "name":intro,
@@ -269,12 +292,7 @@ class Home extends Component {
           photoCover,
           photos
         }
-      }).then((e)=>{
-        Taro.showToast({
-          'title': '新增成功',
-        });
-        Taro.navigateBack()
-      });
+      })
     }
   }
 
@@ -283,7 +301,7 @@ class Home extends Component {
 
     return (
       <View className={styles.needdetail}>
-        <View className={styles.backImageItem}>
+        {/* <View className={styles.backImageItem}>
           {
             frontPagePath&&(
               <View className={styles.imageView}>
@@ -299,7 +317,7 @@ class Home extends Component {
           </View>
           }
           
-        </View>
+        </View> */}
        
         <View className={styles.label}>
           相册分类

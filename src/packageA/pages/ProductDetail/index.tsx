@@ -91,19 +91,19 @@ class Home extends Component {
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
 
-    const {name,desc,intro,category} = this.props.srmalbums;
+    const {name,desc,intro,category,photoCover} = this.props.srmalbums;
 
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={img_my_bg_corp} />
+        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${photoCover}`} />
 
         <View className={styles.userInfo} onClick={()=>{
             Taro.navigateTo({
               url: '/pages/AlbumProduct/index'
             })
           }}>
-          <View className={styles.tips} style={titletop}>产品展示</View>
+          {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
         </View>
         
         <View className={styles.title}>

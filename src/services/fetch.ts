@@ -215,6 +215,29 @@ export const getUserInfo = (params)=>{
 export const getMypointslist = (params)=>{
   return Api.getMypointslist(params);
 }
+export const addjxhReqMsg = (params)=>{
+  return Api.addjxhReqMsg(params,'POST');
+}
+export const getportalNoticeDetail = (params)=>{
+  return Api.getportalNoticeDetail(params);
+}
+export const getbaseVendorAlbumList = (params)=>{
+  return Api.getbaseVendorAlbumList(params);
+}
+
+
+export const updatebaseVendorAlbum = (params)=>{
+  return Api.updatebaseVendorAlbum(params,'POST');
+}
+
+export const updatebaseMember = (params)=>{
+  return Api.updatebaseMember(params,'POST');
+}
+
+export const delbaseVendorAlbum = (params)=>{
+  return Api.delbaseVendorAlbum(params,'DELETE');
+}
+
 
 
 

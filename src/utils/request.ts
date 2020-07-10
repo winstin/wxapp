@@ -48,11 +48,11 @@ export class Request {
     const returnMethod = opts.method || method || 'GET';
     let returenData = { ...conmomPrams, ...opts.data, ...data };
     let returnUrl = `${opts.host || MAINHOST}${opts.url}`;
-    if( method === 'GET' ){
+    if( method === 'GET'){
       returenData = {...returenData,...params}
     }else{
       let str = stringify(params, { addQueryPrefix: true });
-      if(returnUrl.includes('/gate/oauth/loginWithPassword')){
+      if(returnUrl.includes('/gate/oauth/loginWithPassword') || method === 'DELETE' ){
         str = stringify(returenData, { addQueryPrefix: true });
       }
       returnUrl=returnUrl+str;

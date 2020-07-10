@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { getjxhReqList,getMyjxhReqList,addjxhReq } from '@/services/fetch';
+import { getjxhReqList,getMyjxhReqList,addjxhReq,addjxhReqMsg } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -51,6 +51,23 @@ export default {
       //   payload:{jxhReqData:res.data.records}
       // })
     },
+
+    // 发布需求
+    *addjxhReqMsg({payload}, { put,call }) {
+      const res = yield call(addjxhReqMsg,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '评论成功',
+      });
+      // Taro.navigateBack()
+
+      // yield put({
+      //   type:'updateState',
+      //   payload:{jxhReqData:res.data.records}
+      // })
+    },
+
+    
 
     
 

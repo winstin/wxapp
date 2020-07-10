@@ -40,41 +40,6 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
@@ -89,7 +54,8 @@ class Home extends Component {
     introduction:'',
     account:'',
     referrerName:'',
-    drawingVo:{}
+    drawingVo:{},
+    linkman:''
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -99,7 +65,6 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
   }
 
   handleClick (value) {
@@ -181,17 +146,22 @@ class Home extends Component {
 
   submit = () =>{
     const {dispatch} = this.props;
-    const {name,businessLicenseNo,introduction,account,referrerName,drawingVo}:any = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,drawingVo}:any = this.state;
 
     if(dispatch){
       dispatch({
         type: "factory/registerCorporate",
         payload:  {
-          name,businessLicenseNo,introduction,
-          linkman:account,
+          name,
+          businessLicenseNo,
+          introduction,
+          linkman,
           linkmanPhone:account,
-          referrerName,drawingVo,
-          isTop:'1'
+          referrerName,
+          logo:drawingVo.url,
+          isTop:'1',
+          levelNow:"1",
+          levelApply:"2",
         }
       }).then((e)=>{
         Taro.showToast({
@@ -204,7 +174,7 @@ class Home extends Component {
 
 
   render() {
-    const {name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath} = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -277,7 +247,7 @@ class Home extends Component {
               className={styles.itemIcon}
               src={phoneIcon}
             />
-            <AtInput className={styles.input} name="referrerName" placeholder="请输入登记人姓名…"  value={referrerName} onChange={(e)=>{this.Change('referrerName',e)}} />
+            <AtInput className={styles.input} name="linkman" placeholder="请输入登记人姓名…"  value={linkman} onChange={(e)=>{this.Change('linkman',e)}} />
           </View>
           <View className={styles.codeBtn} >
               {/* <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
@@ -295,6 +265,24 @@ class Home extends Component {
             src={ico_mobilephone}
           />
           <AtInput className={styles.input} name="account" placeholder="请输入手机号码…"  value={account} onChange={(e)=>{this.Change('account',e)}} />
+        </View>
+
+        <View className={styles.label}>
+          推荐人姓名
+        </View>
+        <View className={classNames(styles.formItem,styles.codeItem)}>
+          <View className={styles.left}>
+            <Image
+              className={styles.itemIcon}
+              src={phoneIcon}
+            />
+            <AtInput className={styles.input} name="referrerName" placeholder="请输入推荐人姓名…"  value={referrerName} onChange={(e)=>{this.Change('referrerName',e)}} />
+          </View>
+          <View className={styles.codeBtn} >
+              {/* <AtTag name='tag-1'  circle  type='primary' active={true} onClick={this.onClick.bind(this)}>先生</AtTag>
+              <AtTag  circle>女士</AtTag> */}
+          </View>
+
         </View>
 
         <View className={styles.label}>

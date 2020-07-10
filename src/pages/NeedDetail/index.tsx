@@ -1,7 +1,9 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,Image,Button } from "@tarojs/components";
+import { AtInput,AtButton } from 'taro-ui'
+import classNames from 'classnames';
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
@@ -37,7 +39,10 @@ class Home extends Component {
     current: 0,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    msg:"",
+    parentsId:'1',
+    parentsName:'',
   }
   config: Config = {
     navigationBarTitleText: "需求详情",
@@ -61,10 +66,10 @@ class Home extends Component {
       // })
       dispatch({
         type: "needcheck/getjxhReqDetail",
-        // payload:  this.$router.params,
-        payload:{
-          id:'1278941345442643969'
-        }
+        payload:  this.$router.params,
+        // payload:{
+        //   id:'1278941345442643969'
+        // }
       });
     }
   }
@@ -88,10 +93,40 @@ class Home extends Component {
     Taro.navigateBack()
   }
 
+  reqComment = ()=>{
+    const {dispatch,jxhReqDetail} = this.props;
+    const {msg,parentsId} = this.state;
+    if(dispatch){
+      dispatch({
+        type: "need/addjxhReqMsg",
+        payload:{
+          reqId:jxhReqDetail.id,
+          parentsId,
+          msg,
+        }
+      }).then((e)=>{
+        this.setState({
+          parentsId:'1',
+          parentsName:"",
+          msg:''
+        })
+        this.fetchList();
+      });
+    }
+  }
+
+  //转发
+  onShareAppMessage (res) {
+    return {
+        title: "需求详情",
+        path:'/pages/NeedDetail/index'
+    }
+  }
+
   render() {
 
     const {name,desc,intro,category,reqName,createdDate,companyName,qty,reqDesc,drawings,id,jxhReqMsgs} = this.props.jxhReqDetail;
-
+    const {msg,parentsName} = this.state;
     return (
       <View className={styles.needdetail}>
          <View className={styles.toplabel}>
@@ -133,6 +168,7 @@ class Home extends Component {
                 <View className={styles.item}>
                   <Image src={ico_share} className={styles.bottom_btn} />
                   <View>分享</View>
+                  <Button openType="share" className={styles.sharebtn}>分享</Button>
                 </View>
                 <View className={styles.item}> 
                   <Image src={ico_comment} className={styles.bottom_btn} />
@@ -143,14 +179,30 @@ class Home extends Component {
           </View>
         </View>
         <View className={styles.comment}>
+        {jxhReqMsgs.length>0&&<View className={styles.d3}></View>}
           {
             jxhReqMsgs.map((item)=>(
-              <View className={styles.commentbg}>
-                <View className={styles.commentatorTitle}>{item.commentatorTitle}</View>
+              <View className={styles.commentbg} onClick={()=>{
+                this.setState({
+                  parentsId:item.id,
+                  parentsName:item.commentatorName,
+                })
+              }}>
+                <View className={styles.commentatorTitle}>{item.commentatorTitle} </View>
                 <View className={styles.msg}>{item.msg}</View>
               </View>
             ))
           }
+        </View>
+
+        <View className={classNames(styles.comment,styles.flex)}>
+          <View className={styles.commentmsg}>
+            <AtInput className={styles.input} name="msg" placeholder={`${parentsName}评论:`}  value={msg} onChange={(e)=>{this.setState({msg:e})}} />
+          </View>
+          <AtButton 
+            type="primary"
+            onClick={this.reqComment}
+          >评论</AtButton>
         </View>
       
       </View>

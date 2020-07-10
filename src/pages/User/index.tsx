@@ -121,10 +121,12 @@ class User extends Component {
     //   )
     // }
 
+    const {type ="person"} = myInfo;
+
     return (
       <View className={styles.user}>
         {/* 个人信息 */}
-        <View className={styles.userInfo} onClick={this.manageCard.bind(this,"/pages/CardManage/index")}>
+        <View className={styles.userInfo} onClick={this.manageCard.bind(this,"/packageA/pages/CardManage/index")}>
           <Image className={styles.bg_img} src={img_my_bg_corp} />
 
           <View className={styles.info}>
@@ -183,27 +185,27 @@ class User extends Component {
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>
-        <ListItem 
+        {type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}
           title={'企业规模'}
-        ></ListItem>
+        ></ListItem>}
         
-        <ListItem 
+        {type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyCompaniestIntroduce/index")}}
           cardIcon={qygm}
           title={'企业介绍'}
-        ></ListItem>
-        <ListItem 
+        ></ListItem>}
+        {type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyAlbumEnterprise/index")}}
           cardIcon={qyxc}
           title={'企业相册'}
-        ></ListItem>
-        <ListItem 
+        ></ListItem>}
+        {type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/AlbumProductList/index")}}
           cardIcon={cpxc}
           title={'产品相册'}
-        ></ListItem>
+        ></ListItem>}
         <ListItem 
           onClick={this.manageCard}
           cardIcon={gzgzh}

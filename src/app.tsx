@@ -23,7 +23,7 @@ class App extends Component {
 
   config: Config = {
     pages: [
-      "pages/NeedDetail/index",// 企业相册
+      // "pages/NeedDetail/index",// 企业相册
       'pages/Index/index', // 主页
       'pages/Home/index', // 首页
       'pages/Login/index', // 登录
@@ -32,7 +32,7 @@ class App extends Component {
       "pages/Need/index",
       "pages/Recruitment/index",
       "pages/FactoryDetail/index",// 企业详情
-      // "pages/NeedDetail/index",// 商品详情
+      "pages/NeedDetail/index",// 商品详情
       "pages/AlbumEnterprise/index",// 企业相册
       "pages/AlbumProduct/index",// 产品相册
       "pages/NeedPublish/index",// 发布需求

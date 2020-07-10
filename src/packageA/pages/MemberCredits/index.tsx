@@ -74,7 +74,7 @@ class Home extends Component {
     industry:false,
     haveMore:true,
     mypointslist:[],
-
+    total:0
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -98,12 +98,13 @@ class Home extends Component {
           current:page
         }
       }).then((e)=>{
-        if(e.length<20){
+        if(e.records.length<20){
           this.state.haveMore = false;
         }
         this.state.current = page + 1;
         this.setState({
-          mypointslist:page===1?e:mypointslist.concat(e)
+          total:e.total,
+          mypointslist:page===1?e.records:mypointslist.concat(e.records)
         })
       });;
     }
@@ -144,7 +145,7 @@ class Home extends Component {
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back}></View>
         <View className={styles.userInfo} >
           <View className={styles.tips}>总积分</View>
-          <View className={styles.number}>2000</View>
+          <View className={styles.number}>{this.state.total}</View>
         </View>
         <View className={styles.toptip} >
           积分明细

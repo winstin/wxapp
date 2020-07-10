@@ -54,6 +54,7 @@ export const requestConfig = {
   getsrmbaseVendorAlbum:'/api/srm/baseVendorAlbum/get', // 产品说明
 
   addbaseVendorAlbum:'/api/srm/baseVendorAlbum/add', // 企业相册添加
+  updatebaseVendorAlbum:'/api/srm/baseVendorAlbum/update', // 企业相册更新
   registerCorporate:'/api/srm/corporate/register', // 企业注册
   registerBaseMember:'/api/srm/baseMember/register', // 个人注册
   passAudit:'/api/srm/jxhReq/audit-pass-update', // 通过需求
@@ -75,6 +76,11 @@ export const requestConfig = {
   getUserInfo:'/api/gate/oauth/user', // 用户信息
 
   getMypointslist:'/api/srm/baseMemberPoints/my-points-list', // 积分列表
+  addjxhReqMsg:'/api//srm/jxhReqMsg/add', // 添加评论
+  getportalNoticeDetail:'/api/srm/portalNotice/cooperated-get', // 招聘详情
+  getbaseVendorAlbumList:'/api/srm/baseVendorAlbum/list', // 产品相册
 
-  
+  updatebaseMember:'/api/srm/baseMember/update', // 跟新我的信息
+  delbaseVendorAlbum:'/api/srm/baseVendorAlbum/del', // 删除产品信息
+
 }

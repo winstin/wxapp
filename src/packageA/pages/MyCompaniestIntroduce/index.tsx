@@ -125,10 +125,15 @@ class Home extends Component {
   }
 
   // 手机号输入框
-  phoneChange = (value) => {
-    this.setState({
-      phone: value
-    })
+  phoneChange = (value,type) => {
+    const {dispatch,myInfo} = this.props;
+    myInfo.introduce[`${type}`] = value;
+    if(dispatch){
+      dispatch({
+        type: "user/updateState",
+        payload: myInfo
+      });
+    }
   }
 
   chooseImageReverse = () => {
@@ -163,6 +168,20 @@ class Home extends Component {
     })
   }
 
+  submit = ()=>{
+    const {dispatch,myInfo} = this.props;
+    const {introduce,basic,contact,scale} = myInfo;
+
+    if(dispatch){
+      dispatch({
+        type: "user/updatebaseMember",
+        payload: {
+          ...introduce,...basic,...contact,...scale
+        }
+      });
+    }
+  }
+
   render() {
     const {phone,dateSel} = this.state;
 
@@ -175,7 +194,7 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={img_my_bg_corp} />
+        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${myInfo.basic.photoCover}`} />
 
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
@@ -224,7 +243,7 @@ class Home extends Component {
             <AtTextarea
               className={styles.textarea}
               value={introduction}
-              onChange={()=>{}}
+              onChange={(e)=>{this.phoneChange(e,'introduction')}}
               maxLength={200}
               placeholder='请输入企业简介…'
             />
@@ -232,7 +251,7 @@ class Home extends Component {
         </View>
 
         
-        <AtButton type='primary' className={styles.loginBtn} >保存</AtButton>
+        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>保存</AtButton>
       
       </View>
 

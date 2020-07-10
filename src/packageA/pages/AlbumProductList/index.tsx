@@ -1,14 +1,14 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,ScrollView } from "@tarojs/components";
+import { View,ScrollView,Image } from "@tarojs/components";
 import { AtButton  } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import NeedItem from './components/NeedItem/index';
 import styles from "./index.modules.less";
-import Index2 from '../../../assets/Index2.jpeg';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/tabs.scss";
+import btn_new from '../../../assets/need/btn_new@3x.png';
 
 type PageStateProps = {
   userInfo:any;
@@ -27,8 +27,9 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ myindex,loading }) => {
+  const {userInfo={}} = myindex;
+  
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
@@ -36,46 +37,13 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    haveMore:true,
+    jxhReqData:[]
   }
   config: Config = {
     navigationBarTitleText: "产品列表",
@@ -85,22 +53,55 @@ class Home extends Component {
   };
 
   componentDidShow() {
-
+    this.fetchList(1)
   }
 
   handleClick (value) {
+    this.fetchList(1)
     this.setState({
-      current: value
+      activeCurrent: value
     })
   }
 
-  onScrollToUpper() {}
+  // 最新需求
+  fetchList = (page=1)=>{
+    const {dispatch,userInfo} = this.props;
+    const { jxhReqData } = this.state;
+    if(dispatch){
+      Taro.showToast({
+        icon:'loading',
+        title: "加载中",
+        duration:500
+      })
+      dispatch({
+        type: "factory/getbaseVendorAlbumList",
+        payload: {
+          "vendorId":userInfo.supplierId,
+          // "vendorId":'1140906925177778177',
+          current:page,
+          // industryType:industryObject.value
+        }
+      }).then((e)=>{
+        if(e.length<20){
+          this.state.haveMore = false;
+        }
+        this.state.current = page + 1;
+        this.setState({
+          jxhReqData:page===1?e:jxhReqData.concat(e)
+        })
+      });
+    }
+  }
+  onScrollToUpper() {
+    console.log("onScrollToUpper");
+    this.fetchList(1)
+  }
 
   // or 使用箭头函数
-  // onScrollToUpper = () => {}
-
-  onScroll(e){
-    // console.log(e.detail)
+  onScrollToLower = () => {
+    console.log("滚动到底部")
+    if(!this.state.haveMore) return
+    this.fetchList(this.state.current)
   }
 
 
@@ -108,19 +109,28 @@ class Home extends Component {
     const scrollStyle = {
       // height: '100vh',
       backgroundColor:"#fff",
-      padding:"0pt 16pt",
+      // padding:"0pt 12px",
       flex:1,
-      width:'auto'
+      width:'auto',
+      borderBottom:'1px solid rgba(26,47,66,0.10)'
     }
     const scrollTop = 0
     const Threshold = 20
+    const {dispatch} = this.props;
     return (
       <View className={styles.need}>
-        <AtButton type='secondary' className={styles.loginBtn} onClick={()=>{
+        
+        <View className={styles.loginBtn} onClick={()=>{
           Taro.navigateTo({
             url: '/packageA/pages/MyAlbumProduct/index'
           })
-        }}>+ 新增产品图片</AtButton>
+        }}>
+          <Image src={btn_new} className={styles.addicon} onClick={()=>{
+            Taro.navigateTo({
+              url: '/packageA/pages/MyAlbumProduct/index'
+            })
+          }}/> 
+        新增产品</View>
         <ScrollView
           className='scrollview'
           scrollY
@@ -129,11 +139,23 @@ class Home extends Component {
           style={scrollStyle}
           lowerThreshold={Threshold}
           upperThreshold={Threshold}
-          onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
-          onScroll={this.onScroll}
+          onScrollToLower={this.onScrollToLower}
+          onScrollToUpper={this.onScrollToUpper.bind(this)}  // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
         >
         {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-          { this.industryList.map((item,idx) => (<NeedItem src={Index2} key={`FactoryItem${idx}`}/>))}
+          { this.state.jxhReqData.map((item,idx) => (<NeedItem src={item} key={`FactoryItem${idx}`} onRemove={(e)=>{
+            console.log(e);
+            if(dispatch){
+              dispatch({
+                type: "factory/delbaseVendorAlbum",
+                payload: {
+                  id:e.id,
+                }
+              }).then(()=>{
+                this.fetchList();
+              })
+            }
+          }}/>))}
         {/* </View> */}
         </ScrollView>
       </View>
