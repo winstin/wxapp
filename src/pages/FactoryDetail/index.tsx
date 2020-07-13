@@ -129,7 +129,7 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
-    const {name,countryName,provinceName,referrerOpinion,products,id,photoCover} = this.props.corporateDetail;
+    const {name,countryName,provinceName,referrerOpinion,products,id,photoCover=''} = this.props.corporateDetail;
     return (
       <View className={styles.factorydetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>

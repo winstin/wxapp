@@ -63,7 +63,7 @@ class IndustryItem extends Component {
 
       }}>
         <View className={styles.iconView}>
-          {item && item.icon && <AtBadge value={count} maxValue={99}>
+          {item && item.icon && <AtBadge value={count===0?"":count} maxValue={99}>
             <Image src={item.icon} className={styles.icon} />
           </AtBadge>}
         </View>

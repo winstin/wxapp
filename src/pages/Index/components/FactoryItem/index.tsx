@@ -34,7 +34,7 @@ class IndustryItem extends Component {
         })
       }}>
         <View>
-          <Image src={data.logo?`http://sz-spd.cn:889/${data.logo}`:Index2} className={styles.listimg} />
+          <Image src={data.logo?`http://sz-spd.cn:889/${data.photoCover}`:Index2} className={styles.listimg} />
           <View className={styles.rateback}>
             <AtRate value={star} size={10}/>
           </View>
