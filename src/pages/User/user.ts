@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { fetchmakerDetails, makerIdentity, makerBank,getOssFile } from '@/services/fetch';
+import { updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist } from '@/services/fetch';
 
 /**
  * 登录页面
@@ -7,7 +7,9 @@ import { fetchmakerDetails, makerIdentity, makerBank,getOssFile } from '@/servic
 export default {
   namespace: "user",
   state: {
-    makerInfo:{}
+    makerInfo:{},
+    myInfo:{},
+    mypointslist:[]
   },
 
   effects: {
@@ -52,6 +54,46 @@ export default {
       //   payload:{makerInfo:res.data}
       // })
     },
+
+    // 获取用户信息
+    *getMyInfo({payload}, { put,call }) {
+      const res = yield call(getMyInfo,payload);
+      console.log(res)
+      yield put({
+        type:'updateState',
+        payload:{myInfo:res.data}
+      })
+    },
+
+    // 获取积分信息
+    *getMypointslist({payload}, { put,call }) {
+      const res = yield call(getMypointslist,payload);
+      console.log(res)
+      let result = {};
+      if(res.data){
+        result = {
+          records:res.data.list.records,
+          total:res.data.total
+        }
+      }
+      return result
+      // yield put({
+      //   type:'updateState',
+      //   payload:{mypointslist:res.data}
+      // })
+    },
+
+    *updatebaseMember({payload}, { put,call }) {
+      const res = yield call(updatebaseMember,payload);
+      console.log(res)
+      Taro.showToast({
+        'title': '更新成功',
+      });
+      Taro.navigateBack()
+    },
+    
+    
+    
     
   },
 
@@ -59,7 +101,7 @@ export default {
     // 更新基础数据
     updateState(state, { payload }) {
       return { ...state, ...payload };
-    }
+    },
   },
 
 };

@@ -1,17 +1,14 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { AtButton,AtInput,AtActionSheet, AtActionSheetItem } from 'taro-ui';
+import { AtButton,AtInput, AtActionSheetItem } from 'taro-ui';
 import { View,Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import classNames from 'classnames';
 import logo from '../../assets/logo.png';
 import phoneIcon from '../../assets/mobile@2x.png';
 import codeIcon from '../../assets/authcode@2x.png';
-// import enterpriseLogo from '../../assets/enterprise_logo@2x.png';
-// import { isPhoneAvailable } from '@/utils/utils';
 import styles from "./index.modules.less";
-import "taro-ui/dist/style/components/action-sheet.scss";
 
 type PageStateProps = {
   tenants:any;
@@ -38,8 +35,10 @@ interface Login {
 })
 class Login extends Component {
   state = {
-    phone: '',
-    code: '',
+    phone: '100321',
+    code: 'spd2019',
+    // phone: 'jxhadmin',
+    // code: 'jxhadmin',
     isOpened: false,
     tenantInfo:{
       tenantId:'',
@@ -53,13 +52,6 @@ class Login extends Component {
   };
 
   componentDidMount() {
-    // const {dispatch} = this.props;
-    // if(dispatch){
-    //   dispatch({
-    //     type: "login/fetchTenantInfo",
-    //     payload: {}
-    //   });
-    // }
   }
  
   // 登录
@@ -72,7 +64,7 @@ class Login extends Component {
         payload: {
           username:phone,
           password:code,
-          tenantId:tenantInfo.tenantId
+          captcha:""
         }
       });
     }
@@ -100,25 +92,6 @@ class Login extends Component {
       isOpened:!isOpened
     })
   }
-
-  // sendCode = () => {
-  //   const { phone } = this.state;
-  //   if (!phone) {
-  //     Taro.showToast({
-  //       title: '请输入手机号！',
-  //     })
-  //     return;
-  //   }
-  //   if (!isPhoneAvailable(phone)) {
-  //     Taro.showToast({
-  //       title: '手机号码格式有误',
-  //     })
-  //     return;
-  //   }
-
-  //   // TODO 获取验证码
-  //   console.log('获取验证码');
-  // }
 
   render() {
     const {phone,code,isOpened,tenantInfo} = this.state;

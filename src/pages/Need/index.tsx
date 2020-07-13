@@ -28,8 +28,8 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ need,loading }) => {
+  const {userInfo={}} = need;
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
@@ -73,10 +73,17 @@ class Home extends Component {
   ]
 
   state = {
-    current: 0,
+    activeCurrent:0,
+    current: 1,
+    myCurrent:1,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    haveMore:true,
+    myhaveMore:true,
+    jxhReqData:[],
+    myjxhReqData:[],
+
   }
   config: Config = {
     navigationBarTitleText: "最新需求",
@@ -86,23 +93,103 @@ class Home extends Component {
   };
 
   componentDidShow() {
-
+    this.fetchList(1)
   }
 
   handleClick (value) {
+    if(value === 0){
+      this.fetchList(1)
+    }else{
+      this.fetchMyList(1)
+    }
     this.setState({
-      current: value
+      activeCurrent: value
     })
   }
 
-  onScrollToUpper() {}
+  // 最新需求
+  fetchList = (page=1)=>{
+    const {dispatch} = this.props;
+    const { jxhReqData } = this.state;
+    if(dispatch){
+      Taro.showToast({
+        icon:'loading',
+        title: "加载中",
+        duration:500
+      })
+      dispatch({
+        type: "need/getjxhReqList",
+        payload: {
+          isAsc:false,
+          current:page,
+          // industryType:industryObject.value
+        }
+      }).then((e)=>{
+        if(e.length<20){
+          this.state.haveMore = false;
+        }
+        this.state.current = page + 1;
+        this.setState({
+          jxhReqData:page===1?e:jxhReqData.concat(e)
+        })
+      });
+    }
+  }
+
+  // 我的需求
+  fetchMyList = (page=1)=>{
+    const {dispatch} = this.props;
+    const { myjxhReqData } = this.state;
+    if(dispatch){
+      Taro.showToast({
+        icon:'loading',
+        title: "加载中",
+        duration:500
+      })
+      dispatch({
+        type: "need/getMyjxhReqList",
+        payload: {
+          isAsc:false,
+          current:page,
+          // industryType:industryObject.value
+        }
+      }).then((e)=>{
+        if(e.length<20){
+          this.state.myhaveMore = false;
+        }
+        this.state.myCurrent = page + 1;
+        this.setState({
+          myjxhReqData:page===1?e:myjxhReqData.concat(e)
+        })
+      });
+    }
+  }
+
+
+  onScrollToUpper() {
+    console.log("onScrollToUpper");
+    this.fetchList(1)
+  }
 
   // or 使用箭头函数
-  // onScrollToUpper = () => {}
-
-  onScroll(e){
-    console.log(e.detail)
+  onScrollToLower = () => {
+    console.log("滚动到底部")
+    if(!this.state.haveMore) return
+    this.fetchList(this.state.current)
   }
+
+  myonScrollToUpper() {
+    console.log("myonScrollToUpper");
+    this.fetchMyList(1)
+  }
+
+  // or 使用箭头函数
+  myonScrollToLower = () => {
+    console.log("滚动到底部")
+    if(!this.state.haveMore) return
+    this.fetchMyList(this.state.current)
+  }
+
 
 
   render() {
@@ -110,7 +197,6 @@ class Home extends Component {
     const scrollStyle = {
       height: '100vh',
       backgroundColor:"#fff",
-      padding:"0pt 16pt",
     }
     const scrollTop = 0
     const Threshold = 20
@@ -121,8 +207,8 @@ class Home extends Component {
             url: '/pages/NeedPublish/index'
           })
         }}/>
-        <AtTabs current={this.state.current} tabList={tabList} onClick={this.handleClick.bind(this)}>
-          <AtTabsPane current={this.state.current} index={0} >
+        <AtTabs current={this.state.activeCurrent} tabList={tabList} onClick={this.handleClick.bind(this)}>
+          <AtTabsPane current={this.state.activeCurrent} index={0} >
             <ScrollView
               className='scrollview'
               scrollY
@@ -131,16 +217,17 @@ class Home extends Component {
               style={scrollStyle}
               lowerThreshold={Threshold}
               upperThreshold={Threshold}
+              onScrollToLower={this.onScrollToLower}
               onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
-              onScroll={this.onScroll}
+              // onScroll={this.onScroll}
             >
             {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.industryList.map((item,idx) => (<NeedItem src={Index2} key={`FactoryItem${idx}`}/>))}
+              { this.state.jxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`}/>))}
             {/* </View> */}
             </ScrollView>
 
           </AtTabsPane>
-          <AtTabsPane current={this.state.current} index={1}>
+          <AtTabsPane current={this.state.activeCurrent} index={1}>
             <ScrollView
               className='scrollview'
               scrollY
@@ -149,11 +236,12 @@ class Home extends Component {
               style={scrollStyle}
               lowerThreshold={Threshold}
               upperThreshold={Threshold}
-              onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
-              onScroll={this.onScroll}
+              onScrollToLower={this.myonScrollToLower}
+              onScrollToUpper={this.myonScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
+              // onScroll={this.onScroll}
             >
             {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.industryList.map((item,idx) => (<NeedItem src={Index2} key={`FactoryItem${idx}`}/>))}
+              { this.state.myjxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`}/>))}
             {/* </View> */}
             </ScrollView>
           </AtTabsPane>

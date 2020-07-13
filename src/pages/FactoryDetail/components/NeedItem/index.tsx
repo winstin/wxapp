@@ -2,13 +2,11 @@ import { ComponentClass } from "react";
 import Taro, { Component } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
-import ico_comment from '../../../../assets/need/ico_comment@3x.png';
-import ico_share from '../../../../assets/need/ico_share@3x.png';
 
 
 
 type PageOwnProps = {
-  src?:any
+  data?:any
 };
 
 type PageState = {};
@@ -25,26 +23,29 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src} = this.props;
+    const {data} = this.props;
 
     return (
       <View className={styles.list} onClick={()=>{
+        // Taro.navigateTo({
+        //   url: '/pages/NeedDetail/index'
+        // })
         Taro.navigateTo({
-          url: '/pages/NeedDetail/index'
+          url: `/packageA/pages/ProductDetail/index?id=${data.id}`
         })
       }}>
         <View>
-          <Image src={src} className={styles.listimg} />
+          <Image src={`http://sz-spd.cn:889/${data.photoCover}`} className={styles.listimg} />
         </View>
         <View >
           <View className={styles.title} >
-          机加工-车削工艺
+          {data.name}
           </View>
           <View className={styles.tips} >
-          材料  不锈钢
+          {data.intro}
           </View>
           <View className={styles.tips} >
-          产能  每月2000件
+          {data.desc}
           </View>
           
         </View>

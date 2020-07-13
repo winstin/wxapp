@@ -172,7 +172,7 @@ class Home extends Component {
 
     return (
       <View className={styles.album}>
-          <View className={styles.taglabel} >
+          {/* <View className={styles.taglabel} >
             { industryList.map((item,idx) => (
                 <AtTag 
                   className={styles.tag}
@@ -185,7 +185,7 @@ class Home extends Component {
                   {item.title}
                 </AtTag>
             ))}
-          </View>
+          </View> */}
         <View className={styles.taglabel} >
           {industryList[activeIndex].imageUrls.map((item,idx) => (
                  <Image

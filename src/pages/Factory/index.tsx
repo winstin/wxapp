@@ -1,12 +1,11 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View} from "@tarojs/components";
+import { View,ScrollView} from "@tarojs/components";
 import { AtDrawer } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import FactoryItem from '../Index/components/FactoryItem/index';
 import styles from "./index.modules.less";
-import Index2 from '../../assets/Index2.jpeg';
 import "taro-ui/dist/style/components/rate.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/drawer.scss";
@@ -20,7 +19,10 @@ type PageStateProps = {
 
 type PageOwnProps = {
   loading: boolean;
+  INDUSTRY_TYPE: any;
+  corporateData:any
 };
+
 
 type PageState = {};
 
@@ -30,10 +32,17 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ factory,loading }) => {
+  const {userInfo={},INDUSTRY_TYPE=[],corporateData} = factory;
+  let newtype = JSON.parse(JSON.stringify(INDUSTRY_TYPE))
+  newtype.unshift({
+    label:'行业不限',
+    value:''
+  })
   return {
     userInfo,
+    INDUSTRY_TYPE:newtype,
+    corporateData,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -74,14 +83,39 @@ class Home extends Component {
     },
   ]
 
+  sortArr = [
+    {
+      key:'',
+      value:'不限'
+    },
+    {
+      key:'star',
+      value:'按照星级降序'
+    },
+    {
+      key:'pv',
+      value:'按照访问量降序'
+    }
+  ]
+
   state = {
-    current: 0,
+    current: 1,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    corporateData:[],
+    haveMore:true,
+    industryObject:{
+      label:'行业不限',
+      value:''
+    },
+    sortObject:{
+      key:'',
+      value:'综合排序'
+    }
   }
   config: Config = {
-    navigationBarTitleText: "找工厂",
+    navigationBarTitleText: "企业展示",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
     
@@ -89,22 +123,71 @@ class Home extends Component {
 
   componentDidShow() {
 
+    const token = Taro.getStorageSync('token');
+    const {dispatch} = this.props;
+    if(dispatch){
+      if(token){
+        dispatch({
+          type: "factory/getBatchDictValueByCode",
+          payload: {
+            code:'INDUSTRY_TYPE' 
+          }
+        });
+
+        this.fetchList(1)
+      }
+    }
   }
 
-  handleClick (value) {
-    this.setState({
-      current: value
-    })
+
+  fetchList = (page=1)=>{
+    const {dispatch} = this.props;
+    const { corporateData,industryObject,sortObject } = this.state;
+    if(dispatch){
+      Taro.showToast({
+        icon:'loading',
+        title: "加载中",
+        duration:500
+      })
+      const payload:any = {
+        isAsc:false,
+        current:page,
+      }
+      if(industryObject.value){
+        payload.industryType=industryObject.value
+      }
+      if(sortObject.key){
+        payload.orderByField=sortObject.key
+      }
+      dispatch({
+        type: "factory/getCorporateList",
+        payload 
+      }).then((e)=>{
+        if(e.length<20){
+          this.state.haveMore = false;
+        }
+        this.state.current = page + 1;
+        this.setState({
+          corporateData:page===1?e:corporateData.concat(e)
+        })
+      });
+    }
   }
 
-  onScrollToUpper() {}
+
+
+  onScrollToUpper() {
+    console.log("onScrollToUpper");
+    this.fetchList(1)
+  }
 
   // or 使用箭头函数
-  // onScrollToUpper = () => {}
-
-  onScroll(e){
-    console.log(e.detail)
+  onScrollToLower = () => {
+    console.log("滚动到底部")
+    if(!this.state.haveMore) return
+    this.fetchList(this.state.current)
   }
+
 
   onClose=()=>{
     this.setState({show:false,sort:false,industry:false})
@@ -112,18 +195,38 @@ class Home extends Component {
 
 
   render() {
-    const {sort,industry} = this.state;
+    const {sort,industry,corporateData,industryObject,sortObject} = this.state;
+    const {INDUSTRY_TYPE} = this.props;
+    const JSX = INDUSTRY_TYPE.map((item)=>(
+      <View className={styles.listItem} onClick={()=>{
+        this.setState({
+          industryObject:{
+            label:item.label,
+            value:item.value
+          }
+        },()=>{
+          this.fetchList(1)
+        })
+      }}>
+        <View>{item.label}</View>
+      </View>
+    ))
+
+    const scrollStyle = {
+      height:'100vh'
+    }
+    const scrollTop = 50
     return (
       <View className={styles.factory}>
         <View className={styles.factorytop}>
           <View className={styles.topItem} onClick={()=>{
               this.setState({sort:true,show:false,industry:false})
             }}>
-              综合排序
+              {sortObject.value}
               <View className='at-icon at-icon-chevron-down'></View>
           </View>
           <View className={styles.topItem} onClick={()=>{this.setState({industry:true,show:false,sort:false})}}>
-              行业
+              {industryObject.label}
               <View className='at-icon at-icon-chevron-down'></View>
           </View>
           <View className={styles.topItem} onClick={()=>{this.setState({show:true,sort:false,industry:false})}}>
@@ -133,27 +236,42 @@ class Home extends Component {
         </View>
 
         {sort && <View onClick={this.onClose.bind(this)} className={styles.modal}>
-            <View className={styles.listItem}>
-              <View>按照星级降序</View>
+        
+        {
+          this.sortArr.map((item)=>(
+            <View className={styles.listItem} onClick={()=>{
+              this.setState({
+                sortObject:{
+                  key:item.key,
+                  value:item.value
+                }
+              },()=>{
+                this.fetchList(1)
+              })
+            }}>
+              <View>{item.value}</View>
             </View>
-            <View className={styles.listItem}>
-              <View>按照访问量降序</View>
-            </View>
+          ))
+        }
         </View>}
 
         {industry && <View onClick={this.onClose.bind(this)} className={styles.modal}>
-            <View className={styles.listItem}>
-              <View>行业1</View>
-            </View>
-            <View className={styles.listItem}>
-              <View>行业2</View>
-            </View>
+          {JSX}
         </View>}
 
         <View className={styles.list}>
           <View className={styles.margintop} />
-         
-          { this.industryList.map((item,idx) => (<FactoryItem src={Index2} key={`FactoryItem${idx}`} rate={item.star}/>))}
+          <ScrollView
+            className='scrollview'
+            scrollY
+            scrollWithAnimation
+            scrollTop={scrollTop}
+            style={scrollStyle}
+            onScrollToLower={this.onScrollToLower}
+            onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
+          >
+            { corporateData.map((item,idx) => (<FactoryItem key={`FactoryItem${idx}`} data={item}/>))}
+          </ScrollView>
         </View>
 
         <AtDrawer 

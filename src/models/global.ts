@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { login,getCode,validateCode, queryDictionary, fetchTenants } from '@/services/fetch';
+import { login,getCode,validateCode, getBatchDictValues, fetchTenants } from '@/services/fetch';
 
 export interface userInfo{
   avatarUrl?:string; // 头像
@@ -24,7 +24,19 @@ export type CodeType = object & {
 // 需要统一获取的 字典列表
 // 额外补充 code， 如下模式即可
 const codeList = {
-  PARENT_TYPE: [], // 家长和学生关系
+  POINTS_TYPE:[],// 积分类型
+  INDUSTRY_TYPE:[],// 企业类型
+  ALBUM_TYPE:[],// 相册类别
+  VIP_LEVEL:[],// 会员等级
+  COMMUNITY:[],// 社群
+  EDUCATION_LEVEL:[],// 学历
+  SKILLED_FIELD:[],// 擅长领域
+  COMPANY_TYPE:[],// 企业类型
+  COMPANY_PROPERTY:[],// 企业性质
+  INDUSTRY_RANKING:[],// 行业排名
+  STAFF_AMOUNT:[],// 公司规模
+  PURCHASE_SIZE :[],//采购部门规模
+  PROCUREMENT_CATEGORY_PROCESSES :[],//
 };
 
 /**
@@ -34,7 +46,6 @@ export default {
   namespace: "global",
   state: {
     hasReady: false, // 是否已经初始化完成
-    PARENT_TYPE: [], // 家长和学生关系
     userInfo: undefined, // 用户信息
     authSetting: {}, // 用户授权列表
     clientInfo: {}, // 设备信息
@@ -52,7 +63,7 @@ export default {
         // 2、获取授权信息，和用户信息
         put.resolve({ type: "getUserInfo" }),
         // 3、获取字典信息
-        // put.resolve({ type: "getDictionary" }),
+        put.resolve({ type: "getDictionary" }),
         // 4、获取设备信息
         put.resolve({ type: "getClientInfo" })
       ]);
@@ -66,24 +77,27 @@ export default {
     *login({payload}, { call, put }) {
       // 先判断缓存中是否有token
       const token = Taro.getStorageSync("token");
-      // console.log("后台返回token", !token);
+      console.log("后台返回token", !token);
       
       if( !token ){
           // const code = yield call(Taro.login);
           const params = {
-              grant_type: "password", 
-              scope:"all", // 登录账号身份
-              type:"account",
+              // grant_type: "password", 
+              // scope:"all", // 登录账号身份
+              // type:"account",
               ...payload
           }
           // 获取token
-          const authRes = yield call(login,params);
-          if (authRes && authRes.tenant_id) {
+          const res = yield call(login,params);
+          const authRes = JSON.parse(res.data)
+          console.log("authRes2", authRes);
+
+          if (authRes && authRes.access_token) {
             // 存储token和userId
             Taro.setStorage({ key: 'token', data: authRes.access_token });
-            Taro.setStorage({ key: 'tenant_id', data: authRes.tenant_id });
-            Taro.setStorage({ key: 'user_id', data: authRes.user_id });
-          //   Taro.setStorage({ key: 'vbNo', data: authRes.data.vbNo })
+            // Taro.setStorage({ key: 'tenant_id', data: authRes.tenant_id });
+            // Taro.setStorage({ key: 'user_id', data: authRes.user_id });
+            // Taro.setStorage({ key: 'vbNo', data: authRes.data.vbNo })
             // yield put({
             //   type:'updateState',
             //   payload:{userInfo:authRes}
@@ -106,7 +120,7 @@ export default {
       let responseData: CodeType[];
       try {
         // 此接口不需要单独的报错处理
-        const res = yield call(queryDictionary, Object.keys(codeList).join(','));
+        const res = yield call(getBatchDictValues, {codes:Object.keys(codeList).join(',')});
         responseData = res.data;
         
       } catch (err) {
@@ -115,20 +129,22 @@ export default {
 
       console.log('responseData:',responseData);
       // 遍历数据生成key-value形式
-      const result = {};
-      responseData.forEach(item => {
-        const { id, code, typeCode, value, parentCode, addressDetails } = item;
-        const obj = { id, code, typeCode, value, parentCode, addressDetails };
-        if (item.typeCode in result) {
-          result[item.typeCode].push(obj);
-        } else {
-          result[item.typeCode] = [obj];
-        }
-      });
+      // const result = {};
+      // responseData.forEach(item => {
+      //   const { id, code, typeCode, value, parentCode, addressDetails } = item;
+      //   const obj = { id, code, typeCode, value, parentCode, addressDetails };
+      //   if (item.typeCode in result) {
+      //     result[item.typeCode].push(obj);
+      //   } else {
+      //     result[item.typeCode] = [obj];
+      //   }
+      // });
+      // console.log('result:',result);
+
       yield put({
         type: 'updateState',
         payload: {
-          ...result,
+          ...responseData,
           hasLoad: true,
         },
       });

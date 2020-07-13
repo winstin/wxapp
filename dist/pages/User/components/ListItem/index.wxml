@@ -1,9 +1,0 @@
-<block wx:if="{{$taroCompReady}}">
-    <view class="{{styles.cardManage}}" bindtap="funPrivateeizzz">
-        <view class="{{styles.cardL}}">
-            <image class="{{styles.itemIcon}}" src="{{cardIcon}}"></image>
-            <view class="{{styles.itemTitle}}">{{title}}</view>
-        </view>
-        <image class="{{styles.arrow}}" src="{{arrowIcon}}"></image>
-    </view>
-</block>

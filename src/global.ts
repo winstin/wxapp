@@ -6,14 +6,17 @@
  */
 import Taro from "@tarojs/taro";
 // import "taro-ui/dist/style/components/modal.scss";
-import "taro-ui/dist/style/components/avatar.scss";
-import "taro-ui/dist/style/components/toast.scss";
-import "taro-ui/dist/style/components/icon.scss";
-import "taro-ui/dist/style/components/list.scss";
-import "taro-ui/dist/style/components/swipe-action.scss";
-import "taro-ui/dist/style/components/fab.scss";
-import "taro-ui/dist/style/components/countdown.scss";
-import "taro-ui/dist/style/components/tab-bar.scss";
+// import "taro-ui/dist/style/components/avatar.scss";
+// import "taro-ui/dist/style/components/toast.scss";
+// import "taro-ui/dist/style/components/icon.scss";
+// import "taro-ui/dist/style/components/list.scss";
+// import "taro-ui/dist/style/components/swipe-action.scss";
+// import "taro-ui/dist/style/components/fab.scss";
+// import "taro-ui/dist/style/components/countdown.scss";
+// import "taro-ui/dist/style/components/tab-bar.scss";
+// import "taro-ui/dist/style/components/badge.scss";
+import "taro-ui/dist/style/components/button.scss";
+import "taro-ui/dist/style/components/message.scss";
 import "taro-ui/dist/style/components/badge.scss";
 
 /**

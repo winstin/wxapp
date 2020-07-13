@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Text } from "@tarojs/components";
+import { View,Image } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import arrowIcon from '../../assets/user/ico_arrow@3x.png';
 import cardIcon from '../../assets/user/ico_card@2x.png';
@@ -12,14 +12,15 @@ import qyxc from '../../assets/user/ico_my_qyxc@3x.png';
 import cpxc from '../../assets/user/ico_my_cpxc@3x.png';
 import gzgzh from '../../assets/user/ico_my_gzgzh@3x.png';
 import qygm from '../../assets/user/ico_my_qygm@3x.png';
-
-import "taro-ui/dist/style/components/button.scss";
 import styles from "./index.modules.less";
 import ListItem from './components/ListItem/index';
+import img_my_bg_corp from '../../assets/user/img_my_bg_corp.png';
+import { AtButton } from "taro-ui";
 
 type PageStateProps = {
   userInfo:any;
   makerInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -37,10 +38,11 @@ interface User {
 
 @connect(({ global,user,loading }) => {
   const {userInfo={}} = global;
-  const { makerInfo } = user;
+  const { makerInfo,myInfo={} } = user;
   return {
     userInfo,
     makerInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -60,12 +62,22 @@ class User extends Component {
 
     const token = Taro.getStorageSync('token');
     if(token){
+      // const {dispatch} = this.props;
+      // if(dispatch){
+      //   dispatch({
+      //     type: "user/fetchmakerDetails",
+      //     payload: {
+      //       user_id:Taro.getStorageSync('user_id')
+      //     }
+      //   });
+      // }
+
       const {dispatch} = this.props;
       if(dispatch){
         dispatch({
-          type: "user/fetchmakerDetails",
+          type: "user/getMyInfo",
           payload: {
-            user_id:Taro.getStorageSync('user_id')
+            // user_id:Taro.getStorageSync('user_id')
           }
         });
       }
@@ -85,10 +97,17 @@ class User extends Component {
     })
   }
 
-  render() {
-    const {userInfo} = this.props;
+  cancelLogin = ()=>{
+    Taro.clearStorage();
+    Taro.reLaunch({
+      url: "/pages/Login/index"
+    })
+  }
 
-    // const token = Taro.getStorageSync('token');
+  render() {
+    const {userInfo,myInfo} = this.props;
+
+    const token = Taro.getStorageSync('token');
     // if(!token){
     //   return (
     //     <View className={styles.unLogin}>
@@ -102,10 +121,14 @@ class User extends Component {
     //   )
     // }
 
+    const {type ="person"} = myInfo;
+
     return (
       <View className={styles.user}>
         {/* 个人信息 */}
-        <View className={styles.userInfo} onClick={this.manageCard.bind(this,"/pages/CardManage/index")}>
+        <View className={styles.userInfo} onClick={this.manageCard.bind(this,"/packageA/pages/CardManage/index")}>
+          <Image className={styles.bg_img} src={img_my_bg_corp} />
+
           <View className={styles.info}>
           <Image
             className={styles.avatar}
@@ -130,12 +153,12 @@ class User extends Component {
           /> */}
         </View>
 
-        <View className={styles.cardtop} onClick={()=>{this.manageCard("/pages/MemberCredits/index")}}>
+        <View className={styles.cardtop} onClick={()=>{this.manageCard("/packageA/pages/MemberCredits/index")}}>
           <View className={styles.cardL}>
             <View className={styles.itemTitle}>会员积分</View>
           </View>
           <View className={styles.cardL}>
-            <View className={styles.vipNumber}>2000</View>
+            <View className={styles.vipNumber}>{myInfo.total}</View>
             <Image
               className={styles.arrow}
               src={arrowIcon}
@@ -143,46 +166,46 @@ class User extends Component {
           </View>
         </View>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MemberShipPerson/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MemberShipPerson/index")}}
           cardIcon={sjhy}
           title={'升级个人会员'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MemberShipUpgrade/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MemberShipUpgrade/index")}}
           cardIcon={sjhy}
           title={'升级企业会员'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyBaseInfo/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>
         <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyContactInfo/index")}}
+          onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>
-        <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyEnterpriseScale/index")}}
+        {type==="enterprise" && <ListItem 
+          onClick={()=>{this.manageCard("/packageA/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}
           title={'企业规模'}
-        ></ListItem>
+        ></ListItem>}
         
-        <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyCompaniestIntroduce/index")}}
+        {type==="enterprise" && <ListItem 
+          onClick={()=>{this.manageCard("/packageA/pages/MyCompaniestIntroduce/index")}}
           cardIcon={qygm}
           title={'企业介绍'}
-        ></ListItem>
-        <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyAlbumEnterprise/index")}}
+        ></ListItem>}
+        {type==="enterprise" && <ListItem 
+          onClick={()=>{this.manageCard("/packageA/pages/MyAlbumEnterprise/index")}}
           cardIcon={qyxc}
           title={'企业相册'}
-        ></ListItem>
-        <ListItem 
-          onClick={()=>{this.manageCard("/pages/MyAlbumProduct/index")}}
+        ></ListItem>}
+        {type==="enterprise" && <ListItem 
+          onClick={()=>{this.manageCard("/packageA/pages/AlbumProductList/index")}}
           cardIcon={cpxc}
           title={'产品相册'}
-        ></ListItem>
+        ></ListItem>}
         <ListItem 
           onClick={this.manageCard}
           cardIcon={gzgzh}
@@ -193,6 +216,13 @@ class User extends Component {
           cardIcon={qygm}
           title={'会员章程'}
         ></ListItem>
+
+        <View className={styles.loginBtn}>
+        {!token ? <AtButton 
+          onClick={()=>{this.manageCard("/pages/Home/index")}}
+          type="primary"
+        >登录</AtButton> : <View className={styles.loginout} onClick={this.cancelLogin} >退出登录</View>}
+        </View>
       </View>
     );
   }

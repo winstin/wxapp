@@ -6,7 +6,7 @@ import styles from "../../index.modules.less";
 
 
 type PageOwnProps = {
-  src?:any
+  data?:any
 };
 
 type PageState = {};
@@ -23,16 +23,22 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src} = this.props;
+    const {data} = this.props;
+    const {title,createdDate,id} = data;
 
     return (
-      <View className={styles.list}>
+      <View className={styles.list} onClick={()=>{
+        Taro.navigateTo({
+          url: `/packageA/pages/RecruitmentDetail/index?id=${id}`
+        })
+        
+      }}>
         {/* <View>
           <Image src={src} className={styles.listimg} />
         </View> */}
         <View >
           <View className={styles.title} >
-          寻超声波电焊机厂商
+          {title}
           </View>
           {/* <View className={styles.tips} >
           数量  20台
@@ -41,7 +47,7 @@ class IndustryItem extends Component {
           要求  口罩耳带焊接用
           </View> */}
           <View className={styles.tips} >
-          发布日期：2020/04/15
+          发布日期：{createdDate}
           </View>
         </View>
       </View>

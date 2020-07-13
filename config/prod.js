@@ -2,7 +2,7 @@
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    PREFIX_URL: '"https://bid.sz-spd.cn"', // build命令下的配置(一般为sit、uat、pro环境的请求地址前缀)
+    PREFIX_URL: '"https://sz-spd.cn"', // build命令下的配置(一般为sit、uat、pro环境的请求地址前缀)
   },
   defineConstants: {},
   mini: {},

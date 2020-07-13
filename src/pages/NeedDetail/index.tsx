@@ -1,16 +1,16 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,Image,Button } from "@tarojs/components";
+import { AtInput,AtButton } from 'taro-ui'
+import classNames from 'classnames';
 import { connect } from "@tarojs/redux";
-import Index2 from '../../assets/Index2.jpeg';
 import styles from "./index.modules.less";
-import location from '../../assets/factory/ico_location@3x.png';
-import arrowIcon from '../../assets/user/ico_arrow@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
-
+import ico_comment from '../../assets/need/ico_comment@3x.png';
+import ico_share from '../../assets/need/ico_share@3x.png';
 type PageStateProps = {
-  userInfo:any;
+  jxhReqDetail:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -26,65 +26,52 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ needcheck,loading }) => {
+  const {jxhReqDetail={}} = needcheck;
   return {
-    userInfo,
+    jxhReqDetail,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    msg:"",
+    parentsId:'1',
+    parentsName:'',
   }
   config: Config = {
-    navigationBarTitleText: "会员积分",
+    navigationBarTitleText: "需求详情",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
-    navigationStyle:"custom",
+    // navigationStyle:"custom",
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    console.log(this.$router.params);
+    this.fetchList()
+  }
+
+  fetchList = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      // Taro.showToast({
+      //   icon:'loading',
+      //   title: "加载中",
+      //   duration:500
+      // })
+      dispatch({
+        type: "needcheck/getjxhReqDetail",
+        payload:  this.$router.params,
+        // payload:{
+        //   id:'1278941345442643969'
+        // }
+      });
+    }
   }
 
   handleClick (value) {
@@ -106,59 +93,116 @@ class Home extends Component {
     Taro.navigateBack()
   }
 
+  reqComment = ()=>{
+    const {dispatch,jxhReqDetail} = this.props;
+    const {msg,parentsId} = this.state;
+    if(dispatch){
+      dispatch({
+        type: "need/addjxhReqMsg",
+        payload:{
+          reqId:jxhReqDetail.id,
+          parentsId,
+          msg,
+        }
+      }).then((e)=>{
+        this.setState({
+          parentsId:'1',
+          parentsName:"",
+          msg:''
+        })
+        this.fetchList();
+      });
+    }
+  }
+
+  //转发
+  onShareAppMessage (res) {
+    return {
+        title: "需求详情",
+        path:'/pages/NeedDetail/index'
+    }
+  }
+
   render() {
 
-    const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
-    const topstyle = `top:${MenuButtonBounding.top}px;`;
-    const titletop = `margin-top:${MenuButtonBounding.top}px;`
-
+    const {name,desc,intro,category,reqName,createdDate,companyName,qty,reqDesc,drawings,id,jxhReqMsgs} = this.props.jxhReqDetail;
+    const {msg,parentsName} = this.state;
     return (
       <View className={styles.needdetail}>
-        <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <View className={styles.userInfo} onClick={()=>{
-            Taro.navigateTo({
-              url: '/pages/AlbumProduct/index'
-            })
-          }}>
-          <View className={styles.tips} style={titletop}>产品展示</View>
+         <View className={styles.toplabel}>
+          <View className={styles.leftlabel}>
+            发布人
+          </View>
+          <View className={styles.text}>
+            {reqName}
+          </View>
         </View>
-        
-        <View className={styles.title}>
-          燕窝窝马来西亚正品燕窝
+        <View className={styles.toplabel}>
+          <View className={styles.leftlabel}>
+            发布日期
+          </View>
+          <View className={styles.text}>
+            {createdDate}
+          </View>
+        </View>
+        <View className={styles.list}>
+          <View>
+            <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
+          </View>
+          <View style='flex:1'>
+            <View className={styles.title} >
+            {companyName}
+            </View>
+            <View className={styles.tips} >
+            数量  {qty}台
+            </View>
+            <View className={styles.tips} >
+            要求  {reqDesc}
+            </View>
+            <View className={styles.tips} >
+              {createdDate}
+            </View>
+            <View className={styles.tips3} >
+              <View/>
+              <View className={styles.share} >
+                <View className={styles.item}>
+                  <Image src={ico_share} className={styles.bottom_btn} />
+                  <View>分享</View>
+                  <Button openType="share" className={styles.sharebtn}>分享</Button>
+                </View>
+                <View className={styles.item}> 
+                  <Image src={ico_comment} className={styles.bottom_btn} />
+                  <View>评论 {jxhReqMsgs.length}</View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View className={styles.comment}>
+        {jxhReqMsgs.length>0&&<View className={styles.d3}></View>}
+          {
+            jxhReqMsgs.map((item)=>(
+              <View className={styles.commentbg} onClick={()=>{
+                this.setState({
+                  parentsId:item.id,
+                  parentsName:item.commentatorName,
+                })
+              }}>
+                <View className={styles.commentatorTitle}>{item.commentatorTitle} </View>
+                <View className={styles.msg}>{item.msg}</View>
+              </View>
+            ))
+          }
         </View>
 
-        <View className={styles.content} >
-          <View className={styles.tips} >
-            <View className={styles.tipicon} />
-            <View className={styles.tipstext} >
-              商品参数
-            </View>
+        <View className={classNames(styles.comment,styles.flex)}>
+          <View className={styles.commentmsg}>
+            <AtInput className={styles.input} name="msg" placeholder={`${parentsName}评论:`}  value={msg} onChange={(e)=>{this.setState({msg:e})}} />
           </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            品类
-            </View>
-            <View className={styles.conenttext} >
-            燕窝
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            简介
-            </View>
-            <View className={styles.conenttext} >
-            适合孕妇、老人长期使用
-            </View>
-          </View>
-        </View>
-        <View className={styles.content} >
-          <View className={styles.tips} >
-            <View className={styles.tipicon} />
-            <View className={styles.tipstext} >
-              商品详情
-            </View>
-          </View>
-          
+          <AtButton 
+            type="primary"
+            onClick={this.reqComment}
+          >评论</AtButton>
         </View>
       
       </View>
