@@ -21,6 +21,7 @@ type PageStateProps = {
   STAFF_AMOUNT:any;
   INDUSTRY_TYPE:any;
   COMPANY_PROPERTY:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -36,9 +37,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {    
+@connect(({ user,global,loading }) => {    
   const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
   ,COMPANY_PROPERTY=[]} = global;
+  const {myInfo} = user;
   return {
     userInfo,
     SKILLED_FIELD,
@@ -48,45 +50,11 @@ interface Home {
     STAFF_AMOUNT,
     COMPANY_PROPERTY,
     INDUSTRY_TYPE,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -98,6 +66,7 @@ class Home extends Component {
     code:'',
     frontFilePath:'', // 正面照
     dateSel: '',
+    reportTo:'',
     "name":"",
     "nickname":"",
     "account":"",
@@ -119,8 +88,11 @@ class Home extends Component {
     "industryRanking": [],
     "companyScale" :[],
     "dptScale": [],
-    "purType": []
-
+    "purType": [],
+    company:'',
+    position:'',
+    address:'',
+    nameCard:''
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -130,7 +102,45 @@ class Home extends Component {
   };
 
   componentDidShow() {
-    console.log("Taro.getMenuButtonBoundingClientRect()",Taro.getMenuButtonBoundingClientRect())
+    const {myInfo} = this.props;
+    const { photo,
+      name,
+      birthday,
+      native_place,
+      education,
+      school,
+      email,
+      telephoe,
+      qq,
+      referrerName,
+      wx_id,
+      sex} = myInfo.basic;
+    const {company,reportTo,companyProperty,companyType,skilledField,industryType,industryRanking,companyScale,dptScale,purType,position,address,nameCard} = myInfo.company;
+    if(myInfo.type === "personal"){
+      this.setState({
+        photo:nameCard,
+        name,
+        birthday,
+        native_place,
+        education,
+        school,
+        email,
+        telephoe,
+        qq,
+        referrerName,
+        wx_id,
+        sex,
+        skilledField,
+        industryType,
+        companyProperty,
+        companyScale,
+        dptScale,
+        purType,
+        reportTo,
+        company,
+        position,address,frontFilePath:nameCard?`http://sz-spd.cn:889/${nameCard}`:''
+      })
+    }
   }
 
   handleClick (value) {
@@ -202,7 +212,8 @@ class Home extends Component {
 
   deleteFont = () => {
     this.setState({
-      frontFilePath: ''
+      frontFilePath: '',
+      photo:''
     })
   }
 
@@ -225,21 +236,24 @@ class Home extends Component {
   }
 
   submit = () =>{
-    const {dispatch} = this.props;
+    const {dispatch,myInfo} = this.props;
+    const {levelNow,levelApply} = myInfo.basic;
+
     const {
       photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
-      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType
+      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address
     } = this.state;
 
     if(dispatch){
       dispatch({
         type: "factory/registerBaseMember",
         payload:  {
-          photo,name,
+          name,
           nickname:name,
           account:telephoe,
           birthday,
           native_place,
+          reportTo,
           education:education.join(','),
           school,email,telephoe,qq,referrerName,wx_id,sex,
           skilledField:skilledField.join(','),
@@ -247,7 +261,10 @@ class Home extends Component {
           companyProperty:companyProperty.join(','),
           companyScale:companyScale.join(','),
           dptScale:dptScale.join(','),
-          purType:purType.join(',')
+          purType:purType.join(','),
+          levelNow,
+          levelApply,
+          company,position,address,nameCard:photo
         }
       }).then((e)=>{
         Taro.showToast({
@@ -259,8 +276,10 @@ class Home extends Component {
   }
 
   render() {
-    const {phone,name,birthday,native_place,school,email,telephoe,qq,referrerName,wx_id,frontFilePath,sex} = this.state;
-
+    const {
+      name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
+      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address,frontFilePath
+    } = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
@@ -323,9 +342,9 @@ class Home extends Component {
         <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("education",e)}}>
             {
-              this.props.EDUCATION_LEVEL && this.props.EDUCATION_LEVEL.map((item)=>(
+              this.props.EDUCATION_LEVEL && this.props.EDUCATION_LEVEL.map((item:any)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1"  checked={education.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -396,7 +415,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的公司…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+          <AtInput className={styles.input} name="company" placeholder="请输入您的公司…"  value={company} onChange={(e)=>{this.Change('company',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -407,7 +426,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入您的职位…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+          <AtInput className={styles.input} name="position" placeholder="请输入您的职位…"  value={position} onChange={(e)=>{this.Change('position',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -418,30 +437,14 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="phone" placeholder="请输入通讯地址…"  value={phone} onChange={(e)=>{this.Change('name',e)}} />
+          <AtInput className={styles.input} name="address" placeholder="请输入通讯地址…"  value={address} onChange={(e)=>{this.Change('address',e)}} />
         </View>
 
         <View className={styles.label}>
           汇报对象
         </View>
         <View className={styles.formcheckboxItem}>
-          <View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='0' checked>总经理</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='1'>CPO</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='2'>供应链总监</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='3'>运营经理</Checkbox>
-            </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='4'>其他</Checkbox>
-            </View>
-          </View>
+          <AtInput className={styles.input} name="reportTo" placeholder="请输入汇报对象…"  value={reportTo} onChange={(e)=>{this.Change('reportTo',e)}} />
         </View>
 
 
@@ -454,7 +457,7 @@ class Home extends Component {
             {
               this.props.SKILLED_FIELD && this.props.SKILLED_FIELD.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={skilledField.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -469,7 +472,7 @@ class Home extends Component {
             {
               this.props.INDUSTRY_TYPE && this.props.INDUSTRY_TYPE.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={industryType.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -484,7 +487,7 @@ class Home extends Component {
             {
               this.props.COMPANY_PROPERTY && this.props.COMPANY_PROPERTY.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={companyProperty.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -499,7 +502,7 @@ class Home extends Component {
             {
               this.props.STAFF_AMOUNT && this.props.STAFF_AMOUNT.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={companyScale.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -515,7 +518,7 @@ class Home extends Component {
             {
               this.props.PURCHASE_SIZE && this.props.PURCHASE_SIZE.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={dptScale.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }
@@ -530,7 +533,7 @@ class Home extends Component {
             {
               this.props.PROCUREMENT_CATEGORY_PROCESSES && this.props.PROCUREMENT_CATEGORY_PROCESSES.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Checkbox value={item.value} style="flex:1" >{item.label}</Checkbox>
+                  <Checkbox value={item.value} style="flex:1" checked={purType.includes(item.value)}>{item.label}</Checkbox>
                 </View>
               ))
             }

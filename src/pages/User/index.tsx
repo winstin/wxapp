@@ -15,6 +15,9 @@ import qygm from '../../assets/user/ico_my_qygm@3x.png';
 import styles from "./index.modules.less";
 import ListItem from './components/ListItem/index';
 import img_my_bg_corp from '../../assets/user/img_my_bg_corp.png';
+import img_my_corp from '../../assets/img_vip_corp@3x.png';
+import img_vip_person from '../../assets/img_vip_person@3x.png';
+
 import { AtButton } from "taro-ui";
 
 type PageStateProps = {
@@ -137,6 +140,14 @@ class User extends Component {
           <View className={styles.lr}>
             <View className={styles.lrTop}>
               <View className={styles.name}>{userInfo.nickName}</View>
+              {type==="enterprise"?<Image
+                  className={styles.itemtag}
+                  src={img_my_corp}
+                />:<Image
+                className={styles.itemtag}
+                src={img_vip_person}
+              />}
+              
             </View>
             <View className={styles.phone}>{'1074 2210 2177 51023'}
             <Image
@@ -165,26 +176,26 @@ class User extends Component {
             />
           </View>
         </View>
-        <ListItem 
+        {type!=="enterprise" &&<ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MemberShipPerson/index")}}
           cardIcon={sjhy}
           title={'升级个人会员'}
-        ></ListItem>
-        <ListItem 
+        ></ListItem>}
+        {type!=="personal" &&<ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MemberShipUpgrade/index")}}
           cardIcon={sjhy}
           title={'升级企业会员'}
-        ></ListItem>
+        ></ListItem>}
         <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>
-        <ListItem 
+        {type==="enterprise" &&<ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
           title={'联系信息'}
-        ></ListItem>
+        ></ListItem>}
         {type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}

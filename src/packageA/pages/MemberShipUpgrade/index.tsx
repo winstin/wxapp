@@ -15,7 +15,7 @@ import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
-  userInfo:any;
+  myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -31,10 +31,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {myInfo={}} = user;
   return {
-    userInfo,
+    myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -55,7 +55,8 @@ class Home extends Component {
     account:'',
     referrerName:'',
     drawingVo:{},
-    linkman:''
+    linkman:'',
+    logo:''
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -65,6 +66,14 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    const {myInfo={basic:{},contact:{}}} = this.props;
+    const { businessLicenseNo,name,logo,introduction,referrerName } = myInfo.basic;
+    const { linkman,linkmanPhone } = myInfo.contact;
+    this.setState({
+      businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,
+      frontFilePath:logo?`http://sz-spd.cn:889/${logo}`:'',account:linkmanPhone
+    })
+    
   }
 
   handleClick (value) {
@@ -145,8 +154,9 @@ class Home extends Component {
   }
 
   submit = () =>{
-    const {dispatch} = this.props;
-    const {linkman,name,businessLicenseNo,introduction,account,referrerName,drawingVo}:any = this.state;
+    const {dispatch,myInfo} = this.props;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo}:any = this.state;
+    const {levelNow,levelApply} = myInfo.basic;
 
     if(dispatch){
       dispatch({
@@ -158,10 +168,10 @@ class Home extends Component {
           linkman,
           linkmanPhone:account,
           referrerName,
-          logo:drawingVo.url,
+          logo,
           isTop:'1',
-          levelNow:"1",
-          levelApply:"2",
+          levelNow,
+          levelApply,
         }
       }).then((e)=>{
         Taro.showToast({
