@@ -58,6 +58,15 @@ class Login extends Component {
   login = () => {
     const {dispatch} = this.props;
     const {phone,code,tenantInfo} = this.state;
+
+    Taro.login({
+      success:(res)=>{
+        console.log(res)
+      },
+      fail:(err)=>{
+        console.log(err)
+      }
+    })
     if(dispatch){
       dispatch({
         type: "global/login",

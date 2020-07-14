@@ -4,6 +4,7 @@ import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
 import ico_comment from '../../../../assets/need/ico_comment@3x.png';
 import ico_share from '../../../../assets/need/ico_share@3x.png';
+import { isLogined } from '@/utils/utils'
 
 
 
@@ -29,6 +30,7 @@ class IndustryItem extends Component {
     const {companyName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs} = data;
     return (
       <View className={styles.list} onClick={()=>{
+        if(isLogined()) return;
         Taro.navigateTo({
           url: `/pages/NeedDetail/index?id=${id}`
         })

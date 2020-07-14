@@ -33,41 +33,6 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
@@ -75,7 +40,7 @@ class Home extends Component {
     industry:false
   }
   config: Config = {
-    navigationBarTitleText: "银行卡信息",
+    navigationBarTitleText: "会员信息",
     navigationBarTextStyle:'black',
     navigationBarBackgroundColor: "#F2F3FE",
     

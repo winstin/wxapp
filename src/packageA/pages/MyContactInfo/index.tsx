@@ -14,7 +14,7 @@ import img_my_bg_corp from '../../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
   myInfo:any;
-  dispatch?<K = any>(action: AnyAction): K;
+  dispatch<K = any>(action: AnyAction): K;
 };
 
 type PageOwnProps = {
@@ -37,42 +37,6 @@ interface Home {
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
@@ -83,9 +47,12 @@ class Home extends Component {
     code:'',
     frontFilePath:'', // 正面照
     dateSel: '',
-    selector: ['美国', '中国', '巴西', '日本'],
-    selectorChecked: '美国',
-
+    country:[],
+    province:[],
+    city:[],
+    countryObject:{name:'',id:'',code:''},
+    provinceObject:{name:'',id:'',code:''},
+    cityObject:{name:'',id:'',code:''},
 
   }
   config: Config = {
@@ -95,15 +62,59 @@ class Home extends Component {
     navigationStyle:"custom",
   };
 
-  componentDidShow() {
-    const {dispatch} = this.props;
+  async componentDidShow() {
+    const {dispatch,myInfo} = this.props;
+    const {contact={}} = myInfo;
     if(dispatch){
-      dispatch({
-        type: "user/getMyInfo",
+      const country = await dispatch({
+        type: "user/getSysRegionAllList",
         payload: {
-          // user_id:Taro.getStorageSync('user_id')
+          type:0,
+          parentid:-1 
         }
       });
+      let countryObject;
+      if(contact.countryCode){
+        countryObject = country.filter(item=>item.code === contact.countryCode)[0];
+      }else{
+        countryObject = country[0];
+      }
+      const province = await dispatch({
+        type: "user/getSysRegionAllList",
+        payload: {
+          type:1,
+          parentid:countryObject.id
+        }
+      });
+      let provinceObject;
+      if(contact.provinceCode){
+        provinceObject = province.filter(item=>item.code === contact.provinceCode)[0];
+      }else{
+        provinceObject = province[0];
+      }
+      const city = await dispatch({
+        type: "user/getSysRegionAllList",
+        payload: {
+          type:2,
+          parentid:provinceObject.id
+        }
+      });
+      let cityObject;
+      if(contact.cityCode){
+        cityObject = city.filter(item=>item.code === contact.cityCode)[0];
+      }else{
+        cityObject = city[0];
+      }
+      // console.log(countryObject,provinceObject,cityObject)
+      this.setState({
+        country,
+        province,
+        city,
+        countryObject,
+        provinceObject,
+        cityObject,
+      })
+
     }
   }
 
@@ -165,11 +176,6 @@ class Home extends Component {
     })
   }
 
-  onPickerChange = e => {
-    this.setState({
-      selectorChecked: this.state.selector[e.detail.value]
-    })
-  }
 
   infoChange = (value,type) => {
     const {dispatch,myInfo} = this.props;
@@ -182,14 +188,45 @@ class Home extends Component {
     }
   }
 
+  onPickerChange = (e,type,fetchType) => {
+    const {dispatch} = this.props;
+    this.setState({
+      [`${type}Object`]: this.state[`${type}`][e.detail.value],
+    },async ()=>{
+      if(type === "province"){
+        const city = await dispatch({
+          type: "user/getSysRegionAllList",
+          payload: {
+            type:2,
+            parentid:this.state.provinceObject.id
+          }
+        });
+        const cityObject = city[0];
+
+        this.setState({
+          // country,
+          // province,
+          city,
+          // countryObject,
+          // provinceObject,
+          cityObject,
+        })
+      }
+    })
+  }
+
   submit = ()=>{
     const {dispatch,myInfo} = this.props;
     const {introduce,basic,contact,scale} = myInfo;
+    const {countryObject,provinceObject,cityObject} = this.state;
     if(dispatch){
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale
+          ...introduce,...basic,...contact,...scale,
+          countryCode:countryObject.code,
+          provinceCode:provinceObject.code,
+          cityCode:cityObject.code,
         }
       });
     }
@@ -215,10 +252,6 @@ class Home extends Component {
           企业电话
         </View>
         <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
           <AtInput className={styles.input} name="companyTel" placeholder="请输入企业电话…"  value={companyTel} onChange={(e)=>{this.infoChange(e,'companyTel')}} />
         </View>
 
@@ -232,25 +265,46 @@ class Home extends Component {
         <View className={styles.label}>
           供应商所属国家
         </View>
-        <View className={styles.formItem}>
+        {/* <View className={styles.formItem}>
           <View>
               <AtInput className={styles.input} name="countryName" placeholder=""  value={countryName} onChange={(e)=>{this.infoChange(e,'countryName')}}/>
           </View>
-        </View>
+        </View> */}
+        <Picker value={this.state.countryObject.name} mode='selector' range={this.state.country}  range-key='name' onChange={(e)=>this.onPickerChange(e,"country",0)}>
+          <View className={styles.formItem}>
+            <View>
+              <AtInput className={styles.input} name="country" placeholder=""  value={this.state.countryObject.name} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
         <View className={styles.label}>
           省份
         </View>
-        <View className={styles.formItem}>
+        <Picker value={this.state.provinceObject.name} mode='selector' range={this.state.province}  range-key='name' onChange={(e)=>this.onPickerChange(e,"province",1)}>
+          <View className={styles.formItem}>
+            <View>
+              <AtInput className={styles.input} name="province" placeholder=""  value={this.state.provinceObject.name} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
+        {/* <View className={styles.formItem}>
           <AtInput className={styles.input} name="provinceName" placeholder="请输入省份…"  value={provinceName} onChange={(e)=>{this.infoChange(e,'provinceName')}} />
-        </View>
+        </View> */}
 
 
         <View className={styles.label}>
           城市
         </View>
-        <View className={styles.formItem}>
+        <Picker value={this.state.cityObject.name} mode='selector' range={this.state.city}  range-key='name' onChange={(e)=>this.onPickerChange(e,"city",2)}>
+          <View className={styles.formItem}>
+            <View>
+              <AtInput className={styles.input} name="city" placeholder=""  value={this.state.cityObject.name} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
+        {/* <View className={styles.formItem}>
           <AtInput className={styles.input} name="cityName" placeholder="请输入城市…"  value={cityName} onChange={(e)=>{this.infoChange(e,'cityName')}} />
-        </View>
+        </View> */}
 
 
         <View className={styles.label}>

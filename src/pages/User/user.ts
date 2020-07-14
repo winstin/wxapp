@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist } from '@/services/fetch';
+import { updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
 
 /**
  * 登录页面
@@ -91,6 +91,14 @@ export default {
       });
       Taro.navigateBack()
     },
+
+    *getSysRegionAllList({payload}, { put,call }) {
+      const res = yield call(getSysRegionAllList,payload);
+      // console.log(res)
+      return res.data
+    },
+
+    
     
     
     

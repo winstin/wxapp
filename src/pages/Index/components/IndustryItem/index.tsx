@@ -40,7 +40,6 @@ class IndustryItem extends Component {
     }
     return (
       <View className={styles.industryItem} onClick={()=>{
-        if(isLogined()) return;
         if(item.title === "签到" && !Signin){
           Taro.atMessage({
             'message': '今日已签到',
@@ -49,6 +48,7 @@ class IndustryItem extends Component {
           return
         }
         if(item.path){
+          if(isLogined()) return;
           Taro.navigateTo({
             url: item.path
           })
@@ -58,6 +58,7 @@ class IndustryItem extends Component {
           })
         }
         if(item.onClick){
+          if(isLogined()) return;
           item.onClick()
         }
 

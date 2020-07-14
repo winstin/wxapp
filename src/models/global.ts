@@ -37,6 +37,11 @@ const codeList = {
   STAFF_AMOUNT:[],// 公司规模
   PURCHASE_SIZE :[],//采购部门规模
   PROCUREMENT_CATEGORY_PROCESSES :[],//
+  ANNUAL_VALUE :[], // 年产值
+  SALES_AMOUNT :[], // 销售额
+  FACTORY_AREA :[], // 工厂面积
+  CONTRIBUTED_CAPITAL  :[],// 实缴资本
+  REGISTERED_CAPITAL :[], // 注册资本
 };
 
 /**

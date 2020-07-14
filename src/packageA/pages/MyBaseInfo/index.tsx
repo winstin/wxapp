@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Picker,Checkbox,Image } from "@tarojs/components";
+import { View,Picker,Checkbox,Image,CheckboxGroup } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
@@ -14,6 +14,16 @@ import "taro-ui/dist/style/components/tag.scss";
 // import "taro-ui/dist/style/components/input.scss";
 
 type PageStateProps = {
+  userInfo:any;
+  SKILLED_FIELD:any;
+  EDUCATION_LEVEL:any;
+  PROCUREMENT_CATEGORY_PROCESSES:any;
+  PURCHASE_SIZE:any;
+  STAFF_AMOUNT:any;
+  INDUSTRY_TYPE:any;
+  COMPANY_PROPERTY:any;
+  INDUSTRY_RANKING:any;
+  COMPANY_TYPE:any;
   myInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
@@ -30,9 +40,21 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ user,loading }) => {
-  const {myInfo={}} = user;
+@connect(({ user,global,loading }) => {    
+  const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
+  ,COMPANY_PROPERTY=[],INDUSTRY_RANKING=[],COMPANY_TYPE=[]} = global;
+  const {myInfo} = user;
   return {
+    userInfo,
+    SKILLED_FIELD,
+    EDUCATION_LEVEL,
+    PROCUREMENT_CATEGORY_PROCESSES,
+    PURCHASE_SIZE,
+    STAFF_AMOUNT,
+    COMPANY_PROPERTY,
+    INDUSTRY_TYPE,
+    INDUSTRY_RANKING,
+    COMPANY_TYPE,
     myInfo,
     loading: loading.effects['parent/getStudentList'],
   }
@@ -51,7 +73,12 @@ class Home extends Component {
     frontFilePath:'', // 正面照
     dateSel: '',
     photoCover:'',
-    frontPagePath:''
+    frontPagePath:'',
+    companyType:'',
+    companyProperty:'',
+    industryType:'',
+    industryRanking:'',
+    reportTo:'',
   }
   config: Config = {
     navigationBarTitleText: "基本信息",
@@ -62,7 +89,17 @@ class Home extends Component {
 
   componentWillMount(){
     const {myInfo} = this.props;
-    this.setState({frontPagePath:`http://sz-spd.cn:889/${myInfo.basic.photoCover}`})
+    const {company,reportTo,companyProperty,companyType,skilledField,industryType,industryRanking,companyScale,dptScale,purType,position,address,nameCard} = myInfo.company || myInfo.basic;
+
+    this.setState({
+      frontPagePath:`http://sz-spd.cn:889/${myInfo.basic.photoCover}`,
+      photoCover:myInfo.basic.photoCover,
+      companyType,
+      companyProperty,
+      industryType,
+      industryRanking,
+      reportTo,
+    })
   }
   componentDidShow() {
       
@@ -167,23 +204,33 @@ class Home extends Component {
   submit = ()=>{
     const {dispatch,myInfo} = this.props;
     const {introduce,basic,contact,scale} = myInfo;
+    const {industryType,companyProperty,industryRanking,companyType,reportTo} = this.state;
     if(dispatch){
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,
+          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType,reportTo
+          
         }
       });
     }
   }
 
+  onChange = (type,e)=>{
+    console.log(type,e);
+    this.setState({
+      [`${type}`]:e.detail.value,
+      // [`${type}Name`]:e.detail.value,
+    })
+  }
+
   render() {
-    const {phone,frontPagePath} = this.state;
+    const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType,reportTo} = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
 
     const {myInfo={basic:{}}} = this.props;
-    const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic} = myInfo.basic;
+    const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic,birthday} = myInfo.basic;
 
     return (
       <View className={styles.needdetail}>
@@ -193,7 +240,7 @@ class Home extends Component {
         <View className={styles.userInfo} >
         </View> */}
 
-        <View className={styles.backImageItem}>
+        {myInfo.type==="enterprise" && <View className={styles.backImageItem}>
           {
             frontPagePath&&(
               <View className={styles.imageView}>
@@ -203,113 +250,167 @@ class Home extends Component {
             )
           }
           {
-          !frontPagePath && <View className={styles.uploadBtn} onClick={this.chooseImageFontpage}>
-            <View className={styles.addIcon}>+</View>
-            <View className={styles.btnTitle}>点击上传封面图片</View>
-          </View>
+            !frontPagePath && <View className={styles.uploadBtn} onClick={this.chooseImageFontpage}>
+              <View className={styles.addIcon}>+</View>
+              <View className={styles.btnTitle}>点击上传封面图片</View>
+            </View>
           }
           
-        </View>
+        </View>}
         
         <View className={styles.label}>
-          公司名称
+          {myInfo.type==="personal"?"姓名":"公司名称"}
         </View>
         <View className={styles.formItem}>
           <View className={styles.flex}>
           <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.infoChange(e,'name')}} />
           </View>
         </View>
-
-        <View className={styles.label}>
-          公司平台代码
-        </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="code" placeholder="请输入公司平台代码…" disabled={true} value={code} onChange={(e)=>{this.infoChange(e,'code')}}/>
-        </View>
-
-        <View className={styles.label}>
+        
+        {myInfo.type==="personal" && 
+          <View>
+              <View className={styles.label}>
+                生日
+              </View>
+              <View className={styles.formItem}>
+                <View>
+                    <Picker value={""} mode='date' onChange={this.onDateChange}>
+                      <AtInput className={styles.input} name="birthday" placeholder="请选择您的出生日期…"  value={birthday} onChange={(e)=>{this.infoChange(e,'birthday')}}/>
+                    </Picker>
+                </View>
+              </View>
+          </View>
+        }
+        {myInfo.type==="enterprise" && 
+          <View>
+            <View className={styles.label}>
+              公司平台编码
+            </View>
+            <View className={styles.formItem}>
+              <AtInput className={styles.input} name="code" placeholder="请输入公司平台编码…" disabled={true} value={code} onChange={(e)=>{this.infoChange(e,'code')}}/>
+            </View>
+          </View>
+        }
+        {/* <View className={styles.label}>
           公司简称
         </View>
         <View className={styles.formItem}>
           <AtInput className={styles.input} name="phone" placeholder="请输入公司简称…"  value={phone} onChange={(e)=>{this.infoChange(e,'phone')}} />
-        </View>
+        </View> */}
+        {myInfo.type==="enterprise" && 
+          <View>
+            <View className={styles.label}>
+              统一税务登记号
+            </View>
+            <View className={styles.formItem}>
+              <AtInput className={styles.input} name="businessLicenseNo" placeholder="请输入统一税务登记号…"  value={businessLicenseNo} onChange={(e)=>{this.infoChange(e,'businessLicenseNo')}} />
+            </View>
+          </View>
+        }
 
-        <View className={styles.label}>
-          统一税务登记号
-        </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="businessLicenseNo" placeholder="请输入统一税务登记号…"  value={businessLicenseNo} onChange={(e)=>{this.infoChange(e,'businessLicenseNo')}} />
-        </View>
-
-
-        <View className={styles.label}>
+        {/* <View className={styles.label}>
           公司网站
         </View>
         <View className={styles.formItem}>
           <AtInput className={styles.input} name="phone" placeholder="请输入公司网站…"  value={phone} onChange={(e)=>{this.infoChange(e,'phone')}} />
-        </View>
+        </View> */}
 
 
         <View className={styles.label}>
           企业类型
         </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="companyTypeName" placeholder="请输入企业类型…"  value={companyTypeName} onChange={(e)=>{this.infoChange(e,'companyTypeName')}} />
+        <View className={styles.formcheckboxItem}>
+          <CheckboxGroup onChange={(e)=>{this.onChange("companyType",e)}}>
+            {
+              this.props.COMPANY_TYPE && this.props.COMPANY_TYPE.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" checked={companyType.includes(item.value)}>{item.label}</Checkbox>
+                </View>
+              ))
+            }
+          </CheckboxGroup>
+          {/* <AtInput className={styles.input} name="companyTypeName" placeholder="请输入企业类型…"  value={companyTypeName} onChange={(e)=>{this.infoChange(e,'companyTypeName')}} /> */}
         </View>
 
         <View className={styles.label}>
           企业性质
         </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="companyPropertyname" placeholder="请输入企业性质…"  value={companyPropertyname} onChange={(e)=>{this.infoChange(e,'companyPropertyname')}} />
+        <View className={styles.formcheckboxItem}>
+          <CheckboxGroup onChange={(e)=>{this.onChange("companyProperty",e)}}>
+            {
+              this.props.COMPANY_PROPERTY && this.props.COMPANY_PROPERTY.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" checked={companyProperty.includes(item.value)}>{item.label}</Checkbox>
+                </View>
+              ))
+            }
+          </CheckboxGroup>
+          {/* <AtInput className={styles.input} name="companyPropertyname" placeholder="请输入企业性质…"  value={companyPropertyname} onChange={(e)=>{this.infoChange(e,'companyPropertyname')}} /> */}
         </View>
 
         <View className={styles.label}>
           行业类型
         </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="industryTypeName" placeholder="请输入企业性质…"  value={industryTypeName} onChange={(e)=>{this.infoChange(e,'industryTypeName')}} />
+        <View className={styles.formcheckboxItem}>
+          <CheckboxGroup onChange={(e)=>{this.onChange("industryType",e)}}>
+            {
+              this.props.INDUSTRY_TYPE && this.props.INDUSTRY_TYPE.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" checked={industryType.includes(item.value)}>{item.label}</Checkbox>
+                </View>
+              ))
+            }
+          </CheckboxGroup>
+          {/* <AtInput className={styles.input} name="industryTypeName" placeholder="请输入企业性质…"  value={industryTypeName} onChange={(e)=>{this.infoChange(e,'industryTypeName')}} /> */}
         </View>
         <View className={styles.label}>
           行业排名
         </View>
-        <View className={styles.formItem}>
-          <AtInput className={styles.input} name="industryRankingName" placeholder="请输入企业性质…"  value={industryRankingName} onChange={(e)=>{this.infoChange(e,'industryRankingName')}} />
-        </View>
-
-        <View className={styles.label}>
-          汇报对象
-        </View>
         <View className={styles.formcheckboxItem}>
+          <CheckboxGroup onChange={(e)=>{this.onChange("industryRanking",e)}}>
+            {
+              this.props.INDUSTRY_RANKING && this.props.INDUSTRY_RANKING.map((item)=>(
+                <View className={styles.checkboxItem}>
+                  <Checkbox value={item.value} style="flex:1" checked={industryRanking.includes(item.value)}>{item.label}</Checkbox>
+                </View>
+              ))
+            }
+          </CheckboxGroup>
+          {/* <AtInput className={styles.input} name="industryRankingName" placeholder="请输入企业性质…"  value={industryRankingName} onChange={(e)=>{this.infoChange(e,'industryRankingName')}} /> */}
+        </View>
+        {myInfo.type !== "enterprise" && 
           <View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='0' checked>机处理</Checkbox>
+            <View className={styles.label}>
+              汇报对象
             </View>
-            <View className={styles.checkboxItem}>
-              <Checkbox value='1'>表面加工</Checkbox>
+            <View className={styles.formItem}>
+                <AtInput className={styles.input} name="reportTo" placeholder="请输入企业性质…"  value={reportTo} onChange={(e)=>{this.infoChange(e,'reportTo')}} /> 
             </View>
           </View>
-        </View>
+        }
 
-        <View className={styles.label}>
+        {/* <View className={styles.label}>
           主要供货类别
         </View>
         <View className={styles.formItem}>
           <AtInput className={styles.input} name="phone" placeholder="请输入企业性质…"  value={phone} onChange={(e)=>{this.infoChange(e,'phone')}} />
-        </View>
+        </View> */}
 
-
-        <View className={styles.label}>
-          营业执照生效日期
-        </View>
-        <View className={styles.formItem}>
+        {myInfo.type === "enterprise" && 
           <View>
-              <Picker value={""} mode='date' onChange={this.onDateChange}>
-                <AtInput className={styles.input} name="licenseDate" placeholder="请选择您的出生日期…"  value={licenseDate} onChange={(e)=>{this.infoChange(e,'licenseDate')}}/>
-              </Picker>
+            <View className={styles.label}>
+              营业执照生效日期
+            </View>
+            <View className={styles.formItem}>
+              <View>
+                  <Picker value={""} mode='date' onChange={this.onDateChange}>
+                    <AtInput className={styles.input} name="licenseDate" placeholder="请选择您的出生日期…"  value={licenseDate} onChange={(e)=>{this.infoChange(e,'licenseDate')}}/>
+                  </Picker>
+              </View>
+              
+            </View>
           </View>
-          
-        </View>
+      }
 
         <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>保存</AtButton>
       

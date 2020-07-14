@@ -8,6 +8,15 @@ import Index2 from '../../assets/Index2.jpeg';
 
 type PageStateProps = {
   corporateDetail:any;
+  SKILLED_FIELD:any;
+  EDUCATION_LEVEL:any;
+  PROCUREMENT_CATEGORY_PROCESSES:any;
+  PURCHASE_SIZE:any;
+  STAFF_AMOUNT:any;
+  INDUSTRY_TYPE:any;
+  COMPANY_PROPERTY:any;
+  INDUSTRY_RANKING:any;
+  COMPANY_TYPE:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -23,49 +32,25 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ factory,loading }) => {
+@connect(({ factory,global,loading }) => {
   const {corporateDetail={}} = factory;
+  const {SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
+  ,COMPANY_PROPERTY=[],INDUSTRY_RANKING=[],COMPANY_TYPE=[]} = global;
   return {
     corporateDetail,
+    SKILLED_FIELD,
+    EDUCATION_LEVEL,
+    PROCUREMENT_CATEGORY_PROCESSES,
+    PURCHASE_SIZE,
+    STAFF_AMOUNT,
+    COMPANY_PROPERTY,
+    INDUSTRY_TYPE,
+    INDUSTRY_RANKING,
+    COMPANY_TYPE,
     loading: loading.effects['parent/getStudentList'],
   }
 })
 class Home extends Component {
-
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
 
   state = {
     current: 0,
@@ -121,8 +106,13 @@ class Home extends Component {
 
   render() {
 
-    const {name,productTech,countryName,provinceName,factoryArea,staffAmount,referrerOpinion,products,id} = this.props.corporateDetail;
-
+    const {
+      name,productTech,countryName,provinceName,factoryArea,
+      staffAmount,introduction,businessLicenseNo,referrerOpinion,
+      address,companyTel,legalPerson,star,linkmanPhone,shortName,companyTypeName,companyPropertyName,industryType=''
+    } = this.props.corporateDetail;
+    const industryData = this.props.INDUSTRY_TYPE.filter((item)=>`${industryType}`.includes(item.value))||[];
+    const industryarr = industryData && industryData.map((item)=>item.label) || ''
     return (
       <View className={styles.needdetail}>
         <View className={styles.title}>
@@ -141,10 +131,6 @@ class Home extends Component {
           </View>
         </View>
       </View>
-    
-        
-
-
         <View className={styles.content} >
           <View className={styles.tips} >
             <View className={styles.tipicon} />
@@ -154,7 +140,7 @@ class Home extends Component {
           </View>
           <View className={styles.tips2} >
             <View className={styles.conenttext} >
-            {referrerOpinion}
+            {introduction}
             </View>
           </View>
         </View>
@@ -169,12 +155,100 @@ class Home extends Component {
           </View>
           <View className={styles.tips2} >
             <View className={styles.label} >
+            企业简称
+            </View>
+            <View className={styles.conenttext} >
+            {shortName}
+            </View>
+          </View>
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            企业类型
+            </View>
+            <View className={styles.conenttext} >
+            {companyTypeName}
+            </View>
+          </View>
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            企业性质
+            </View>
+            <View className={styles.conenttext} >
+            {companyPropertyName}
+            </View>
+          </View>
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            行业类别
+            </View>
+            <View className={styles.conenttext} >
+            {industryarr.join(',')}
+            </View>
+          </View>
+
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
             国家地区
             </View>
             <View className={styles.conenttext} >
             {countryName}，{provinceName}
             </View>
           </View>
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            详细地址
+            </View>
+            <View className={styles.conenttext} >
+            {address}
+            </View>
+          </View>
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            统一税务登记号
+            </View>
+            <View className={styles.conenttext} >
+            {businessLicenseNo}
+            </View>
+          </View>
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            企业电话
+            </View>
+            <View className={styles.conenttext} >
+            {companyTel}
+            </View>
+          </View>
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            法人
+            </View>
+            <View className={styles.conenttext} >
+            {legalPerson}
+            </View>
+          </View>
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            联系人手机
+            </View>
+            <View className={styles.conenttext} >
+            {linkmanPhone}
+            </View>
+          </View>
+
+          <View className={styles.tips2} >
+            <View className={styles.label} >
+            星级
+            </View>
+            <View className={styles.conenttext} >
+            {star}
+            </View>
+          </View>
+          
           <View className={styles.tips2} >
             <View className={styles.label} >
             工厂面积

@@ -238,6 +238,11 @@ export const delbaseVendorAlbum = (params)=>{
   return Api.delbaseVendorAlbum(params,'DELETE');
 }
 
+export const getSysRegionAllList = (params)=>{
+  return Api.getSysRegionAllList(params);
+}
+
+
 
 
 

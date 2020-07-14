@@ -2,7 +2,7 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View,ScrollView} from "@tarojs/components";
-import { AtDrawer } from 'taro-ui'
+import { AtDrawer,AtSearchBar } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import FactoryItem from '../Index/components/FactoryItem/index';
 import styles from "./index.modules.less";
@@ -11,6 +11,7 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/drawer.scss";
 import "taro-ui/dist/style/components/list.scss";
 import "taro-ui/dist/style/components/modal.scss";
+import "taro-ui/dist/style/components/search-bar.scss";
 
 type PageStateProps = {
   userInfo:any;
@@ -48,41 +49,6 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   sortArr = [
     {
       key:'',
@@ -112,7 +78,8 @@ class Home extends Component {
     sortObject:{
       key:'',
       value:'综合排序'
-    }
+    },
+    value:''
   }
   config: Config = {
     navigationBarTitleText: "企业展示",
@@ -153,6 +120,9 @@ class Home extends Component {
         isAsc:false,
         current:page,
       }
+      if(this.state.value){
+        payload.name=this.state.value
+      }
       if(industryObject.value){
         payload.industryType=industryObject.value
       }
@@ -191,6 +161,19 @@ class Home extends Component {
 
   onClose=()=>{
     this.setState({show:false,sort:false,industry:false})
+  }
+
+  onChange (value) {
+    this.setState({
+      value: value
+    })
+  }
+  onActionClick () {
+    console.log('开始搜索');
+
+    this.fetchList(1);
+
+    this.onClose();
   }
 
 
@@ -278,9 +261,20 @@ class Home extends Component {
           show={this.state.show} 
           right 
           mask 
+          width={"260px"}
           onClose={this.onClose.bind(this)} 
-          items={['菜单1', '菜单2']}
-        ></AtDrawer>
+          // items={['菜单1', '菜单2']}
+        >
+          <View className='drawer-item'>
+            <AtSearchBar
+              // showActionButton
+              value={this.state.value}
+              onChange={this.onChange.bind(this)}
+              onActionClick={this.onActionClick.bind(this)}
+            />
+          </View>
+
+        </AtDrawer>
 
         
       </View>

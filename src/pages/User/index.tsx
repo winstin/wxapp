@@ -17,8 +17,8 @@ import ListItem from './components/ListItem/index';
 import img_my_bg_corp from '../../assets/user/img_my_bg_corp.png';
 import img_my_corp from '../../assets/img_vip_corp@3x.png';
 import img_vip_person from '../../assets/img_vip_person@3x.png';
-
 import { AtButton } from "taro-ui";
+import { isLogined } from '@/utils/utils'
 
 type PageStateProps = {
   userInfo:any;
@@ -95,6 +95,9 @@ class User extends Component {
   }
  
   manageCard = (url) => {
+    if(url!="/packageA/pages/MemberShipPerson/index" && url!="/packageA/pages/MemberShipUpgrade/index"){
+      if(isLogined()) return;
+    }
     Taro.navigateTo({
       url
     })
@@ -191,28 +194,28 @@ class User extends Component {
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>
-        {type==="enterprise" &&<ListItem 
+        {token && type==="enterprise" &&<ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>}
-        {type==="enterprise" && <ListItem 
+        {token && type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyEnterpriseScale/index")}}
           cardIcon={qygm}
           title={'企业规模'}
         ></ListItem>}
         
-        {type==="enterprise" && <ListItem 
+        {token && type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyCompaniestIntroduce/index")}}
           cardIcon={qygm}
           title={'企业介绍'}
         ></ListItem>}
-        {type==="enterprise" && <ListItem 
+        {token && type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyAlbumEnterprise/index")}}
           cardIcon={qyxc}
           title={'企业相册'}
         ></ListItem>}
-        {type==="enterprise" && <ListItem 
+        {token && type==="enterprise" && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/AlbumProductList/index")}}
           cardIcon={cpxc}
           title={'产品相册'}

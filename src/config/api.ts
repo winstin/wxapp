@@ -83,4 +83,8 @@ export const requestConfig = {
   updatebaseMember:'/api/srm/baseMember/update', // 跟新我的信息
   delbaseVendorAlbum:'/api/srm/baseVendorAlbum/del', // 删除产品信息
 
+  getSysRegionAllList:'/api/basic/sysRegion/allList', // # 获取国家列表 省份 城市
+
+
+  
 }

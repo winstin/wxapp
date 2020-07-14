@@ -2,6 +2,7 @@ import { ComponentClass } from "react";
 import Taro, { Component } from "@tarojs/taro";
 import { View,Image } from "@tarojs/components";
 import styles from "../../index.modules.less";
+import { isLogined } from '@/utils/utils'
 
 
 
@@ -28,6 +29,7 @@ class IndustryItem extends Component {
 
     return (
       <View className={styles.list} onClick={()=>{
+        if(isLogined()) return;
         Taro.navigateTo({
           url: `/packageA/pages/RecruitmentDetail/index?id=${id}`
         })

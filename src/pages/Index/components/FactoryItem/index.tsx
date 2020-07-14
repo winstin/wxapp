@@ -9,6 +9,7 @@ import skill from '../../../../assets/factory/ico_skill@3x.png';
 import staff from '../../../../assets/factory/ico_staff@3x.png';
 import location from '../../../../assets/factory/ico_location@3x.png';
 import Index2 from '../../../../assets/Index2.jpeg';
+import { isLogined } from '@/utils/utils'
 
 type PageOwnProps = {
   src?:any;
@@ -29,6 +30,7 @@ class IndustryItem extends Component {
     const {star,name,address,introduction,factoryArea,staffAmount,productTech} = data;
     return (
       <View className={styles.list} onClick={()=>{
+        if(isLogined()) return;
         Taro.navigateTo({
           url: `/pages/FactoryDetail/index?id=${data.id}`
         })
