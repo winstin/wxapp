@@ -237,41 +237,72 @@ class Home extends Component {
 
   submit = () =>{
     const {dispatch,myInfo} = this.props;
-    const {levelNow,levelApply} = myInfo.basic;
+    const {type} = myInfo;
 
     const {
       photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
       wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address
     } = this.state;
-
     if(dispatch){
-      dispatch({
-        type: "factory/registerBaseMember",
-        payload:  {
-          name,
-          nickname:name,
-          account:telephoe,
-          birthday,
-          native_place,
-          reportTo,
-          education:education.join(','),
-          school,email,telephoe,qq,referrerName,wx_id,sex,
-          skilledField:skilledField.join(','),
-          industryType:industryType.join(','),
-          companyProperty:companyProperty.join(','),
-          companyScale:companyScale.join(','),
-          dptScale:dptScale.join(','),
-          purType:purType.join(','),
-          levelNow,
-          levelApply,
-          company,position,address,nameCard:photo
-        }
-      }).then((e)=>{
-        Taro.showToast({
-          'title': '注册成功',
+      if(type){
+        const {introduce,basic,contact,scale} = myInfo;
+        console.log("升级会员")
+        dispatch({
+          type: "user/updatebaseMember",
+          payload:  {
+            ...introduce,...basic,...contact,...scale,
+            name,
+            nickname:name,
+            account:telephoe,
+            birthday,
+            native_place,
+            reportTo,
+            education:education.join(','),
+            school,email,telephoe,qq,referrerName,wx_id,sex,
+            skilledField:skilledField.join(','),
+            industryType:industryType.join(','),
+            companyProperty:companyProperty.join(','),
+            companyScale:companyScale.join(','),
+            dptScale:dptScale.join(','),
+            purType:purType.join(','),
+            company,position,address,nameCard:photo
+          }
+        }).then((e)=>{
+          Taro.showToast({
+            'title': '升级成功',
+          });
+          Taro.navigateBack()
         });
-        Taro.navigateBack()
-      });
+      }else{
+        console.log("注册会员")
+        dispatch({
+          type: "factory/registerBaseMember",
+          payload:  {
+            name,
+            nickname:name,
+            account:telephoe,
+            birthday,
+            native_place,
+            reportTo,
+            education:education.join(','),
+            school,email,telephoe,qq,referrerName,wx_id,sex,
+            skilledField:skilledField.join(','),
+            industryType:industryType.join(','),
+            companyProperty:companyProperty.join(','),
+            companyScale:companyScale.join(','),
+            dptScale:dptScale.join(','),
+            purType:purType.join(','),
+            // levelNow,
+            // levelApply,
+            company,position,address,nameCard:photo
+          }
+        }).then((e)=>{
+          Taro.showToast({
+            'title': '注册成功',
+          });
+          Taro.navigateBack()
+        });
+      }
     }
   }
 

@@ -119,6 +119,8 @@ class Home extends Component {
           codes:'XCX_HOME_IMG' 
         }
       });
+      this.fetchList(0);
+
       if(token){
         dispatch({
           type: "myindex/getsysMenu",
@@ -147,7 +149,6 @@ class Home extends Component {
           }
         });
         
-        this.fetchList(0);
       }
     }
   }

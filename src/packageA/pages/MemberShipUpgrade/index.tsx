@@ -156,29 +156,52 @@ class Home extends Component {
   submit = () =>{
     const {dispatch,myInfo} = this.props;
     const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo}:any = this.state;
-    const {levelNow,levelApply} = myInfo.basic;
-
+    const { type } = myInfo;
     if(dispatch){
-      dispatch({
-        type: "factory/registerCorporate",
-        payload:  {
-          name,
-          businessLicenseNo,
-          introduction,
-          linkman,
-          linkmanPhone:account,
-          referrerName,
-          logo,
-          isTop:'1',
-          levelNow,
-          levelApply,
-        }
-      }).then((e)=>{
-        Taro.showToast({
-          'title': '注册成功',
+      if(type){
+        const {introduce,basic,contact,scale} = myInfo;
+        console.log("升级会员")
+        dispatch({
+          type: "user/updatebaseMember",
+          payload:  {
+            ...introduce,...basic,...contact,...scale,
+            name,
+            businessLicenseNo,
+            introduction,
+            linkman,
+            linkmanPhone:account,
+            referrerName,
+            logo,
+            isTop:'1',
+          }
+        }).then((e)=>{
+          Taro.showToast({
+            'title': '升级成功',
+          });
+          Taro.navigateBack()
         });
-        Taro.navigateBack()
-      });
+      }else{
+        console.log("注册会员")
+        dispatch({
+          type: "factory/registerCorporate",
+          payload:  {
+            name,
+            businessLicenseNo,
+            introduction,
+            linkman,
+            linkmanPhone:account,
+            referrerName,
+            logo,
+            isTop:'1',
+          }
+        }).then((e)=>{
+          Taro.showToast({
+            'title': '注册成功',
+          });
+          Taro.navigateBack()
+        });
+      }
+     
     }
   }
 

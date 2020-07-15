@@ -25,7 +25,7 @@ export function isLogined() {
   const token = Taro.getStorageSync('token');
   if(!token){
     Taro.reLaunch({
-      url: "/pages/Login/index"
+      url: "/pages/Home/index"
     })
     return true
   }

@@ -57,26 +57,27 @@ class Login extends Component {
   // 登录
   login = () => {
     const {dispatch} = this.props;
-    const {phone,code,tenantInfo} = this.state;
+    const {phone,code} = this.state;
 
     Taro.login({
       success:(res)=>{
-        console.log(res)
+        if(dispatch){
+          dispatch({
+            type: "global/login",
+            payload: {
+              username:phone,
+              password:code,
+              authType:"wx-app",
+              code:res.code,
+            }
+          });
+        }
       },
       fail:(err)=>{
         console.log(err)
       }
     })
-    if(dispatch){
-      dispatch({
-        type: "global/login",
-        payload: {
-          username:phone,
-          password:code,
-          captcha:""
-        }
-      });
-    }
+    
     // Taro.reLaunch({ url: "/pages/Home/index" });
   }
 
@@ -144,25 +145,18 @@ class Login extends Component {
         {/* <AtButton type='primary' className={styles.codeBtn} onClick={this.sendCode}>发送验证码</AtButton> */}
         </View>
 
-        {/* <View className={styles.formItem} onClick={this.tentantChange}>
-          <Image
-            className={styles.itemIcon}
-            src={codeIcon}
-          />
-          <AtInput className={styles.input} name="phone" placeholder="租户身份"  value={tenantInfo.tenantName} disabled onChange={()=>{}} />
-          <AtActionSheet isOpened={isOpened}>
-            {JSX}
-          </AtActionSheet>
-        </View> */}
         <AtButton type='primary' className={styles.loginBtn} onClick={this.login}>登录</AtButton>
-
+        <View className={styles.content}>
+          {/* <View className={styles.content} style={{marginBottom:10}}>机械荟应用</View> */}
+          <View className={styles.little}> 升级会员即可注册账号，默认密码 000000 </View>
+        </View>
         {/* 底部公司信息 */}
         <View className={styles.bottom}>
         {/* <Image
           className={styles.enterpriseLogo}
           src={enterpriseLogo}
         /> */}
-        <View className={styles.enterpriseName}>苏州钛耘数据科技有限公司</View>
+        {/* <View className={styles.enterpriseName}>苏州钛耘数据科技有限公司</View> */}
         </View>
       </View>
     );

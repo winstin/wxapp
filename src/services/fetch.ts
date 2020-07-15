@@ -242,6 +242,9 @@ export const getSysRegionAllList = (params)=>{
   return Api.getSysRegionAllList(params);
 }
 
+export const getMycard = (params)=>{
+  return Api.getMycard(params);
+}
 
 
 

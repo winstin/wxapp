@@ -10,6 +10,7 @@ import Index2 from '../../assets/Index2.jpeg';
 import btn_new from '../../assets/need/btn_new@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/tabs.scss";
+import { isLogined } from '@/utils/utils'
 
 type PageStateProps = {
   userInfo:any;
@@ -203,6 +204,7 @@ class Home extends Component {
     return (
       <View className={styles.need}>
         <Image src={btn_new} className={styles.addicon} onClick={()=>{
+          if(isLogined()) return;
           Taro.navigateTo({
             url: '/pages/NeedPublish/index'
           })

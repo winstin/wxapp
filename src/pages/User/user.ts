@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
+import { getMycard,updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
 
 /**
  * 登录页面
@@ -9,6 +9,7 @@ export default {
   state: {
     makerInfo:{},
     myInfo:{},
+    cardInfo:{},
     mypointslist:[]
   },
 
@@ -97,6 +98,17 @@ export default {
       // console.log(res)
       return res.data
     },
+
+    // 获取用户信息
+    *getMycard({payload}, { put,call }) {
+      const res = yield call(getMycard,payload);
+      console.log(res)
+      yield put({
+        type:'updateState',
+        payload:{cardInfo:res.data}
+      })
+    },
+    
 
     
     

@@ -8,7 +8,7 @@ import styles from "./index.modules.less";
 import img_my_bg_corp from '../../../assets/user/img_my_bg_corp.png';
 
 type PageStateProps = {
-  userInfo:any;
+  cardInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -24,10 +24,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ user,loading }) => {
+  const {cardInfo={}} = user;
   return {
-    userInfo,
+    cardInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -47,7 +47,22 @@ class Home extends Component {
   };
 
   componentDidShow() {
+    // this.fetchCardInfo();
+  }
 
+   // 最新需求
+   fetchCardInfo = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "user/getMycard",
+        payload: {
+          // isAsc:false,
+          // current:page,
+          // industryType:industryObject.value
+        }
+      })
+    }
   }
 
   handleClick (value) {
@@ -67,27 +82,39 @@ class Home extends Component {
 
 
   render() {
+    const{ cardInfo } = this.props;
+    const logo = cardInfo.logo || "";
     return (
-      <View className={styles.userInfo} >
-          <Image className={styles.bg_img} src={img_my_bg_corp} />
-          <View className={styles.rightico} >
+      <View>
+          <View className={styles.userInfo} >
+              <Image className={styles.bg_img} src={img_my_bg_corp} />
+              <View className={styles.rightico} >
+                <Image
+                  className={styles.logo}
+                  src={`http://sz-spd.cn:889/${logo.trim()}`}
+                />
+              </View>
+
+              <View className={styles.bankname} >
+                  {cardInfo.name}
+              </View>
+
+              <View className={styles.banktip} >
+                  联系人: {cardInfo.linkMan}
+              </View>
+
+              <View className={styles.bankacount} >
+                {cardInfo.code}
+              </View>
+
+              
+          </View>
+          <View className={styles.card}>
             <Image
-              className={styles.logo}
-              src={logo}
-            />
-          </View>
-
-          <View className={styles.bankname} >
-              苏州瑞得恩自动化设备有限公司
-          </View>
-
-          <View className={styles.banktip} >
-              联系人: 蔡德霖
-          </View>
-
-          <View className={styles.bankacount} >
-              1074 2210 2177 51023
-          </View>
+                className={styles.barCode}
+                src={`http://sz-spd.cn:889/${cardInfo.barCode}`}
+              />
+          </View> 
       </View>
 
     );

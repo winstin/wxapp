@@ -181,7 +181,7 @@ class Home extends Component {
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
     const {myInfo={scale:{}}} = this.props;
-    const {staffAmount,factoryArea,annualSale,registCapital,annualValue,contributedCapital} = myInfo.scale;
+    const {staffAmount,factoryArea,annualSale,registCapital,annualValue,paidinCapital} = myInfo.scale;
 
     return (
       <View className={styles.needdetail}>
@@ -219,11 +219,11 @@ class Home extends Component {
           <AtInput className={styles.input} name="registCapital" placeholder="请输入实收资本…"  value={registCapital} onChange={(e)=>{this.infoChange(e,'introduction')}} />
         </View> */}
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("contributedCapital",e)}}>
+            <RadioGroup onChange={(e)=>{this.onChange("paidinCapital",e)}}>
             {
               this.props.CONTRIBUTED_CAPITAL && this.props.CONTRIBUTED_CAPITAL.map((item)=>(
                 <View className={styles.checkboxItem}>
-                  <Radio value={item.value} style="flex:1" checked={`${contributedCapital}`.includes(item.value)}>{item.label}</Radio>
+                  <Radio value={item.value} style="flex:1" checked={`${paidinCapital}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }

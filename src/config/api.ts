@@ -33,7 +33,7 @@ export const requestConfig = {
   getOssFile: '/api/agileworker-resource/oss/get-file', // 获取文件
 
 
-  weapplogin: '/api/gate/oauth/loginWithPassword', // 微信登录接口
+  weapplogin: '/api/gate/oauth/miniProgramLogin', // 微信登录接口
   getBatchDictValues: '/api/basic/sysDictValue/getBatchDictValues', // 微信登录接口
   baseMemberPoints:'/api/srm/baseMemberPoints/signIn', // 会员签到
   getsysMenu:'/api/basic/sysMenu/xcx-menu', // 获取有权限的小程序菜单
@@ -84,6 +84,7 @@ export const requestConfig = {
   delbaseVendorAlbum:'/api/srm/baseVendorAlbum/del', // 删除产品信息
 
   getSysRegionAllList:'/api/basic/sysRegion/allList', // # 获取国家列表 省份 城市
+  getMycard:'/api/srm/baseMember/my-card', // # 获取国家列表 省份 城市
 
 
   

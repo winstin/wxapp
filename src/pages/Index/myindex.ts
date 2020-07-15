@@ -76,11 +76,13 @@ export default {
           path
         }
       });
-      for(let i = newMenu.length; i<5;i++){
-        newMenu.push({
-          icon:'',
-          title:''
-        })
+      if(newMenu.length>0){
+        for(let i = newMenu.length; i<5;i++){
+          newMenu.push({
+            icon:'',
+            title:''
+          })
+        }
       }
       yield put({
         type:'updateState',

@@ -33,8 +33,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ factory,loading }) => {
-  const {userInfo={},INDUSTRY_TYPE=[],corporateData} = factory;
+@connect(({ factory,global,loading }) => {
+  const {userInfo={},corporateData} = factory;
+  const {INDUSTRY_TYPE=[]} = global;
+
   let newtype = JSON.parse(JSON.stringify(INDUSTRY_TYPE))
   newtype.unshift({
     label:'行业不限',
@@ -91,19 +93,8 @@ class Home extends Component {
   componentDidShow() {
 
     const token = Taro.getStorageSync('token');
-    const {dispatch} = this.props;
-    if(dispatch){
-      if(token){
-        dispatch({
-          type: "factory/getBatchDictValueByCode",
-          payload: {
-            code:'INDUSTRY_TYPE' 
-          }
-        });
+    this.fetchList(1);
 
-        this.fetchList(1)
-      }
-    }
   }
 
 

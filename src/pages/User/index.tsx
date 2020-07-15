@@ -24,6 +24,7 @@ type PageStateProps = {
   userInfo:any;
   makerInfo:any;
   myInfo:any;
+  cardInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -41,11 +42,12 @@ interface User {
 
 @connect(({ global,user,loading }) => {
   const {userInfo={}} = global;
-  const { makerInfo,myInfo={} } = user;
+  const { makerInfo,myInfo={},cardInfo } = user;
   return {
     userInfo,
     makerInfo,
     myInfo,
+    cardInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -83,9 +85,25 @@ class User extends Component {
             // user_id:Taro.getStorageSync('user_id')
           }
         });
+        this.fetchCardInfo();
       }
     }
     
+  }
+
+  // 最新需求
+  fetchCardInfo = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "user/getMycard",
+        payload: {
+          // isAsc:false,
+          // current:page,
+          // industryType:industryObject.value
+        }
+      })
+    }
   }
 
   goInfo = () => {
@@ -106,12 +124,12 @@ class User extends Component {
   cancelLogin = ()=>{
     Taro.clearStorage();
     Taro.reLaunch({
-      url: "/pages/Login/index"
+      url: "/pages/Home/index"
     })
   }
 
   render() {
-    const {userInfo,myInfo} = this.props;
+    const {userInfo,myInfo,cardInfo} = this.props;
 
     const token = Taro.getStorageSync('token');
     // if(!token){
@@ -152,7 +170,7 @@ class User extends Component {
               />}
               
             </View>
-            <View className={styles.phone}>{'1074 2210 2177 51023'}
+            <View className={styles.phone}>{cardInfo.code}
             <Image
               className={styles.itemIcon}
               src={cardIcon}
