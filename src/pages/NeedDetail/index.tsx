@@ -129,29 +129,16 @@ class Home extends Component {
     const {msg,parentsName} = this.state;
     return (
       <View className={styles.needdetail}>
-         <View className={styles.toplabel}>
-          <View className={styles.leftlabel}>
-            发布人
-          </View>
-          <View className={styles.text}>
-            {reqName}
-          </View>
-        </View>
-        <View className={styles.toplabel}>
-          <View className={styles.leftlabel}>
-            发布日期
-          </View>
-          <View className={styles.text}>
-            {createdDate}
-          </View>
-        </View>
         <View className={styles.list}>
-          <View>
+          {/* <View>
             <Image src={`http://sz-spd.cn:889/${drawings[0].url}`} className={styles.listimg} />
-          </View>
+          </View> */}
           <View style='flex:1'>
             <View className={styles.title} >
             {companyName}
+            </View>
+            <View className={styles.tips} >
+              {createdDate}
             </View>
             <View className={styles.tips} >
             数量  {qty}台
@@ -159,9 +146,12 @@ class Home extends Component {
             <View className={styles.tips} >
             要求  {reqDesc}
             </View>
-            <View className={styles.tips} >
-              {createdDate}
+
+            <View className={styles.drawings}>
+              {drawings.map((item)=>(<Image src={`http://sz-spd.cn:889/${item.url}`} className={styles.listimg} />))}
+
             </View>
+
             <View className={styles.tips3} >
               <View/>
               <View className={styles.share} >

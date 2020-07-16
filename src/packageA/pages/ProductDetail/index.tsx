@@ -91,7 +91,7 @@ class Home extends Component {
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
 
-    const {name,desc,intro,category,photoCover} = this.props.srmalbums;
+    const {name,desc,intro,category,photoCover,photos} = this.props.srmalbums;
 
     return (
       <View className={styles.needdetail}>
@@ -147,10 +147,21 @@ class Home extends Component {
             {desc}
             </View>
           </View>
-         
-          
         </View>
-      
+        
+        <View className={styles.content} >
+          <View className={styles.tips} >
+            <View className={styles.tipicon} />
+            <View className={styles.tipstext} >
+              商品相册
+            </View>
+          </View>
+          <View className={styles.tips2} >
+            <View className={styles.drawings}>
+              {photos.map((item)=>(<Image src={`http://sz-spd.cn:889/${item.photo}`} className={styles.listimg} />))}
+            </View>
+          </View>
+        </View>
       </View>
 
     );

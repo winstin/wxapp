@@ -247,6 +247,9 @@ export const getMycard = (params)=>{
 }
 
 
+export const getPhone = (params)=>{
+  return Api.getPhone(params,'POST');
+}
 
 
 

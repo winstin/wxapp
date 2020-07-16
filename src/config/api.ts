@@ -85,7 +85,8 @@ export const requestConfig = {
 
   getSysRegionAllList:'/api/basic/sysRegion/allList', // # 获取国家列表 省份 城市
   getMycard:'/api/srm/baseMember/my-card', // # 获取国家列表 省份 城市
+  getPhone:'/api/srm/wxapp/getPhone', // # 获取国家列表 省份 城市
 
-
+  
   
 }

@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,Image,Button } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
@@ -16,6 +16,8 @@ import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
   myInfo:any;
+  code:any;
+  userInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -31,10 +33,13 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ user,loading }) => {
+@connect(({ user,global,loading }) => {
   const {myInfo={}} = user;
+  const {code,userInfo={}} = global;
   return {
     myInfo,
+    code,
+    userInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -56,7 +61,8 @@ class Home extends Component {
     referrerName:'',
     drawingVo:{},
     linkman:'',
-    logo:''
+    logo:'',
+    getUserInfoLoading:false
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -150,13 +156,60 @@ class Home extends Component {
   }
 
   onClick = (value)=>{
-    console.log(value)
+    this.setState({
+      getUserInfoLoading: true
+    });
   }
 
-  submit = () =>{
-    const {dispatch,myInfo} = this.props;
+  getPhoneNumber= async e => {
+    const {dispatch} = this.props;
+    console.log(e);
+    if(e.detail.encryptedData){
+      if(dispatch){
+        await dispatch({
+          type: "global/getCode",
+          payload: {}
+        })
+        const {code} = this.props;
+        dispatch({
+          type: "user/getPhone",
+          payload: {
+            ...e.detail,
+            code,
+          }
+        }).then((e)=>{
+          console.log(e);
+          if(e.data){
+            this.setState({
+              getUserInfoLoading: false,
+              account:e.data.phoneNumber
+            });
+          }else{
+            this.setState({
+              getUserInfoLoading: false,
+            });
+            Taro.showToast({
+              'title': '手机号获取频繁，稍后再试。',
+            });
+          }
+        });
+      }
+    }else{
+      this.setState({
+        getUserInfoLoading: false,
+      });
+      Taro.showToast({
+        'title': '授权失败',
+      });
+    }
+   
+  };
+
+  submit = async () =>{
+    const {dispatch,myInfo,userInfo} = this.props;
     const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo}:any = this.state;
     const { type } = myInfo;
+    
     if(dispatch){
       if(type){
         const {introduce,basic,contact,scale} = myInfo;
@@ -181,7 +234,12 @@ class Home extends Component {
           Taro.navigateBack()
         });
       }else{
-        console.log("注册会员")
+        console.log("注册会员");
+        await dispatch({
+          type: "global/getCode",
+          payload: {}
+        })
+        const {code} = this.props;
         dispatch({
           type: "factory/registerCorporate",
           payload:  {
@@ -193,6 +251,8 @@ class Home extends Component {
             referrerName,
             logo,
             isTop:'1',
+            code,
+            ...userInfo
           }
         }).then((e)=>{
           Taro.showToast({
@@ -298,6 +358,15 @@ class Home extends Component {
             src={ico_mobilephone}
           />
           <AtInput className={styles.input} name="account" placeholder="请输入手机号码…"  value={account} onChange={(e)=>{this.Change('account',e)}} />
+          <Button
+            className={styles.authBtn}
+            openType="getPhoneNumber"
+            onGetPhoneNumber={this.getPhoneNumber}
+            onClick={this.onClick}
+            // loading={this.state.getUserInfoLoading}
+          >
+            获取手机号码
+          </Button>
         </View>
 
         <View className={styles.label}>

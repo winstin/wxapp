@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
+import { View,Image,OpenData } from "@tarojs/components";
 import { connect } from "@tarojs/redux";
 import arrowIcon from '../../assets/user/ico_arrow@3x.png';
 import cardIcon from '../../assets/user/ico_card@2x.png';
@@ -154,13 +154,18 @@ class User extends Component {
           <Image className={styles.bg_img} src={img_my_bg_corp} />
 
           <View className={styles.info}>
-          <Image
+          <View className={styles.avatar}>
+            <OpenData className={styles.avatar} type="userAvatarUrl"></OpenData>
+          </View>
+          {/* <Image
             className={styles.avatar}
             src={userInfo.avatarUrl}
-          />
+          /> */}
           <View className={styles.lr}>
             <View className={styles.lrTop}>
-              <View className={styles.name}>{userInfo.nickName}</View>
+              <View className={styles.name}>
+                <OpenData className={styles.name} type="userNickName"></OpenData>
+              </View>
               {type==="enterprise"?<Image
                   className={styles.itemtag}
                   src={img_my_corp}

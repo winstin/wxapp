@@ -231,7 +231,7 @@ class Home extends Component {
 
     const {myInfo={basic:{}}} = this.props;
     const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic,birthday} = myInfo.basic;
-
+    console.log(this.props.COMPANY_TYPE[this.state.companyType],this.state.companyType)
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
@@ -319,8 +319,8 @@ class Home extends Component {
         <View className={styles.label}>
           企业类型
         </View>
-        <View className={styles.formcheckboxItem}>
-          <CheckboxGroup onChange={(e)=>{this.onChange("companyType",e)}}>
+        {/* <View className={styles.formcheckboxItem}> */}
+          {/* <CheckboxGroup onChange={(e)=>{this.onChange("companyType",e)}}>
             {
               this.props.COMPANY_TYPE && this.props.COMPANY_TYPE.map((item)=>(
                 <View className={styles.checkboxItem}>
@@ -328,15 +328,23 @@ class Home extends Component {
                 </View>
               ))
             }
-          </CheckboxGroup>
+          </CheckboxGroup> */}
+          <Picker value={''} mode='selector' range={this.props.COMPANY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("companyType",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.COMPANY_TYPE[this.state.companyType] && this.props.COMPANY_TYPE[this.state.companyType].label || companyTypeName} onChange={()=>{}}/>
+            </View>
+            {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
+          </View>
+        </Picker>
           {/* <AtInput className={styles.input} name="companyTypeName" placeholder="请输入企业类型…"  value={companyTypeName} onChange={(e)=>{this.infoChange(e,'companyTypeName')}} /> */}
-        </View>
+        {/* </View> */}
 
         <View className={styles.label}>
           企业性质
         </View>
-        <View className={styles.formcheckboxItem}>
-          <CheckboxGroup onChange={(e)=>{this.onChange("companyProperty",e)}}>
+        {/* <View className={styles.formcheckboxItem}> */}
+          {/* <CheckboxGroup onChange={(e)=>{this.onChange("companyProperty",e)}}>
             {
               this.props.COMPANY_PROPERTY && this.props.COMPANY_PROPERTY.map((item)=>(
                 <View className={styles.checkboxItem}>
@@ -344,9 +352,17 @@ class Home extends Component {
                 </View>
               ))
             }
-          </CheckboxGroup>
+          </CheckboxGroup> */}
+          <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.COMPANY_PROPERTY[this.state.companyType] && this.props.COMPANY_PROPERTY[this.state.companyType].label || companyPropertyname} onChange={()=>{}}/>
+            </View>
+            {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
+          </View>
+          </Picker>
           {/* <AtInput className={styles.input} name="companyPropertyname" placeholder="请输入企业性质…"  value={companyPropertyname} onChange={(e)=>{this.infoChange(e,'companyPropertyname')}} /> */}
-        </View>
+        {/* </View> */}
 
         <View className={styles.label}>
           行业类型
@@ -366,8 +382,8 @@ class Home extends Component {
         <View className={styles.label}>
           行业排名
         </View>
-        <View className={styles.formcheckboxItem}>
-          <CheckboxGroup onChange={(e)=>{this.onChange("industryRanking",e)}}>
+        {/* <View className={styles.formcheckboxItem}> */}
+          {/* <CheckboxGroup onChange={(e)=>{this.onChange("industryRanking",e)}}>
             {
               this.props.INDUSTRY_RANKING && this.props.INDUSTRY_RANKING.map((item)=>(
                 <View className={styles.checkboxItem}>
@@ -375,9 +391,18 @@ class Home extends Component {
                 </View>
               ))
             }
-          </CheckboxGroup>
+          </CheckboxGroup> */}
+
+          <Picker value={''} mode='selector' range={this.props.INDUSTRY_RANKING}  range-key='label' onChange={(e)=>{this.onChange("industryRanking",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.INDUSTRY_RANKING[this.state.companyType] && this.props.INDUSTRY_RANKING[this.state.companyType].label || industryRankingName} onChange={()=>{}}/>
+            </View>
+            {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
+          </View>
+          </Picker>
           {/* <AtInput className={styles.input} name="industryRankingName" placeholder="请输入企业性质…"  value={industryRankingName} onChange={(e)=>{this.infoChange(e,'industryRankingName')}} /> */}
-        </View>
+        {/* </View> */}
         {myInfo.type !== "enterprise" && 
           <View>
             <View className={styles.label}>

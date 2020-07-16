@@ -56,6 +56,7 @@ export default {
     clientInfo: {}, // 设备信息
     verificationCodeInfo: undefined, // 验证码信息
     hasLoad: false, // 字典库是否已经加载过了
+    code:'',
     ...codeList,
   },
 
@@ -64,7 +65,9 @@ export default {
     *init(_, { all, put }) {
       // 1、小程序登录，后台登录
       // yield put.resolve({ type: "login" });
+
       yield all([
+        // put.resolve({ type: "getCode" }),
         // 2、获取授权信息，和用户信息
         put.resolve({ type: "getUserInfo" }),
         // 3、获取字典信息
@@ -164,6 +167,7 @@ export default {
         type: "updateState",
         payload: { authSetting }
       });
+
       // 判断用户是否已经授权了小程序
       if (authSetting["scope.userInfo"]) {
         // 如果已经授权，获取用户信息
@@ -177,6 +181,27 @@ export default {
       }
       return false;
     },
+
+    
+    // 获取凭证信息
+    *getCode(_, { call, put }) {
+      const { code } = yield call(Taro.login);
+      console.log('=======',code)
+      yield put({
+        type: "updateState",
+        payload: {
+          code,
+        }
+      });
+    },
+
+    // 检查登录态是否过期。
+    *checkSession(_, { call, put }) {
+      const data = yield call(Taro.checkSession);
+      console.log(data);
+      return data;
+    },
+
 
     // 获取设备信息
     *getClientInfo(_, { call, put }) {

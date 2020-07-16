@@ -41,10 +41,14 @@ export default {
     *addjxhReq({payload}, { put,call }) {
       const res = yield call(addjxhReq,payload);
       console.log(res)
-      Taro.showToast({
-        'title': '发布成功',
-      });
-      Taro.navigateBack()
+      if(res.message){
+        Taro.showToast({
+          'title': res.message,
+        });
+      }
+      setTimeout(()=>{
+        Taro.navigateBack()
+      },1000)
 
       // yield put({
       //   type:'updateState',

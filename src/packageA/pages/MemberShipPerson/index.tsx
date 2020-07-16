@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Picker,Checkbox,CheckboxGroup } from "@tarojs/components";
+import { View,Image,Picker,Checkbox,CheckboxGroup,Button } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
@@ -22,6 +22,7 @@ type PageStateProps = {
   INDUSTRY_TYPE:any;
   COMPANY_PROPERTY:any;
   myInfo:any;
+  code:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -39,7 +40,7 @@ interface Home {
 
 @connect(({ user,global,loading }) => {    
   const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
-  ,COMPANY_PROPERTY=[]} = global;
+  ,COMPANY_PROPERTY=[],code} = global;
   const {myInfo} = user;
   return {
     userInfo,
@@ -51,6 +52,7 @@ interface Home {
     COMPANY_PROPERTY,
     INDUSTRY_TYPE,
     myInfo,
+    code,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -92,7 +94,8 @@ class Home extends Component {
     company:'',
     position:'',
     address:'',
-    nameCard:''
+    nameCard:'',
+    getUserInfoLoading:false
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -222,6 +225,58 @@ class Home extends Component {
     this.setState({sex:value})
   }
 
+  onClicks = (value)=>{
+    this.setState({
+      getUserInfoLoading: true
+    });
+  }
+
+  getPhoneNumber= async e => {
+    const {dispatch} = this.props;
+    console.log(e);
+    if(e.detail.encryptedData){
+      if(dispatch){
+        await dispatch({
+          type: "global/getCode",
+          payload: {}
+        })
+        const {code} = this.props;
+        dispatch({
+          type: "user/getPhone",
+          payload: {
+            ...e.detail,
+            code,
+          }
+        }).then((e)=>{
+          console.log(e);
+          if(e.data){
+            this.setState({
+              getUserInfoLoading: false,
+              telephoe:e.data.phoneNumber
+            });
+          }else{
+            this.setState({
+              getUserInfoLoading: false,
+            });
+            Taro.showToast({
+              'title': '手机号获取频繁，稍后再试。',
+            });
+          }
+        });
+      }
+    }else{
+      this.setState({
+        getUserInfoLoading: false,
+      });
+      Taro.showToast({
+        'title': '授权失败',
+      });
+    }
+   
+  };
+
+
+
   onDateChange = e => {
     this.setState({
       birthday: e.detail.value
@@ -235,8 +290,8 @@ class Home extends Component {
     })
   }
 
-  submit = () =>{
-    const {dispatch,myInfo} = this.props;
+  submit = async () =>{
+    const {dispatch,myInfo,userInfo} = this.props;
     const {type} = myInfo;
 
     const {
@@ -274,7 +329,12 @@ class Home extends Component {
           Taro.navigateBack()
         });
       }else{
-        console.log("注册会员")
+        console.log("注册会员");
+        await dispatch({
+          type: "global/getCode",
+          payload: {}
+        })
+        const {code} = this.props;
         dispatch({
           type: "factory/registerBaseMember",
           payload:  {
@@ -294,7 +354,8 @@ class Home extends Component {
             purType:purType.join(','),
             // levelNow,
             // levelApply,
-            company,position,address,nameCard:photo
+            company,position,address,nameCard:photo,code,
+            ...userInfo
           }
         }).then((e)=>{
           Taro.showToast({
@@ -310,7 +371,7 @@ class Home extends Component {
     const {
       name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
       wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address,frontFilePath
-    } = this.state;
+    }:any = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
@@ -370,7 +431,7 @@ class Home extends Component {
         <View className={styles.label}>
           学历
         </View>
-        <View className={styles.formcheckboxItem}>
+        {/* <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("education",e)}}>
             {
               this.props.EDUCATION_LEVEL && this.props.EDUCATION_LEVEL.map((item:any)=>(
@@ -380,7 +441,16 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View>
+
+
+        </View> */}
+        <Picker value={''} mode='selector' range={this.props.EDUCATION_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("education",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择学历"  value={this.props.EDUCATION_LEVEL[education] && this.props.EDUCATION_LEVEL[education].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
        
         
         <View className={styles.label}>
@@ -409,11 +479,20 @@ class Home extends Component {
           手机
         </View>
         <View className={styles.formItem}>
-          {/* <Image
+          <Image
             className={styles.itemIcon}
             src={phoneIcon}
-          /> */}
+          />
           <AtInput className={styles.input} name="telephoe" placeholder="请输入您的手机号…"  value={telephoe} onChange={(e)=>{this.Change('telephoe',e)}} />
+          <Button
+            className={styles.authBtn}
+            openType="getPhoneNumber"
+            onGetPhoneNumber={this.getPhoneNumber}
+            onClick={this.onClicks}
+            // loading={this.state.getUserInfoLoading}
+          >
+            获取手机号码
+          </Button>
         </View>
 
         <View className={styles.label}>
@@ -498,7 +577,7 @@ class Home extends Component {
         <View className={styles.label}>
           公司行业
         </View>
-        <View className={styles.formcheckboxItem}>
+        {/* <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("industryType",e)}}>
             {
               this.props.INDUSTRY_TYPE && this.props.INDUSTRY_TYPE.map((item)=>(
@@ -508,12 +587,19 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View>
+        </View> */}
+        <Picker value={''} mode='selector' range={this.props.INDUSTRY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("industryType",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择公司行业"  value={this.props.INDUSTRY_TYPE[industryType] && this.props.INDUSTRY_TYPE[industryType].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
         
         <View className={styles.label}>
           公司性质
         </View>
-        <View className={styles.formcheckboxItem}>
+        {/* <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("companyProperty",e)}}>
             {
               this.props.COMPANY_PROPERTY && this.props.COMPANY_PROPERTY.map((item)=>(
@@ -523,12 +609,19 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View>
+        </View> */}
+        <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择公司性质"  value={this.props.COMPANY_PROPERTY[companyProperty] && this.props.COMPANY_PROPERTY[companyProperty].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
 
         <View className={styles.label}>
           公司规模
         </View>
-        <View className={styles.formcheckboxItem}>
+        {/* <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("companyScale",e)}}>
             {
               this.props.STAFF_AMOUNT && this.props.STAFF_AMOUNT.map((item)=>(
@@ -538,13 +631,20 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View>
+        </View> */}
+        <Picker value={''} mode='selector' range={this.props.STAFF_AMOUNT}  range-key='label' onChange={(e)=>{this.onChange("companyScale",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择公司规模"  value={this.props.STAFF_AMOUNT[companyScale] && this.props.STAFF_AMOUNT[companyScale].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
 
         <View className={styles.label}>
           采购部门规模
         </View>
         
-        <View className={styles.formcheckboxItem}>
+        {/* <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("dptScale",e)}}>
             {
               this.props.PURCHASE_SIZE && this.props.PURCHASE_SIZE.map((item)=>(
@@ -554,7 +654,15 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View>
+        </View> */}
+
+        <Picker value={''} mode='selector' range={this.props.PURCHASE_SIZE}  range-key='label' onChange={(e)=>{this.onChange("dptScale",e)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择采购部门规模"  value={this.props.PURCHASE_SIZE[dptScale] && this.props.PURCHASE_SIZE[dptScale].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
 
         <View className={styles.label}>
           采购涉及品类或工艺

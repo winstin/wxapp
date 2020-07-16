@@ -11,6 +11,7 @@ import btn_new from '../../assets/need/btn_new@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/tabs.scss";
 import { isLogined } from '@/utils/utils'
+import NoneData from '../Index/components/NoneData';
 
 type PageStateProps = {
   userInfo:any;
@@ -29,8 +30,8 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ need,loading }) => {
-  const {userInfo={}} = need;
+@connect(({ myindex,loading }) => {
+  const {userInfo={}} = myindex;
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
@@ -139,6 +140,8 @@ class Home extends Component {
 
   // 我的需求
   fetchMyList = (page=1)=>{
+    const token = Taro.getStorageSync('token');
+    if(!token) return; 
     const {dispatch} = this.props;
     const { myjxhReqData } = this.state;
     if(dispatch){
@@ -203,14 +206,15 @@ class Home extends Component {
     const Threshold = 20
     return (
       <View className={styles.need}>
-        <Image src={btn_new} className={styles.addicon} onClick={()=>{
+        {this.props.userInfo.supplierId && <Image src={btn_new} className={styles.addicon} onClick={()=>{
           if(isLogined()) return;
           Taro.navigateTo({
             url: '/pages/NeedPublish/index'
           })
-        }}/>
+        }}/>}
         <AtTabs current={this.state.activeCurrent} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.activeCurrent} index={0} >
+            {this.state.jxhReqData.length===0 && <NoneData/>}
             <ScrollView
               className='scrollview'
               scrollY
@@ -230,6 +234,7 @@ class Home extends Component {
 
           </AtTabsPane>
           <AtTabsPane current={this.state.activeCurrent} index={1}>
+            {this.state.myjxhReqData.length===0 && <NoneData/>}
             <ScrollView
               className='scrollview'
               scrollY
