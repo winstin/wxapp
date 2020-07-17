@@ -354,8 +354,9 @@ class Home extends Component {
             purType:purType.join(','),
             // levelNow,
             // levelApply,
-            company,position,address,nameCard:photo,code,
-            ...userInfo
+            company,position,address,nameCard:photo,
+            wxCode:code,
+            wxUser:{...userInfo}
           }
         }).then((e)=>{
           Taro.showToast({

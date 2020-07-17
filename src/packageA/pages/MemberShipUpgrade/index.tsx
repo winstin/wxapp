@@ -251,8 +251,8 @@ class Home extends Component {
             referrerName,
             logo,
             isTop:'1',
-            code,
-            ...userInfo
+            wxCode:code,
+            wxUser:{...userInfo}
           }
         }).then((e)=>{
           Taro.showToast({
