@@ -107,8 +107,8 @@ class Home extends Component {
   render() {
 
     const {
-      name,productTech,countryName,provinceName,factoryArea,
-      staffAmount,introduction,businessLicenseNo,referrerOpinion,
+      name,productTechName,countryName,provinceName,factoryAreaName,logo,
+      staffAmountName,introduction,businessLicenseNo,referrerOpinion,
       address,companyTel,legalPerson,star,linkmanPhone,shortName,companyTypeName,companyPropertyName,industryType=''
     } = this.props.corporateDetail;
     const industryData = this.props.INDUSTRY_TYPE.filter((item)=>`${industryType}`.includes(item.value))||[];
@@ -120,14 +120,14 @@ class Home extends Component {
         </View>
         <View className={styles.list}>
         <View>
-          <Image src={Index2} className={styles.listimg} />
+          <Image src={logo?`http://sz-spd.cn:889/${logo}`:Index2} className={styles.listimg} />
         </View>
         <View >
           <View className={styles.tips} >
             主要工艺
           </View>
           <View className={styles.title} >
-            {productTech}
+            {productTechName}
           </View>
         </View>
       </View>
@@ -139,7 +139,7 @@ class Home extends Component {
             </View>
           </View>
           <View className={styles.tips2} >
-            <View className={styles.conenttext} >
+            <View className={styles.conenttext} style="margin-left:0px">
             {introduction}
             </View>
           </View>
@@ -254,7 +254,7 @@ class Home extends Component {
             工厂面积
             </View>
             <View className={styles.conenttext} >
-            {factoryArea}
+            {factoryAreaName}
             </View>
           </View>
           <View className={styles.tips2} >
@@ -262,7 +262,7 @@ class Home extends Component {
             雇员数量
             </View>
             <View className={styles.conenttext} >
-            {staffAmount}
+            {staffAmountName}
             </View>
           </View>
         </View>

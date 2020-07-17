@@ -134,7 +134,7 @@ class Home extends Component {
         wx_id,
         sex,
         skilledField,
-        industryType,
+        industryType:industryType.join(','),
         companyProperty,
         companyScale,
         dptScale,
@@ -578,7 +578,7 @@ class Home extends Component {
         <View className={styles.label}>
           公司行业
         </View>
-        {/* <View className={styles.formcheckboxItem}>
+        <View className={styles.formcheckboxItem}>
             <CheckboxGroup onChange={(e)=>{this.onChange("industryType",e)}}>
             {
               this.props.INDUSTRY_TYPE && this.props.INDUSTRY_TYPE.map((item)=>(
@@ -588,14 +588,14 @@ class Home extends Component {
               ))
             }
             </CheckboxGroup>
-        </View> */}
-        <Picker value={''} mode='selector' range={this.props.INDUSTRY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("industryType",e)}}>
+        </View>
+        {/* <Picker value={''} mode='selector' range={this.props.INDUSTRY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("industryType",e)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder="请选择公司行业"  value={this.props.INDUSTRY_TYPE[industryType] && this.props.INDUSTRY_TYPE[industryType].label} onChange={()=>{}}/>
             </View>
           </View>
-        </Picker>
+        </Picker> */}
         
         <View className={styles.label}>
           公司性质

@@ -130,7 +130,7 @@ class Home extends Component {
             console.log('-------success--dataJson:',dataJson);
 
             this.setState({
-              drawingVo:dataJson.data,
+              logo:dataJson.data.url,
               frontFilePath: tempFilePaths[0]
             })
             

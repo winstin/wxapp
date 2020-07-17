@@ -27,7 +27,7 @@ interface IndustryItem {
 class IndustryItem extends Component {
   render() {
     const {data}:any = this.props;
-    const {star,name,address,introduction,factoryArea,staffAmount,productTech} = data;
+    const {star,name,countryName,provinceName,industryTypeName,factoryAreaName,staffAmountName,productTechName} = data;
     return (
       <View className={styles.list} onClick={()=>{
         if(isLogined()) return;
@@ -36,7 +36,7 @@ class IndustryItem extends Component {
         })
       }}>
         <View>
-          <Image src={data.logo?`http://sz-spd.cn:889/${data.photoCover}`:Index2} className={styles.listimg} />
+          <Image src={data.logo?`http://sz-spd.cn:889/${data.logo}`:Index2} className={styles.listimg} />
           <View className={styles.rateback}>
             <AtRate value={star} size={10}/>
           </View>
@@ -47,22 +47,22 @@ class IndustryItem extends Component {
           </View>
           <View className={styles.tips}>
             <Image src={location} className={styles.icon} />
-            <View>{address}</View>
+            <View>{countryName} {provinceName}</View>
           </View>
           <View className={styles.tips}>
             <Image src={skill} className={styles.icon} />
-            <View>{productTech}</View>
+            <View>{productTechName}</View>
           </View>
           <View className={styles.tips}>
             <Image src={industry} className={styles.icon} />
-            <View>{introduction}</View>
+            <View>{industryTypeName}</View>
           </View>
           <View className={styles.tips}>
             <Image src={area} className={styles.icon} />
-            <View>{factoryArea||"不详"}</View>
+            <View>{factoryAreaName||"不详"}</View>
             <View className={styles.tips2}>
               <Image src={staff} className={styles.icon} />
-              <View>{staffAmount||"不详"}</View>
+              <View>{staffAmountName||"不详"}</View>
             </View>
           </View>
         </View>

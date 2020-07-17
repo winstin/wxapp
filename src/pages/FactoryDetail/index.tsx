@@ -129,7 +129,7 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
-    const {name,countryName,provinceName,referrerOpinion,products,id,photoCover=''} = this.props.corporateDetail;
+    const {name,countryName,provinceName,address,referrerOpinion,products,id,photoCover=''} = this.props.corporateDetail;
     return (
       <View className={styles.factorydetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
@@ -151,7 +151,7 @@ class Home extends Component {
             <View className={styles.locationtips}>
               <View className={styles.locationItem}>
                 <Image src={location} className={styles.icon} />
-                <View>  {countryName}，{provinceName}  成立于 2009 年 10 月</View>
+                <View>{countryName} {provinceName} {address}  成立于 2009 年 10 月</View>
               </View>
 
               <View className={styles.locationItem} onClick={()=>{
@@ -162,7 +162,7 @@ class Home extends Component {
                   url: `/pages/FactoryIntroduce/index?id=${id}`
                 })
               }}>
-                <View>详情</View>
+                <View style="width:32px">详情</View>
                 <Image
                   className={styles.arrow}
                   src={arrowIcon}

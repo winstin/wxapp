@@ -189,7 +189,7 @@ class Home extends Component {
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
     const {myInfo={introduce:{}}} = this.props;
-    const {introduction} = myInfo.introduce;
+    const {introduction,keyCustomer,businessScope} = myInfo.introduce;
 
     return (
       <View className={styles.needdetail}>
@@ -211,8 +211,8 @@ class Home extends Component {
           <View className={styles.formItemwidth}>
             <AtTextarea
               className={styles.textarea}
-              value={phone}
-              onChange={()=>{}}
+              value={keyCustomer}
+              onChange={(e)=>{this.phoneChange(e,'keyCustomer')}}
               maxLength={200}
               placeholder='请输入关键客户…'
             />
@@ -227,8 +227,8 @@ class Home extends Component {
           <View className={styles.formItemwidth}>
             <AtTextarea
               className={styles.textarea}
-              value={phone}
-              onChange={()=>{}}
+              value={businessScope}
+              onChange={(e)=>{this.phoneChange(e,'businessScope')}}
               maxLength={200}
               placeholder='请输入公司营业范围…'
             />

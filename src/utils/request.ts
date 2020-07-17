@@ -202,7 +202,7 @@ export class Request {
       const {status} = res;
       if(status === 401){
         Taro.clearStorage();
-        Taro.navigateTo({ url: "/pages/Login/index" });
+        Taro.navigateTo({ url: "/pages/Home/index" });
       }
       return res
     }
