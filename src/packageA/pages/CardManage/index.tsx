@@ -83,7 +83,7 @@ class Home extends Component {
 
   render() {
     const{ cardInfo } = this.props;
-    const logo = cardInfo.logo || "";
+    // const logo = cardInfo.logo || "";
     return (
       <View>
           <View className={styles.userInfo} >
@@ -91,7 +91,7 @@ class Home extends Component {
               <View className={styles.rightico} >
                 <Image
                   className={styles.logo}
-                  src={`http://sz-spd.cn:889/${logo.trim()}`}
+                  src={logo}
                 />
               </View>
 

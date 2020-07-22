@@ -311,12 +311,12 @@ class Home extends Component {
     }
     if(dispatch){
       if(type){
-        const {introduce,basic,contact,scale} = myInfo;
+        const {introduce,basic,contact,scale,type} = myInfo;
         console.log("升级会员")
         dispatch({
           type: "user/updatebaseMember",
           payload:  {
-            ...introduce,...basic,...contact,...scale,
+            ...introduce,...basic,...contact,...scale,type,
             name,
             nickname:name,
             account:telephoe,

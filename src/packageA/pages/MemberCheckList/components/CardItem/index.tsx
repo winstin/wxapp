@@ -42,7 +42,7 @@ class IndustryItem extends Component {
             }
           })
           Taro.navigateTo({
-            url: '/packageA/pages/MemberCheckDetail/index'
+            url: '/packageA/pages/MemberCheckDetail/index?id='+data.id
           })
         }
        

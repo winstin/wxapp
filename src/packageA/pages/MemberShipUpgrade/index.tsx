@@ -224,12 +224,12 @@ class Home extends Component {
         submitLoading:true
       })
       if(type){
-        const {introduce,basic,contact,scale} = myInfo;
+        const {introduce,basic,contact,scale,type} = myInfo;
         console.log("升级会员")
         dispatch({
           type: "user/updatebaseMember",
           payload:  {
-            ...introduce,...basic,...contact,...scale,
+            ...introduce,...basic,...contact,...scale,type,
             name,
             businessLicenseNo,
             introduction,
@@ -365,13 +365,14 @@ class Home extends Component {
           }
           
         </View>
-        {/* <View className={styles.label}>
+        <View className={styles.label}>
           企业介绍
-        </View> */}
-       {/* <View className={styles.formItem}>
-  
-          <AtInput className={styles.input} name="introduction" placeholder="请输入企业介绍…"  value={introduction} onChange={(e)=>{this.Change('introduction',e)}} />
-        </View>  */}
+        </View>
+       <View className={styles.formItem}>
+          <View style={'flex:1'}>
+            <AtInput className={styles.input} name="introduction" placeholder="请输入企业介绍…"  value={introduction} onChange={(e)=>{this.Change('introduction',e)}} />
+          </View> 
+        </View> 
         <View className={styles.label}>
           登记人姓名
         </View>
