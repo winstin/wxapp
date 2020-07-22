@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { login,getCode,validateCode, getBatchDictValues, fetchTenants } from '@/services/fetch';
+import { weappmnlogin,login,getCode,validateCode, getBatchDictValues, fetchTenants } from '@/services/fetch';
 
 export interface userInfo{
   avatarUrl?:string; // 头像
@@ -95,15 +95,17 @@ export default {
               ...payload
           }
           // 获取token
-          const res = yield call(login,params);
+          let res:any = {};
+          if(params.code){
+            res = yield call(login,params);
+          }else{
+            res = yield call(weappmnlogin,params);
+            
+          }
           if(!res.data){
-            if(res.status === 999){
-              Taro.reLaunch({ url: "/pages/Login/index" });
-            }else{
-              Taro.showToast({
-                title: res.message,
-              })
-            }
+            Taro.showToast({
+              title: res.message,
+            })
           }else{
             const authRes = JSON.parse(res.data)
             console.log("authRes2", authRes);
@@ -120,6 +122,47 @@ export default {
           }
       }
       },
+
+
+      // 小程序模拟登录
+      *mnlogin({payload}, { call, put }) {
+        // 先判断缓存中是否有token
+        Taro.clearStorage();
+        // if( !token ){
+            // const code = yield call(Taro.login);
+            const params = {
+                // grant_type: "password", 
+                // scope:"all", // 登录账号身份
+                // type:"account",
+                ...payload
+            }
+            // 获取token
+            let res:any = {};
+            if(params.code){
+              res = yield call(login,params);
+            }else{
+              res = yield call(weappmnlogin,params);
+            }
+            if(!res.data){
+              Taro.showToast({
+                title: res.message,
+              })
+            }else{
+              const authRes = JSON.parse(res.data)
+              console.log("authRes2", authRes);
+              if (authRes && authRes.access_token) {
+                // 存储token和userId
+                Taro.setStorage({ key: 'token', data: authRes.access_token });
+                Taro.reLaunch({ url: "/pages/Index/index" });
+              } else {
+                Taro.showToast({
+                  title: authRes.error_description,
+                })
+                throw new Error('登录失败!');
+              }
+            }
+        // }
+        },
 
     // 获取字典信息
     *getDictionary(_, { call, put, select }) {

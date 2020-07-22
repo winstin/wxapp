@@ -18,6 +18,7 @@ import Taro from "@tarojs/taro";
 import "taro-ui/dist/style/components/button.scss";
 import "taro-ui/dist/style/components/message.scss";
 import "taro-ui/dist/style/components/badge.scss";
+import "taro-ui/dist/style/components/loading.scss";
 
 /**
  * navigateTo 超过8次之后 强行进行redirectTo 否则会造成页面卡死

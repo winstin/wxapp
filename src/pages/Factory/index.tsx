@@ -6,6 +6,7 @@ import { AtDrawer,AtSearchBar } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import FactoryItem from '../Index/components/FactoryItem/index';
 import styles from "./index.modules.less";
+import NoneData from '../Index/components/NoneData';
 import "taro-ui/dist/style/components/rate.scss";
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/drawer.scss";
@@ -235,6 +236,7 @@ class Home extends Component {
 
         <View className={styles.list}>
           <View className={styles.margintop} />
+          {corporateData.length===0 && <NoneData/>}
           <ScrollView
             className='scrollview'
             scrollY

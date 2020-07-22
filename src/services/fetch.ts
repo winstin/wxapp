@@ -252,5 +252,9 @@ export const getPhone = (params)=>{
 }
 
 
+export const weappmnlogin = (params)=>{
+  return Api.weappmnlogin(params,'POST');
+}
+
 
 

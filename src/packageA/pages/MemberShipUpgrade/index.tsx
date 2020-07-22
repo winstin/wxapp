@@ -62,7 +62,8 @@ class Home extends Component {
     drawingVo:{},
     linkman:'',
     logo:'',
-    getUserInfoLoading:false
+    getUserInfoLoading:false,
+    submitLoading:false
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -73,7 +74,9 @@ class Home extends Component {
 
   componentDidShow() {
     const {myInfo={basic:{},contact:{}}} = this.props;
-    const { businessLicenseNo,name,logo,introduction,referrerName } = myInfo.basic;
+    const { businessLicenseNo,name,logo,referrerName } = myInfo.basic;
+    const { introduction } = myInfo.introduce;
+
     const { linkman,linkmanPhone } = myInfo.contact;
     this.setState({
       businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,
@@ -121,7 +124,7 @@ class Home extends Component {
           filePath: tempFilePaths[0],
           name: 'file',
           header: {
-            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'Authorization': Taro.getStorageSync('token')?`Bearer ${Taro.getStorageSync('token')}` : '',
             'content-type': 'multipart/form-data',
           },
           success: (res) => {
@@ -155,10 +158,17 @@ class Home extends Component {
     })
   }
 
-  onClick = (value)=>{
+  onClick = async (value)=>{
     this.setState({
       getUserInfoLoading: true
     });
+    const {dispatch} = this.props;
+    if(dispatch){
+      await dispatch({
+        type: "global/getCode",
+        payload: {}
+      })
+    }
   }
 
   getPhoneNumber= async e => {
@@ -166,10 +176,6 @@ class Home extends Component {
     console.log(e);
     if(e.detail.encryptedData){
       if(dispatch){
-        await dispatch({
-          type: "global/getCode",
-          payload: {}
-        })
         const {code} = this.props;
         dispatch({
           type: "user/getPhone",
@@ -207,10 +213,21 @@ class Home extends Component {
 
   submit = async () =>{
     const {dispatch,myInfo,userInfo} = this.props;
-    const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo}:any = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo,submitLoading}:any = this.state;
     const { type } = myInfo;
-    
+    if(account===''){
+      Taro.showToast({
+        'title': '请输入手机号',
+      });
+      return;
+    }
+    if(submitLoading){
+      return
+    }
     if(dispatch){
+      this.setState({
+        submitLoading:true
+      })
       if(type){
         const {introduce,basic,contact,scale} = myInfo;
         console.log("升级会员")
@@ -226,12 +243,16 @@ class Home extends Component {
             referrerName,
             logo,
             isTop:'1',
+            wxUser:{...userInfo}
           }
         }).then((e)=>{
-          Taro.showToast({
-            'title': '升级成功',
-          });
-          Taro.navigateBack()
+          this.setState({
+            submitLoading:false
+          })
+          // Taro.showToast({
+          //   'title': '升级成功',
+          // });
+          // Taro.navigateBack()
         });
       }else{
         console.log("注册会员");
@@ -255,23 +276,43 @@ class Home extends Component {
             wxUser:{...userInfo}
           }
         }).then((e)=>{
-          Taro.showToast({
-            'title': '注册成功',
-          });
-          Taro.navigateBack()
+          this.setState({
+            submitLoading:false
+          })
+          // Taro.showToast({
+          //   'title': '注册成功',
+          // });
+          // Taro.navigateBack()
         });
       }
-     
     }
   }
 
+  getUserInfo = e => {
+    const { dispatch } = this.props;
+    if (e && dispatch && e.detail && e.detail.rawData) {
+      const userInfo = JSON.parse(e.detail.rawData);
+      dispatch({
+        type: "global/getUserInfo",
+        payload: { userInfo }
+      }).then(()=>{
+        this.submit();
+      })
+    }else{
+      Taro.showToast({
+        'title': '授权失败',
+      });
+    }
+  };
+
 
   render() {
-    const {linkman,name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath} = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath,submitLoading} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
+    const {myInfo} = this.props;
 
     return (
       <View className={styles.needdetail}>
@@ -290,7 +331,9 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.Change('name',e)}} />
+          <View style={'flex:1'}>
+            <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.Change('name',e)}} />
+          </View>
         </View>
         <View className={styles.label}>
           税务登记号
@@ -321,16 +364,13 @@ class Home extends Component {
           }
           
         </View>
-        <View className={styles.label}>
+        {/* <View className={styles.label}>
           企业介绍
-        </View>
-        <View className={styles.formItem}>
-          {/* <Image
-            className={styles.itemIcon}
-            src={phoneIcon}
-          /> */}
+        </View> */}
+       {/* <View className={styles.formItem}>
+  
           <AtInput className={styles.input} name="introduction" placeholder="请输入企业介绍…"  value={introduction} onChange={(e)=>{this.Change('introduction',e)}} />
-        </View>
+        </View>  */}
         <View className={styles.label}>
           登记人姓名
         </View>
@@ -352,7 +392,7 @@ class Home extends Component {
         <View className={styles.label}>
           手机号码/登录账号
         </View>
-        <View className={styles.formItem}>
+            {myInfo.type?<View className={classNames(styles.input,styles.formItem)}>{account}</View>:<View className={styles.formItem}>
           <Image
             className={styles.itemIcon}
             src={ico_mobilephone}
@@ -367,7 +407,7 @@ class Home extends Component {
           >
             获取手机号码
           </Button>
-        </View>
+        </View>}
 
         <View className={styles.label}>
           推荐人姓名
@@ -387,7 +427,7 @@ class Home extends Component {
 
         </View>
 
-        <View className={styles.label}>
+        {/* <View className={styles.label}>
           短信验证码
         </View>
         <View className={classNames(styles.formItem,styles.codeItem)}>
@@ -399,9 +439,16 @@ class Home extends Component {
           <AtInput className={styles.input} name="password" type='password' placeholder="请输入短信验证码…"  value={code} onChange={(e)=>{this.Change('password',e)}} />
           </View>
           <View className={styles.codeBtn} >发送验证码</View>
-        </View>
+        </View> */}
 
-        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>注册</AtButton>
+        <AtButton 
+        type='primary' 
+        loading={submitLoading} 
+        className={styles.loginBtn} 
+        openType="getUserInfo"
+        onGetUserInfo={this.getUserInfo}
+        onClick={this.onClick}
+        >{this.props.myInfo.type?"升级":"注册"}</AtButton>
       
       </View>
 

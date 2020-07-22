@@ -52,7 +52,7 @@ export class Request {
       returenData = {...returenData,...params}
     }else{
       let str = stringify(params, { addQueryPrefix: true });
-      if(returnUrl.includes('/gate/oauth/miniProgramLogin') || method === 'DELETE' ){
+      if(returnUrl.includes('/gate/oauth/miniProgramLogin') || returnUrl.includes('/gate/oauth/loginWithPassword') || method === 'DELETE' ){
         str = stringify(returenData, { addQueryPrefix: true });
       }
       returnUrl=returnUrl+str;

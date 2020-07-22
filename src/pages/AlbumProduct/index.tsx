@@ -9,7 +9,7 @@ import "taro-ui/dist/style/components/tag.scss";
 import Index2 from '../../assets/Index2.jpeg';
 
 type PageStateProps = {
-  userInfo:any;
+  srmalbums:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -25,10 +25,10 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ factory,loading }) => {
+  const {srmalbums={}} = factory;
   return {
-    userInfo,
+    srmalbums,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -38,71 +38,6 @@ class Home extends Component {
 
   state = {
     activeIndex: 0,
-    industryList :[
-      {
-        title:'全部',
-        star:70,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'公司介绍',
-        star:3,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'设备',
-        star:10,
-        imageUrls:[
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'技术工艺',
-        star:15,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'设备检测',
-        star:5,
-        imageUrls:[
-          Index2,
-        ]
-      },
-      {
-        title:'邀请好友',
-        star:5,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-      {
-        title:'签到',
-        star:5,
-        imageUrls:[
-          Index2,
-          Index2,
-          Index2,
-        ]
-      },
-    ]
   }
   config: Config = {
     navigationBarTitleText: "产品相册",
@@ -162,14 +97,13 @@ class Home extends Component {
   }
 
   onClick = (value,idx)=>{
-    // console.log(value);
     this.setState({activeIndex:value})
   }
 
   render() {
 
-    const {activeIndex,industryList} = this.state;
-
+    const {srmalbums} = this.props;
+    console.log(srmalbums)
     return (
       <View className={styles.album}>
           {/* <View className={styles.taglabel} >
@@ -187,14 +121,15 @@ class Home extends Component {
             ))}
           </View> */}
         <View className={styles.taglabel} >
-          {industryList[activeIndex].imageUrls.map((item,idx) => (
+          {srmalbums && srmalbums.photos.map((item,idx) => (
                  <Image
                  className={styles.myphoto}
-                 src={item}
+                 src={`http://sz-spd.cn:889/${item.photo}`}
                  onClick={()=>{
+                  const photos = srmalbums.photos.map((m)=>(`http://sz-spd.cn:889/${m.photo}`))
                   Taro.previewImage({
-                    current: item, // 当前显示图片的http链接
-                    urls: industryList[activeIndex].imageUrls, // 需要预览的图片http链接列表
+                    current: `http://sz-spd.cn:889/${item.photo}`, // 当前显示图片的http链接
+                    urls: photos, // 需要预览的图片http链接列表
                     success:(e)=>{
                       console.log(e)
                     },

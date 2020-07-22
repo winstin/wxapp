@@ -70,6 +70,9 @@ export default {
         if(item.name==="需求审核"){
           path="/packageA/pages/NeedCheckList/index";
         }
+        if(item.name==="模拟登录"){
+          path="/pages/Login/index";
+        }
         return {
           icon: `http://sz-spd.cn:889/${item.remarks}`,
           title:item.name,

@@ -209,7 +209,7 @@ class Home extends Component {
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType:industryType.join(','),companyProperty,industryRanking,companyType,reportTo
+          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType,reportTo
           
         }
       });

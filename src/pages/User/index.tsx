@@ -87,6 +87,19 @@ class User extends Component {
         });
         this.fetchCardInfo();
       }
+    }else{
+      const {dispatch} = this.props;
+      if(dispatch){
+        dispatch({
+          type: "user/updateState",
+          payload: {
+            makerInfo:{},
+            myInfo:{},
+            cardInfo:{},
+            mypointslist:[]
+          }
+        });
+      }
     }
     
   }
@@ -145,7 +158,7 @@ class User extends Component {
     //   )
     // }
 
-    const {type ="person"} = myInfo;
+    const {type ="person",status = '1'} = myInfo;
 
     return (
       <View className={styles.user}>
@@ -175,12 +188,16 @@ class User extends Component {
               />}
               
             </View>
-            <View className={styles.phone}>{cardInfo.code}
-            <Image
-              className={styles.itemIcon}
-              src={cardIcon}
-            />
-          </View>
+            <View className={styles.phone}>
+              会员等级: {myInfo.basic && myInfo.basic.levelNow||1}
+            </View>
+            <View className={styles.phone}>
+              {cardInfo.code}
+              <Image
+                className={styles.itemIcon}
+                src={cardIcon}
+              />
+            </View>
           </View>
           </View>
           {/* <Image
@@ -203,20 +220,38 @@ class User extends Component {
           </View>
         </View>
         {type!=="enterprise" &&<ListItem 
-          onClick={()=>{this.manageCard("/packageA/pages/MemberShipPerson/index")}}
+          onClick={()=>{
+            if(status === "2"){
+              Taro.showToast({
+                'title': '您已经提交会员申请，目前正在审核中！',
+              });
+              return;
+            }else{
+              this.manageCard("/packageA/pages/MemberShipPerson/index")
+            }
+          }}
           cardIcon={sjhy}
           title={'升级个人会员'}
         ></ListItem>}
         {type!=="personal" &&<ListItem 
-          onClick={()=>{this.manageCard("/packageA/pages/MemberShipUpgrade/index")}}
+          onClick={()=>{
+            if(status === "2"){
+              Taro.showToast({
+                'title': '您已经提交会员申请，目前正在审核中！',
+              });
+              return;
+            }else{
+              this.manageCard("/packageA/pages/MemberShipUpgrade/index");
+            }
+          }}
           cardIcon={sjhy}
           title={'升级企业会员'}
         ></ListItem>}
-        <ListItem 
+        {token && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}
           title={'基本信息'}
-        ></ListItem>
+        ></ListItem>}
         {token && type==="enterprise" &&<ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
           cardIcon={lxxx}
@@ -253,7 +288,11 @@ class User extends Component {
           cardIcon={qygm}
           title={'会员章程'}
         ></ListItem>
-
+        <ListItem 
+          onClick={()=>{this.manageCard("/pages/Login/index")}}
+          cardIcon={cpxc}
+          title={'模拟登录'}
+        ></ListItem>
         <View className={styles.loginBtn}>
         {!token ? <AtButton 
           onClick={()=>{this.manageCard("/pages/Home/index")}}

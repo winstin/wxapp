@@ -48,7 +48,7 @@ export default {
       }
       setTimeout(()=>{
         Taro.navigateBack()
-      },1000)
+      },1500)
 
       // yield put({
       //   type:'updateState',

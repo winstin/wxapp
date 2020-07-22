@@ -35,10 +35,10 @@ interface Login {
 })
 class Login extends Component {
   state = {
-    phone: '100321',
-    code: 'spd2019',
-    // phone: 'jxhadmin',
-    // code: 'jxhadmin',
+    // phone: '100321',
+    // code: 'spd2019',
+    phone: 'jxhadmin',
+    code: 'jxhadmin',
     isOpened: false,
     tenantInfo:{
       tenantId:'',
@@ -59,24 +59,35 @@ class Login extends Component {
     const {dispatch} = this.props;
     const {phone,code} = this.state;
 
-    Taro.login({
-      success:(res)=>{
-        if(dispatch){
-          dispatch({
-            type: "global/login",
-            payload: {
-              username:phone,
-              password:code,
-              authType:"wx-app",
-              code:res.code,
-            }
-          });
+    if(dispatch){
+      dispatch({
+        type: "global/mnlogin",
+        payload: {
+          username:phone,
+          password:code,
+          captcha:''
         }
-      },
-      fail:(err)=>{
-        console.log(err)
-      }
-    })
+      });
+    }
+
+    // Taro.login({
+    //   success:(res)=>{
+    //     if(dispatch){
+    //       dispatch({
+    //         type: "global/login",
+    //         payload: {
+    //           username:phone,
+    //           password:code,
+    //           authType:"wx-app",
+    //           code:res.code,
+    //         }
+    //       });
+    //     }
+    //   },
+    //   fail:(err)=>{
+    //     console.log(err)
+    //   }
+    // })
     
     // Taro.reLaunch({ url: "/pages/Home/index" });
   }
@@ -148,7 +159,7 @@ class Login extends Component {
         <AtButton type='primary' className={styles.loginBtn} onClick={this.login}>登录</AtButton>
         <View className={styles.content}>
           {/* <View className={styles.content} style={{marginBottom:10}}>机械荟应用</View> */}
-          <View className={styles.little}> 升级会员即可注册账号，默认密码 000000 </View>
+          {/* <View className={styles.little}> 升级会员即可注册账号，默认密码 000000 </View> */}
         </View>
         {/* 底部公司信息 */}
         <View className={styles.bottom}>

@@ -95,7 +95,9 @@ class Home extends Component {
     position:'',
     address:'',
     nameCard:'',
-    getUserInfoLoading:false
+    getUserInfoLoading:false,
+    submitLoading:false
+
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -225,10 +227,17 @@ class Home extends Component {
     this.setState({sex:value})
   }
 
-  onClicks = (value)=>{
+  onClicks = async (value)=>{
     this.setState({
       getUserInfoLoading: true
     });
+    const {dispatch} = this.props;
+    if(dispatch){
+      await dispatch({
+        type: "global/getCode",
+        payload: {}
+      })
+    }
   }
 
   getPhoneNumber= async e => {
@@ -236,10 +245,6 @@ class Home extends Component {
     console.log(e);
     if(e.detail.encryptedData){
       if(dispatch){
-        await dispatch({
-          type: "global/getCode",
-          payload: {}
-        })
         const {code} = this.props;
         dispatch({
           type: "user/getPhone",
@@ -296,8 +301,18 @@ class Home extends Component {
 
     const {
       photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
-      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address
+      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,
+      reportTo,company,position,address,submitLoading
     } = this.state;
+    if(telephoe===''){
+      Taro.showToast({
+        'title': '请输入手机号',
+      });
+      return;
+    }
+    if(submitLoading){
+      return
+    }
     if(dispatch){
       if(type){
         const {introduce,basic,contact,scale} = myInfo;
@@ -320,9 +335,13 @@ class Home extends Component {
             companyScale:companyScale.join(','),
             dptScale:dptScale.join(','),
             purType:purType.join(','),
-            company,position,address,nameCard:photo
+            company,position,address,nameCard:photo,
+            wxUser:{...userInfo}
           }
         }).then((e)=>{
+          this.setState({
+            submitLoading:false
+          })
           Taro.showToast({
             'title': '升级成功',
           });
@@ -359,19 +378,40 @@ class Home extends Component {
             wxUser:{...userInfo}
           }
         }).then((e)=>{
-          Taro.showToast({
-            'title': '注册成功',
-          });
-          Taro.navigateBack()
+          this.setState({
+            submitLoading:false
+          })
+          // Taro.showToast({
+          //   'title': '注册成功',
+          // });
+          // Taro.navigateBack()
         });
       }
     }
   }
 
+  getUserInfo = e => {
+    const { dispatch } = this.props;
+    if (e && dispatch && e.detail && e.detail.rawData) {
+      const userInfo = JSON.parse(e.detail.rawData);
+      dispatch({
+        type: "global/getUserInfo",
+        payload: { userInfo }
+      }).then(()=>{
+        this.submit();
+      })
+    }else{
+      Taro.showToast({
+        'title': '授权失败',
+      });
+    }
+  };
+
   render() {
     const {
       name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
-      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,reportTo,company,position,address,frontFilePath
+      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,
+      purType,reportTo,company,position,address,frontFilePath,submitLoading
     }:any = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -479,7 +519,7 @@ class Home extends Component {
         <View className={styles.label}>
           手机
         </View>
-        <View className={styles.formItem}>
+        {this.props.myInfo.type?<View className={classNames(styles.input,styles.formItem)}>{telephoe}</View>:<View className={styles.formItem}>
           <Image
             className={styles.itemIcon}
             src={phoneIcon}
@@ -494,7 +534,7 @@ class Home extends Component {
           >
             获取手机号码
           </Button>
-        </View>
+        </View>}
 
         <View className={styles.label}>
           微信
@@ -705,7 +745,14 @@ class Home extends Component {
           
         </View>
 
-        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>注册</AtButton>
+        <AtButton 
+          type='primary' 
+          loading={submitLoading} 
+          className={styles.loginBtn} 
+          // onClick={this.submit}
+          openType="getUserInfo"
+          onGetUserInfo={this.getUserInfo}
+        >{this.props.myInfo.type?"升级":"注册"}</AtButton>
       
       </View>
 

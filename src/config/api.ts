@@ -34,6 +34,8 @@ export const requestConfig = {
 
 
   weapplogin: '/api/gate/oauth/miniProgramLogin', // 微信登录接口
+  weappmnlogin: '/api/gate/oauth/loginWithPassword', // 微信模拟登录接口
+
   getBatchDictValues: '/api/basic/sysDictValue/getBatchDictValues', // 微信登录接口
   baseMemberPoints:'/api/srm/baseMemberPoints/signIn', // 会员签到
   getsysMenu:'/api/basic/sysMenu/xcx-menu', // 获取有权限的小程序菜单

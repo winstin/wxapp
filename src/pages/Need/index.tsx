@@ -206,12 +206,12 @@ class Home extends Component {
     const Threshold = 20
     return (
       <View className={styles.need}>
-        {this.props.userInfo.supplierId && <Image src={btn_new} className={styles.addicon} onClick={()=>{
+        <Image src={btn_new} className={styles.addicon} onClick={()=>{
           if(isLogined()) return;
           Taro.navigateTo({
             url: '/pages/NeedPublish/index'
           })
-        }}/>}
+        }}/>
         <AtTabs current={this.state.activeCurrent} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.activeCurrent} index={0} >
             {this.state.jxhReqData.length===0 && <NoneData/>}

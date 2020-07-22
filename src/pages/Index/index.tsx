@@ -149,6 +149,16 @@ class Home extends Component {
           }
         });
         
+      }else{
+        dispatch({
+          type: "myindex/updateState",
+          payload: {
+            dataCount:{},
+            Signin:true,
+            userInfo:{},
+            sysMenu:{}
+          }
+        });
       }
     }
   }

@@ -87,10 +87,16 @@ export default {
     *updatebaseMember({payload}, { put,call }) {
       const res = yield call(updatebaseMember,payload);
       console.log(res)
-      Taro.showToast({
-        'title': '更新成功',
-      });
-      Taro.navigateBack()
+      if(res.status == 500){
+        Taro.showToast({
+          'title': res.message,
+        });
+      }else{
+        Taro.showToast({
+          'title': res.message,
+        });
+        Taro.navigateBack()
+      }
     },
 
     *getSysRegionAllList({payload}, { put,call }) {

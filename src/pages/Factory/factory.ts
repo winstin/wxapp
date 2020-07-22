@@ -180,18 +180,38 @@ export default {
     // 产品说明
     *registerCorporate({payload}, { put,call }) {
       const res = yield call(registerCorporate,payload);
-      // yield put({
-      //   type:'updateState',
-      //   payload:{srmalbums:res.data}
-      // })
+      console.log(res)
+      if(res.status == 500 || res.status == 400){
+        Taro.showToast({
+          'title': res.message,
+        });
+      }else{
+        if(res.message === "电话已经被注册"){
+          Taro.showToast({
+            'title': res.message,
+          });
+        }else{
+          Taro.navigateBack()
+        }
+      }
     },
 
     *registerBaseMember({payload}, { put,call }) {
       const res = yield call(registerBaseMember,payload);
-      // yield put({
-      //   type:'updateState',
-      //   payload:{srmalbums:res.data}
-      // })
+      console.log(res)
+      if(res.status == 500 || res.status == 400){
+        Taro.showToast({
+          'title': res.message,
+        });
+      }else{
+        if(res.message === "电话已经被注册"){
+          Taro.showToast({
+            'title': res.message,
+          });
+        }else{
+          Taro.navigateBack()
+        }
+      }
     },
 
     *getbaseVendorAlbumList({payload}, { put,call }) {

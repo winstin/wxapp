@@ -10,6 +10,7 @@ import logo from '../../assets/logo.png';
 
 type PageStateProps = {
   userInfo: any;
+  code:any;
   loading: boolean;
   hasReady: boolean;
 };
@@ -32,16 +33,19 @@ interface Index {
 }
 
 @connect(({ global, loading }) => {
-  const { userInfo, hasReady } = global;
+  const { userInfo, hasReady, code } = global;
   return {
     userInfo,
     hasReady,
+    code,
     loading: loading.effects["global/getUserInfo"]
   };
 })
 class Index extends PureComponent {
   state = {
-    getUserInfoLoading: false,current: 0
+    getUserInfoLoading: false,
+    current: 0,
+    telephoe:""
   };
 
   config: Config = {
@@ -102,19 +106,76 @@ class Index extends PureComponent {
     });
   };
 
-  onClick = () => {
-    this.setState({
-      getUserInfoLoading: true
-    });
+  getPhoneNumber = async e => {
+    // console.log("获取手机号",e);
+    const { dispatch,code } = this.props;
+    if(e.detail.encryptedData){
+      if(dispatch){
+        dispatch({
+          type: "user/getPhone",
+          payload: {
+            ...e.detail,
+            code,
+          }
+        }).then((res)=>{
+          console.log(res);
+          if(res.data){
+            this.setState({
+              // getUserInfoLoading: false,
+              telephoe:res.data.phoneNumber
+            },()=>{
+              this.wxLogin();
+            });
+          }else{
+           
+            // if(res.status === 999){
+            //   setTimeout(()=>{
+            //     this.getPhoneNumber(e)
+            //   },500)
+            // }else{
+              this.setState({
+                getUserInfoLoading: false,
+              });
+              Taro.showToast({
+                'title': '手机号获取失败，请重试。',
+              });
+            // }
+          }
+        });
+      }
+    }else{
+      this.setState({
+        getUserInfoLoading: false,
+      });
+      Taro.showToast({
+        'title': '授权失败',
+      });
+    }
+    
+  };
+
+  onClick = async () => {
+    const { dispatch } = this.props;
+    if(dispatch){
+      await dispatch({
+        type: "global/getCode",
+        payload: {}
+      })
+      // console.log("获取code",this.props.code);
+      this.setState({
+        getUserInfoLoading: true
+      });
+    }
+    
     // const {userInfo} = this.props;
     // if(userInfo){
     //   this.wxLogin();
     // }
   };
 
-  wxLogin = ()=>{
+  wxLogin = async ()=>{
     const { dispatch } = this.props;
-    Taro.login({
+    await Taro.login({
       success:(res)=>{
         console.log(res)
         if(dispatch){
@@ -124,7 +185,8 @@ class Index extends PureComponent {
               authType:"wx-app",
               code:res.code,
               username:'',
-              password:res.code
+              password:res.code,
+              phone:this.state.telephoe
             }
           });
         }
@@ -133,6 +195,10 @@ class Index extends PureComponent {
         console.log(err)
       }
     })
+
+    this.setState({
+      getUserInfoLoading: false
+    });
   }
 
   render() {
@@ -165,12 +231,13 @@ class Index extends PureComponent {
             <View>
               <Button
                 className={styles.authBtn}
-                openType="getUserInfo"
-                onGetUserInfo={this.getUserInfo}
+                openType="getPhoneNumber"
+                // onGetUserInfo={this.getUserInfo}
+                onGetPhoneNumber={this.getPhoneNumber}
                 onClick={this.onClick}
                 loading={getUserInfoLoading}
               >
-                一键授权登录
+                一键手机授权登录
               </Button>
             </View>
           </View>
