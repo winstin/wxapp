@@ -337,7 +337,7 @@ class Home extends Component {
             国家地区
             </View>
             <View className={styles.conenttext} >
-            {countryName}，{provinceName}
+            {countryName} {provinceName}
             </View>
           </View>
           <View className={styles.tips2} >
@@ -454,13 +454,27 @@ class Home extends Component {
               签核信息
             </View>
           </View>
-          <View className={styles.tips2} >
-           
-            <View className={styles.conenttext} >
-            {referrerOpinion}
+          <View>
+            <View className={styles.tips2}>
+              <View className={styles.label} >
+              签核人
+              </View>
+              <View className={styles.conenttext} >
+              刘永生
+              </View>
+              <View className={styles.conenttag} >
+              同意
+              </View>
+              <View className={styles.conenttext} >
+              2020年4月15日 18:23
+              </View>
+            </View>
+            <View className={styles.tips2}>
+              <View className={styles.conentback}>
+                建议加入华东2群
+              </View>
             </View>
           </View>
-          
         </View>
 
         <View className={styles.content} >

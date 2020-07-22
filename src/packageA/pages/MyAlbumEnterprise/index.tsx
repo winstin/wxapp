@@ -73,7 +73,7 @@ class Home extends Component {
     // navigationStyle:"custom",
   };
 
-  componentDidShow() {
+  componentWillMount() {
     console.log(this.$router.params,this.props.userInfo);
     if(this.props.myInfo.albums>0){
       this.fetchList()
@@ -148,50 +148,51 @@ class Home extends Component {
 
   chooseImageReverse = () => {
     Taro.chooseImage({
-      count: 1,
+      count: 6-this.state.frontFilePath.length,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
         console.log('----res:',res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        const {frontFilePath,photos,intro,selectorChecked}:any = this.state;
-        frontFilePath.push(tempFilePaths[0]);
-
-        Taro.uploadFile({
-          url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
-          filePath: tempFilePaths[0],
-          name: 'file',
-          header: {
-            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
-            'content-type': 'multipart/form-data',
-          },
-          success: (res) => {
-            const data = res.data;
-            const dataJson = JSON.parse(data);
-            const { userInfo } = this.props;
-            console.log('-------success--dataJson:',dataJson);
-            photos.push({
-              "vendorId":userInfo.supplierId,
-              'photo':dataJson.data.url,
-              "photoName":dataJson.data.name,
-              "type":selectorChecked.value,
-              intro,
-            })
-            this.setState({
-              photos:JSON.parse(JSON.stringify(photos)),
-              frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
-            })
-            
-          },
-          fail: (res: any) => {
-            Taro.showToast({
-              title: '上传失败'
-            })
-          },
-          complete: (res: any) => {
-            console.log('-----complete:',res);
-          }
+        let {frontFilePath,photos,intro,selectorChecked}:any = this.state;
+        frontFilePath = frontFilePath.concat(tempFilePaths)
+        for(let i in tempFilePaths){
+          Taro.uploadFile({
+            url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
+            filePath: tempFilePaths[i],
+            name: 'file',
+            header: {
+              'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+              'content-type': 'multipart/form-data',
+            },
+            success: (res) => {
+              const data = res.data;
+              const dataJson = JSON.parse(data);
+              const { userInfo } = this.props;
+              console.log('-------success--dataJson:',dataJson);
+              photos.push({
+                "vendorId":userInfo.supplierId,
+                'photo':dataJson.data.url,
+                "photoName":dataJson.data.name,
+                "type":selectorChecked.value,
+                intro,
+              })
+              
+              
+            },
+            fail: (res: any) => {
+              Taro.showToast({
+                title: '上传失败'
+              })
+            },
+            complete: (res: any) => {
+              console.log('-----complete:',res);
+            }
+          })
+        }
+        this.setState({
+          frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
         })
 
         
@@ -361,7 +362,7 @@ class Home extends Component {
               </View>
             ))
           }
-          {
+          {this.state.frontFilePath.length <6 &&
             <View className={styles.uploadBtn} onClick={this.chooseImageReverse}>
             <View className={styles.addIcon}>+</View>
             {/* <View className={styles.btnTitle}>点击上传</View> */}
