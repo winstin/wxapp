@@ -75,14 +75,14 @@ class Home extends Component {
     "photo":"", 
     "sex":"male",
     "birthday":"",
-    "native_place":"", 
+    "nativePlace":"", 
     "education":[],
     "school":"",
     "email":"",
     "telephoe":"", 
     "qq":"",
     "referrerName":"",
-    "wx_id":"",
+    "wxId":"",
     "skilledField": [],
     "companyType": [],
     "companyProperty": [],
@@ -108,17 +108,18 @@ class Home extends Component {
 
   componentDidShow() {
     const {myInfo} = this.props;
+    console.log(myInfo)
     const { photo,
       name,
       birthday,
-      native_place,
+      nativePlace,
       education,
       school,
       email,
       telephoe,
       qq,
       referrerName,
-      wx_id,
+      wxId,
       sex} = myInfo.basic;
     const {company,reportTo,companyProperty,companyType,skilledField,industryType,industryRanking,companyScale,dptScale,purType,position,address,nameCard} = myInfo.company;
     if(myInfo.type === "personal"){
@@ -126,17 +127,17 @@ class Home extends Component {
         photo:nameCard,
         name,
         birthday,
-        native_place,
+        nativePlace,
         education,
         school,
         email,
         telephoe,
         qq,
         referrerName,
-        wx_id,
+        wxId,
         sex,
         skilledField,
-        industryType:industryType.join(','),
+        industryType,
         companyProperty,
         companyScale,
         dptScale,
@@ -187,7 +188,7 @@ class Home extends Component {
           filePath: tempFilePaths[0],
           name: 'file',
           header: {
-            'Authorization': `Bearer ${Taro.getStorageSync('token')}` || '',
+            'Authorization': Taro.getStorageSync('token') ? `Bearer ${Taro.getStorageSync('token')}` : '',
             'content-type': 'multipart/form-data',
           },
           success: (res) => {
@@ -300,16 +301,11 @@ class Home extends Component {
     const {type} = myInfo;
 
     const {
-      photo,name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
-      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,
+      photo,name,birthday,nativePlace,education,school,email,telephoe,qq,referrerName,
+      wxId,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,
       reportTo,company,position,address,submitLoading
     } = this.state;
-    if(telephoe===''){
-      Taro.showToast({
-        'title': '请输入手机号',
-      });
-      return;
-    }
+    
     if(submitLoading){
       return
     }
@@ -325,18 +321,20 @@ class Home extends Component {
             nickname:name,
             account:telephoe,
             birthday,
-            native_place,
+            nativePlace,
             reportTo,
-            education:education.join(','),
-            school,email,telephoe,qq,referrerName,wx_id,sex,
-            skilledField:skilledField.join(','),
-            industryType:industryType.join(','),
-            companyProperty:companyProperty.join(','),
-            companyScale:companyScale.join(','),
-            dptScale:dptScale.join(','),
-            purType:purType.join(','),
+            education,
+            school,email,telephoe,qq,referrerName,wxId,sex,
+            skilledField,
+            industryType,
+            companyProperty,
+            companyScale,
+            dptScale,
+            purType,
             company,position,address,nameCard:photo,
-            wxUser:{...userInfo}
+            wxUser:{...userInfo},
+            // levelNow,
+            // levelApply,
           }
         }).then((e)=>{
           this.setState({
@@ -348,6 +346,12 @@ class Home extends Component {
           Taro.navigateBack()
         });
       }else{
+        if(telephoe===''){
+          Taro.showToast({
+            'title': '请输入手机号',
+          });
+          return;
+        }
         console.log("注册会员");
         await dispatch({
           type: "global/getCode",
@@ -361,16 +365,16 @@ class Home extends Component {
             nickname:name,
             account:telephoe,
             birthday,
-            native_place,
+            nativePlace,
             reportTo,
-            education:education.join(','),
-            school,email,telephoe,qq,referrerName,wx_id,sex,
-            skilledField:skilledField.join(','),
-            industryType:industryType.join(','),
-            companyProperty:companyProperty.join(','),
-            companyScale:companyScale.join(','),
-            dptScale:dptScale.join(','),
-            purType:purType.join(','),
+            education,
+            school,email,telephoe,qq,referrerName,wxId,sex,
+            skilledField,
+            industryType,
+            companyProperty,
+            companyScale,
+            dptScale,
+            purType,
             // levelNow,
             // levelApply,
             company,position,address,nameCard:photo,
@@ -407,10 +411,15 @@ class Home extends Component {
     }
   };
 
+  dicValue = (data,type) =>{
+    const key = data.filter(item=>item.value == type);
+    return key[0] && key[0].label
+  }
+
   render() {
     const {
-      name,birthday,native_place,education,school,email,telephoe,qq,referrerName,
-      wx_id,sex,skilledField,industryType,companyProperty,companyScale,dptScale,
+      name,birthday,nativePlace,education,school,email,telephoe,qq,referrerName,
+      wxId,sex,skilledField,industryType,companyProperty,companyScale,dptScale,
       purType,reportTo,company,position,address,frontFilePath,submitLoading
     }:any = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
@@ -465,7 +474,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="native_place" placeholder="请选择您的籍贯…"  value={native_place} onChange={(e)=>{this.Change('native_place',e)}} />
+          <AtInput className={styles.input} name="nativePlace" placeholder="请选择您的籍贯…"  value={nativePlace} onChange={(e)=>{this.Change('nativePlace',e)}} />
         </View>
 
         
@@ -544,7 +553,7 @@ class Home extends Component {
             className={styles.itemIcon}
             src={phoneIcon}
           /> */}
-          <AtInput className={styles.input} name="wx_id" placeholder="请输入您的微信号…"  value={wx_id} onChange={(e)=>{this.Change('wx_id',e)}} />
+          <AtInput className={styles.input} name="wxId" placeholder="请输入您的微信号…"  value={wxId} onChange={(e)=>{this.Change('wxId',e)}} />
         </View>
 
         <View className={styles.label}>
@@ -594,7 +603,7 @@ class Home extends Component {
         <View className={styles.label}>
           汇报对象
         </View>
-        <View className={styles.formcheckboxItem}>
+        <View className={styles.formItem}>
           <AtInput className={styles.input} name="reportTo" placeholder="请输入汇报对象…"  value={reportTo} onChange={(e)=>{this.Change('reportTo',e)}} />
         </View>
 
@@ -654,7 +663,7 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder="请选择公司性质"  value={this.props.COMPANY_PROPERTY[companyProperty] && this.props.COMPANY_PROPERTY[companyProperty].label} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择公司性质"  value={this.dicValue(this.props.COMPANY_PROPERTY,companyProperty)} onChange={()=>{}}/>
             </View>
           </View>
         </Picker>

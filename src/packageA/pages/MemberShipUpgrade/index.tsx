@@ -215,12 +215,7 @@ class Home extends Component {
     const {dispatch,myInfo,userInfo} = this.props;
     const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo,submitLoading}:any = this.state;
     const { type } = myInfo;
-    if(account===''){
-      Taro.showToast({
-        'title': '请输入手机号',
-      });
-      return;
-    }
+    
     if(submitLoading){
       return
     }
@@ -255,6 +250,12 @@ class Home extends Component {
           // Taro.navigateBack()
         });
       }else{
+        if(account===''){
+          Taro.showToast({
+            'title': '请输入手机号',
+          });
+          return;
+        }
         console.log("注册会员");
         await dispatch({
           type: "global/getCode",

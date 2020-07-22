@@ -126,9 +126,7 @@ class User extends Component {
   }
  
   manageCard = (url) => {
-    if(url!="/packageA/pages/MemberShipPerson/index" && url!="/packageA/pages/MemberShipUpgrade/index"){
-      if(isLogined()) return;
-    }
+    if(isLogined()) return;
     Taro.navigateTo({
       url
     })
@@ -158,7 +156,7 @@ class User extends Component {
     //   )
     // }
 
-    const {type ="person",status = '1'} = myInfo;
+    const {type ="person",status = '1',basic} = myInfo;
 
     return (
       <View className={styles.user}>
@@ -179,24 +177,24 @@ class User extends Component {
               <View className={styles.name}>
                 <OpenData className={styles.name} type="userNickName"></OpenData>
               </View>
-              {type==="enterprise"?<Image
+              {/* {type==="enterprise"?<Image
                   className={styles.itemtag}
                   src={img_my_corp}
                 />:<Image
                 className={styles.itemtag}
                 src={img_vip_person}
-              />}
+              />} */}
               
             </View>
             <View className={styles.phone}>
-              会员等级: {myInfo.basic && myInfo.basic.levelNow||1}
+              {myInfo.basic && myInfo.basic.levelNowName}
             </View>
             <View className={styles.phone}>
               {cardInfo.code}
-              <Image
+              {/* <Image
                 className={styles.itemIcon}
                 src={cardIcon}
-              />
+              /> */}
             </View>
           </View>
           </View>
@@ -233,7 +231,7 @@ class User extends Component {
           cardIcon={sjhy}
           title={'升级个人会员'}
         ></ListItem>}
-        {type!=="personal" &&<ListItem 
+        <ListItem 
           onClick={()=>{
             if(status === "2"){
               Taro.showToast({
@@ -246,7 +244,7 @@ class User extends Component {
           }}
           cardIcon={sjhy}
           title={'升级企业会员'}
-        ></ListItem>}
+        ></ListItem>
         {token && <ListItem 
           onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
           cardIcon={jbxx}

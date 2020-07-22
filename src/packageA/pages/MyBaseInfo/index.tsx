@@ -224,6 +224,11 @@ class Home extends Component {
     })
   }
 
+  dicValue = (data,type) =>{
+    const key = data.filter(item=>item.value == type);
+    return key[0] && key[0].label
+  }
+
   render() {
     const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType,reportTo} = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
@@ -231,7 +236,6 @@ class Home extends Component {
 
     const {myInfo={basic:{}}} = this.props;
     const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic,birthday} = myInfo.basic;
-    console.log(this.props.COMPANY_TYPE[this.state.companyType],this.state.companyType)
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
@@ -332,7 +336,7 @@ class Home extends Component {
           <Picker value={''} mode='selector' range={this.props.COMPANY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("companyType",e)}}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.COMPANY_TYPE[this.state.companyType] && this.props.COMPANY_TYPE[this.state.companyType].label || companyTypeName} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.COMPANY_TYPE,this.state.companyType)} onChange={()=>{}}/>
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
@@ -356,7 +360,7 @@ class Home extends Component {
           <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.COMPANY_PROPERTY[this.state.companyType] && this.props.COMPANY_PROPERTY[this.state.companyType].label || companyPropertyname} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.COMPANY_PROPERTY,this.state.companyProperty)} onChange={()=>{}}/>
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
@@ -396,7 +400,7 @@ class Home extends Component {
           <Picker value={''} mode='selector' range={this.props.INDUSTRY_RANKING}  range-key='label' onChange={(e)=>{this.onChange("industryRanking",e)}}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.props.INDUSTRY_RANKING[this.state.companyType] && this.props.INDUSTRY_RANKING[this.state.companyType].label || industryRankingName} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.INDUSTRY_RANKING,this.state.industryRanking)} onChange={()=>{}}/>
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>

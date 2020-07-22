@@ -87,7 +87,7 @@ export default {
     *updatebaseMember({payload}, { put,call }) {
       const res = yield call(updatebaseMember,payload);
       console.log(res)
-      if(res.status == 500){
+      if(res.status !== 0){
         Taro.showToast({
           'title': res.message,
         });

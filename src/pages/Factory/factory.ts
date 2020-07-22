@@ -199,12 +199,12 @@ export default {
     *registerBaseMember({payload}, { put,call }) {
       const res = yield call(registerBaseMember,payload);
       console.log(res)
-      if(res.status == 500 || res.status == 400){
+      if(res.status != 0 ){
         Taro.showToast({
           'title': res.message,
         });
       }else{
-        if(res.message === "电话已经被注册"){
+        if(res.message === "电话已经被注册" || res.message === "数据库校验异常"){
           Taro.showToast({
             'title': res.message,
           });

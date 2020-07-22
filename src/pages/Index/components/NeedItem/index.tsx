@@ -27,7 +27,7 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {companyName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs} = data;
+    const {itemName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs} = data;
     return (
       <View className={styles.list} onClick={()=>{
         if(isLogined()) return;
@@ -40,7 +40,7 @@ class IndustryItem extends Component {
         </View>
         <View style='flex:1'>
           <View className={styles.title} >
-          {companyName}
+          {itemName}
           </View>
           <View className={styles.tips} >
           数量  {qty}台
