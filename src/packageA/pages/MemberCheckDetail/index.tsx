@@ -113,6 +113,18 @@ class Home extends Component {
     }
   }
 
+  fetchalbimList = ()=>{
+    const {dispatch} = this.props;
+    if(dispatch){
+      dispatch({
+        type: "factory/getsrmbaseVendorAlbum",
+        payload:  this.$router.params
+      }).then(()=>{
+        this.manageCard("/pages/AlbumProduct/index")
+      });
+    }
+  }
+
   handleClick (value) {
     this.setState({
       current: value
@@ -401,7 +413,10 @@ class Home extends Component {
             title={'企业相册'}
           ></ListItem>
           <ListItem 
-            onClick={()=>{this.manageCard("/pages/AlbumProduct/index")}}
+            onClick={()=>{
+              this.fetchalbimList();
+              
+            }}
             cardIcon={cpxc}
             title={'产品相册'}
           ></ListItem>
@@ -412,7 +427,31 @@ class Home extends Component {
           <View className={styles.tips} >
             <View className={styles.tipicon} />
             <View className={styles.tipstext} >
-              协会评价
+              推荐信息
+            </View>
+          </View>
+          <View className={styles.tips2}>
+            <View className={styles.label} >
+            推荐人
+            </View>
+            <View className={styles.conenttext} >
+            刘永生
+            </View>
+          </View>
+          <View className={styles.tips2} >
+           
+            <View className={styles.conenttext} style="margin-left:0px">
+            上海嘉协精密机械有限公司和上海乐荣机械模具有限公司成立于2001年，位于闵行区，是一家专业从事航天和外资企业的零部件及模具精密加工的制造型企业。公司现有厂区面积近3100平方米，有110多位员工，各类生产设备78台（详见附表），年销售额3000多万。 公司主要从事有色金属、黑色金属及镁合金、铝合金等材质的加工，尤其擅长做非标零件。公司拥有出色的生产管理部门，强大的销售队伍，尤其是我们的质量检验部是由多名经验丰富的技师组成，因此我们的产品质量得到了航天和外资企业的一致认可。 公司自成立以来，始终坚持“以人为本 质量第一“的经营理念，不断提升自我品质，不断探索新工艺，在成长中求进步，在进步中求发展。 我公司于2004年通过ISO9001：2000质量体系认证，同时获得航天、航空生产产品的相关资质。
+            </View>
+          </View>
+          
+        </View>
+
+        <View className={styles.content} >
+          <View className={styles.tips} >
+            <View className={styles.tipicon} />
+            <View className={styles.tipstext} >
+              签核信息
             </View>
           </View>
           <View className={styles.tips2} >
@@ -426,7 +465,7 @@ class Home extends Component {
 
         <View className={styles.content} >
           <View className={styles.label} style="margin-bottom:12px">
-            审核理由
+            签核意见
           </View>
           <View className={styles.formItem}>
             <View className={styles.formItemwidth}>
@@ -435,7 +474,7 @@ class Home extends Component {
                 value={this.state.referrerOpinion}
                 onChange={(e)=>{this.setState({referrerOpinion:e})}}
                 maxLength={200}
-                placeholder='请输入审核理由…'
+                placeholder='请输入签核意见…'
               />
             </View>
           </View>

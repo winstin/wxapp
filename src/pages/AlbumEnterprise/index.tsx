@@ -7,6 +7,7 @@ import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/tag.scss";
 import Index2 from '../../assets/Index2.jpeg';
+import NoneData from '../Index/components/NoneData';
 
 type PageStateProps = {
   albums:any;
@@ -122,6 +123,7 @@ class Home extends Component {
     return (
       <View className={styles.album}>
           <View className={styles.taglabel} >
+            {albums.length===0 && <NoneData/>}
             { albums.map((item,idx) => (
                 <AtTag 
                   className={styles.tag}
@@ -136,6 +138,7 @@ class Home extends Component {
             ))}
           </View>
         <View className={styles.taglabel} >
+          
           {albums[activeIndex] && albums[activeIndex].photos.map((item,idx) => (
                  <Image
                  className={styles.myphoto}

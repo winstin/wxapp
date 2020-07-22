@@ -291,8 +291,12 @@ class Home extends Component {
 
   onChange = (type,e)=>{
     console.log(type,e);
+    let value = e.detail.value;
+    if(value  instanceof Array){
+      value = value.join(',')
+    }
     this.setState({
-      [`${type}`]:e.detail.value
+      [`${type}`]:value
     })
   }
 
@@ -313,6 +317,7 @@ class Home extends Component {
       if(type){
         const {introduce,basic,contact,scale,type} = myInfo;
         console.log("升级会员")
+        
         dispatch({
           type: "user/updatebaseMember",
           payload:  {
@@ -340,10 +345,10 @@ class Home extends Component {
           this.setState({
             submitLoading:false
           })
-          Taro.showToast({
-            'title': '升级成功',
-          });
-          Taro.navigateBack()
+          // Taro.showToast({
+          //   'title': '升级成功',
+          // });
+          // Taro.navigateBack()
         });
       }else{
         if(telephoe===''){

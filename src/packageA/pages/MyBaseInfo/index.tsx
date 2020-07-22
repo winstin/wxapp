@@ -218,10 +218,18 @@ class Home extends Component {
 
   onChange = (type,e)=>{
     console.log(type,e);
-    this.setState({
-      [`${type}`]:e.detail.value,
-      // [`${type}Name`]:e.detail.value,
-    })
+    if(type === "industryType"){
+      this.setState({
+        [`${type}`]:e.detail.value.join(','),
+        // [`${type}Name`]:e.detail.value,
+      })
+    }else{
+      this.setState({
+        [`${type}`]:e.detail.value,
+        // [`${type}Name`]:e.detail.value,
+      })
+    }
+    
   }
 
   dicValue = (data,type) =>{
