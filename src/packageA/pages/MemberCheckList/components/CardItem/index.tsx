@@ -50,9 +50,12 @@ class IndustryItem extends Component {
         <View style={{flex:1}}>
           <View className={styles.title} >
             {data.name}
-            <Image src={img_vip_corp} className={styles.listimg} />
+            <View className={styles.itemtext} style="margin-left:10px">{data.levelNowName || "注册会员"}</View>
+            {/* <Image src={img_vip_corp} className={styles.listimg} /> */}
           </View>
-        
+          <View className={styles.tips3} >
+            申请等级：{data.levelApplyName || "VIP会员"}
+          </View>
           <View className={styles.tips3}>
             <View>
             联系人：{data.linkman}/{data.linkmanPhone}

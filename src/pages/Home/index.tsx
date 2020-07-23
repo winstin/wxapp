@@ -56,22 +56,11 @@ class Index extends PureComponent {
   };
   
 
-  componentDidShow(){
-    // const { userInfo } = this.props;
-    // // const token = Taro.getStorageSync('token');
-    // // console.log(userInfo)
-    // console.log("userInfo1",userInfo)
-
-    // if (userInfo) {
-    //   Taro.reLaunch({ url: "/pages/Login/index" });
-
-    //   // if (token) {
-    //   //   // 重定向到需要显示的页面
-    //   //   Taro.reLaunch({ url: "/pages/Home/index" });
-    //   // } else {
-    //   //   Taro.reLaunch({ url: "/pages/Login/index" });
-    //   // } 
-    // }
+  componentWillMount(){
+    // console.log(this.$router.params);
+    // Taro.showToast({
+    //   'title': this.$router.params.userId+","+this.$router.params.type,
+    // });
   }
 
   componentDidUpdate() {
@@ -177,7 +166,7 @@ class Index extends PureComponent {
     const { dispatch } = this.props;
     await Taro.login({
       success:(res)=>{
-        console.log(res)
+        console.log(res)   
         if(dispatch){
           dispatch({
             type: "global/login",
@@ -186,19 +175,26 @@ class Index extends PureComponent {
               code:res.code,
               username:'',
               password:res.code,
-              phone:this.state.telephoe
+              phone:this.state.telephoe,
+              userId:this.$router.params.userId,
+              type:this.$router.params.type,
             }
+          }).then(()=>{
+            this.setState({
+              getUserInfoLoading: false
+            });
           });
         }
       },
       fail:(err)=>{
+        this.setState({
+          getUserInfoLoading: false
+        });
         console.log(err)
       }
     })
 
-    this.setState({
-      getUserInfoLoading: false
-    });
+    
   }
 
   render() {

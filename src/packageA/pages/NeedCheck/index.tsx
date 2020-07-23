@@ -2,7 +2,7 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View,Image,Picker } from "@tarojs/components";
-import { AtInput,AtButton,AtIcon,AtRadio } from 'taro-ui'
+import { AtInput,AtButton,AtIcon,AtRadio,AtTextarea } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import classNames from 'classnames';
@@ -11,6 +11,8 @@ import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 import "taro-ui/dist/style/components/radio.scss";
+import "taro-ui/dist/style/components/textarea.scss";
+
 type PageStateProps = {
   jxhReqDetail:any;
   dispatch?<K = any>(action: AnyAction): K;
@@ -50,7 +52,7 @@ class Home extends Component {
     frontPagePath:"",
     selector: ['显示', '不显示'],
     selectorChecked: '显示',
-
+    closeDesc:'',
   }
   config: Config = {
     navigationBarTitleText: "需求审核",
@@ -184,7 +186,8 @@ class Home extends Component {
           itemName,
           drawings,
           isTop:"1",
-          isShowDrawing:this.state.selectorChecked==="显示"?'1':'0'
+          isShowDrawing:this.state.selectorChecked==="显示"?'1':'0',
+          closeDesc:this.state.closeDesc
         }
       }).then(()=>{
         // Taro.showToast({
@@ -197,7 +200,7 @@ class Home extends Component {
 
   render() {
     // const {phone,frontFilePath,frontPagePath} = this.state;
-    const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing} = this.props.jxhReqDetail;
+    const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing,closeDesc} = this.props.jxhReqDetail;
     if(status==='2'){
       this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示'
     }
@@ -249,7 +252,7 @@ class Home extends Component {
         </View>
         <View className={styles.formImageItem}>
           {
-            drawings.map((item,index)=>(
+            drawings && drawings.map((item,index)=>(
               <View className={styles.imageView}>
                 <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this,index)}></AtIcon>
                 <Image mode="scaleToFill" src={`http://sz-spd.cn:889/${item.url}`} className={styles.image} />
@@ -279,7 +282,36 @@ class Home extends Component {
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
         </Picker>
-        {status!=='2'&&<View className={styles.bottom}>
+        {status === "1" ?<View className={styles.content} >
+          <View className={styles.label} style="margin-bottom:12px">
+            审核意见
+          </View>
+          <View className={styles.formItems}>
+            <View className={styles.formItemwidth}>
+              <AtTextarea
+                className={styles.textarea} 
+                value={this.state.closeDesc}
+                onChange={(e)=>{this.setState({closeDesc:e})}}
+                maxLength={200}
+                placeholder='请输入审核意见…'
+              />
+            </View>
+          </View>
+        </View>
+        :
+        <View>
+          <View className={styles.label}>
+            审核意见
+          </View>
+          <View className={styles.formItem}>
+            {closeDesc}
+            {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
+          </View>
+        </View>
+        }
+
+        
+        {status!=='2'&& status!=='3' &&<View className={styles.bottom}>
           <View className={classNames(styles.loginout,styles.agree)} onClick={()=>{this.submit('agree')}}>通过</View>
           <View className={styles.loginout} onClick={()=>{this.submit('reject')}}>作废</View>
         </View>}

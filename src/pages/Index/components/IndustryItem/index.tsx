@@ -69,8 +69,8 @@ class IndustryItem extends Component {
           </AtBadge>}
         </View>
         <View className={styles.itemTitle}>{item.title === "签到" && !Signin?"已签到":item.title}</View>
-        { item.title === "邀请企业"  &&<Button openType="share" className={styles.share}>分享</Button>}
-        { item.title === "邀请好友"  &&<Button openType="share" className={styles.share}>分享</Button>}
+        { item.title === "邀请企业"  &&<Button openType="share" className={styles.share} id="MemberShipUpgrade">分享</Button>}
+        { item.title === "邀请好友"  &&<Button openType="share" className={styles.share} id="MemberShipPerson">分享</Button>}
 
       </View>
     );

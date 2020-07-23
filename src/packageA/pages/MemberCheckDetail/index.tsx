@@ -265,7 +265,7 @@ class Home extends Component {
       staffAmountName,introduction,businessLicenseNo,referrerOpinion,
       address,companyTel,legalPerson,star,linkmanPhone,shortName,companyTypeName,companyPropertyName,industryType='',id,
       referrerName,sex,birthday,nativePlace,school,email,telephoe,wxId,qq,company,position,educationName,skilledFieldName,
-      purTypeName,companyScaleName,dptScaleName,referrerDate
+      purTypeName,companyScaleName,dptScaleName,referrerDate,levelNowName,applyDate,levelApplyName,approveList
     } = data;
     const industryData = this.props.INDUSTRY_TYPE.filter((item)=>`${industryType}`.includes(item.value))||[];
     const industryarr = industryData && industryData.map((item)=>item.label) || '';
@@ -276,22 +276,51 @@ class Home extends Component {
     return (
       <View className={styles.needdetail}>
         <View className={styles.title}>
-          {name}
-        </View>
-        <View className={styles.list}>
-        <View>
-          <Image src={logo?`http://sz-spd.cn:889/${logo}`:Index2} className={styles.listimg} />
+          {name} 
         </View>
         <View >
-          <View className={styles.tips} >
-            主要工艺
+          <View className={styles.list} style="padding:0px">
+            <View className={styles.tips} >
+              当前等级
+            </View>
+            <View className={styles.title} >
+              {levelNowName}
+            </View>
           </View>
-          <View className={styles.title} >
-            {productTechName}
+          <View className={styles.list} style="padding:0px">
+            <View className={styles.tips} >
+              申请等级
+            </View>
+            <View className={styles.title} >
+              {levelApplyName}
+            </View>
+          </View>
+          <View className={styles.list} style="padding:0px">
+            <View className={styles.tips} >
+              申请日期
+            </View>
+            <View className={styles.title} >
+              {applyDate}
+            </View>
           </View>
         </View>
-      </View>
-      { this.$router.params.type !== "person" && <View className={styles.content} >
+        {
+        this.$router.params.type !== "person" &&
+          <View className={styles.list}>
+            <View>
+              <Image src={logo?`http://sz-spd.cn:889/${logo}`:Index2} className={styles.listimg} />
+            </View>
+            <View >
+              <View className={styles.tips} >
+                主要工艺
+              </View>
+              <View className={styles.title} >
+                {productTechName}
+              </View>
+            </View>
+          </View>
+        }
+        {this.$router.params.type !== "person" && <View className={styles.content} >
           <View className={styles.tips} >
             <View className={styles.tipicon} />
             <View className={styles.tipstext} >
@@ -617,7 +646,7 @@ class Home extends Component {
           </View>
           
         </View>
-
+    
         <View className={styles.content} >
           <View className={styles.tips} >
             <View className={styles.tipicon} />
@@ -625,51 +654,45 @@ class Home extends Component {
               签核信息
             </View>
           </View>
-          <View>
+          {
+          approveList && approveList.map((item)=>(
+            <View>
             <View className={styles.tips2}>
-              <View className={styles.label} >
+              <View className={styles.label} style="width:50px" >
               签核人
               </View>
               <View className={styles.conenttext} >
-              {referrerName}
+              {item.approveName}
               </View>
+              
               {
-                status === '1' && 
-                <View className={styles.conenttag} >
-                  推荐人确认中
+                item.approveResult === '1' && 
+                <View className={styles.conenttag} style="width:40px">
+                  同意
                 </View>
               }
               {
-                status === '2' && 
-                <View className={styles.conenttag} >
-                  审核中
-                </View>
-              }
-              {
-                status === '3' && 
-                <View className={styles.conenttag} >
-                  审核通过
-                </View>
-              }
-              {
-                status === '4' && 
-                <View className={styles.conenttag} >
-                  审核拒绝
+                item.approveResult === '2' && 
+                <View className={styles.conentred} style="width:40px">
+                  否决
                 </View>
               }
               <View className={styles.conenttext} >
-              {referrerDate}
+              {item.createdDate}
               </View>
             </View>
             <View className={styles.tips2}>
               <View className={styles.conentback}>
-                {referrerOpinion}
+              {item.approveOpinion}
               </View>
             </View>
           </View>
+        
+          ))
+        }
         </View>
 
-        {status==='2' && <View className={styles.content} >
+        {(status==='2'||status==='1') && <View className={styles.content} >
           <View className={styles.label} style="margin-bottom:12px">
             签核意见
           </View>

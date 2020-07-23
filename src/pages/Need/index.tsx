@@ -228,7 +228,7 @@ class Home extends Component {
               // onScroll={this.onScroll}
             >
             {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.state.jxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`}/>))}
+              { this.state.jxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} />))}
             {/* </View> */}
             </ScrollView>
 
@@ -248,7 +248,7 @@ class Home extends Component {
               // onScroll={this.onScroll}
             >
             {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.state.myjxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`}/>))}
+              { this.state.myjxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} type="myreq"/>))}
             {/* </View> */}
             </ScrollView>
           </AtTabsPane>

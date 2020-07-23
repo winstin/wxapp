@@ -55,7 +55,8 @@ class IndustryItem extends Component {
           <View className={styles.tips3} >
               <View className={styles.title} style="margin-left:0px">
                 {data.name}
-                <Image src={img_vip_person} className={styles.listimg} />
+                <View className={styles.itemtext} style="margin-left:10px">{data.levelNowName}</View>
+                {/* <Image src={img_vip_person} className={styles.listimg} /> */}
               </View>
               <View className={styles.share} >
               <View className={styles.item}>
@@ -64,6 +65,11 @@ class IndustryItem extends Component {
               <View className={styles.item}> 
                 <View>{data.nickname}</View>
               </View>
+            </View>
+          </View>
+          <View className={styles.tips3} >
+            <View className={styles.title} style="margin-left:0px">
+              申请等级: {data.levelApplyName}
             </View>
           </View>
           <View className={styles.tips3} >

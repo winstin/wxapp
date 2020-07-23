@@ -24,7 +24,7 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {itemName,qty,reqDesc,createdDate,drawings} = data;
+    const {itemName,qty,reqDesc,createdDate,drawings,statusName} = data;
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
@@ -44,6 +44,9 @@ class IndustryItem extends Component {
           </View>
           <View className={styles.tips} >
           要求  {reqDesc}
+          </View>
+          <View className={styles.tips} >
+          状态  {statusName}
           </View>
           <View className={styles.tips} >
             {createdDate}

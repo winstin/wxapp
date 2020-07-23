@@ -87,7 +87,7 @@ export default {
       // 先判断缓存中是否有token
       const token = Taro.getStorageSync("token");
       console.log("后台返回token", !token);
-      if( !token ){
+      if( !token ||  payload.type){
           // const code = yield call(Taro.login);
           const params = {
               // grant_type: "password", 
@@ -113,7 +113,12 @@ export default {
             if (authRes && authRes.access_token) {
               // 存储token和userId
               Taro.setStorage({ key: 'token', data: authRes.access_token });
-              Taro.reLaunch({ url: "/pages/Index/index" });
+       
+              if(payload.type){
+                Taro.navigateTo({ url: `/packageA/pages/${payload.type}/index?userId=${payload.userId}` });
+              }else{
+                Taro.reLaunch({ url: "/pages/Index/index" });
+              }
             } else {
               Taro.showToast({
                 title: authRes.error_description,

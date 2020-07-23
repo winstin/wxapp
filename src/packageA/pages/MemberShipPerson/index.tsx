@@ -21,6 +21,7 @@ type PageStateProps = {
   STAFF_AMOUNT:any;
   INDUSTRY_TYPE:any;
   COMPANY_PROPERTY:any;
+  VIP_LEVEL:any;
   myInfo:any;
   code:any;
   dispatch?<K = any>(action: AnyAction): K;
@@ -40,7 +41,7 @@ interface Home {
 
 @connect(({ user,global,loading }) => {    
   const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
-  ,COMPANY_PROPERTY=[],code} = global;
+  ,COMPANY_PROPERTY=[],code,VIP_LEVEL=[]} = global;
   const {myInfo} = user;
   return {
     userInfo,
@@ -53,6 +54,7 @@ interface Home {
     INDUSTRY_TYPE,
     myInfo,
     code,
+    VIP_LEVEL,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -96,7 +98,10 @@ class Home extends Component {
     address:'',
     nameCard:'',
     getUserInfoLoading:false,
-    submitLoading:false
+    submitLoading:false,
+    levelNow:'',
+    levelApply:'',
+    levelNowName:'VIP会员',
 
   }
   config: Config = {
@@ -107,6 +112,24 @@ class Home extends Component {
   };
 
   componentWillMount() {
+    if(this.$router.params.userId){
+      const {dispatch} = this.props;
+      if(dispatch){
+        dispatch({
+          type: "user/getMyInfo",
+          payload: {
+            // user_id:Taro.getStorageSync('user_id')
+          }
+        }).then(()=>{
+          this.initData();
+        });
+      }
+    }else{
+      this.initData();
+    }
+  }
+
+  initData = ()=>{
     const {myInfo} = this.props;
     console.log(myInfo)
     const { photo,
@@ -120,11 +143,14 @@ class Home extends Component {
       qq,
       referrerName,
       wxId,
-      sex} = myInfo.basic;
+      sex,
+      levelNow,levelNowName
+    } = myInfo.basic;
     const {company,reportTo,companyProperty,companyType,skilledField,industryType,industryRanking,companyScale,dptScale,purType,position,address,nameCard} = myInfo.company;
     if(myInfo.type === "personal"){
       this.setState({
         photo:nameCard,
+        levelApply:levelNow,levelNowName,
         name,
         birthday,
         nativePlace,
@@ -169,6 +195,7 @@ class Home extends Component {
   }
 
   Change = (type,value) => {
+    console.log(type,value)
     this.setState({
       [`${type}`]: value
     })
@@ -317,7 +344,7 @@ class Home extends Component {
     const {
       photo,name,birthday,nativePlace,education,school,email,telephoe,qq,referrerName,
       wxId,sex,skilledField,industryType,companyProperty,companyScale,dptScale,purType,
-      reportTo,company,position,address,submitLoading
+      reportTo,company,position,address,submitLoading,levelApply
     } = this.state;
     
     if(submitLoading){
@@ -331,7 +358,7 @@ class Home extends Component {
         dispatch({
           type: "user/levelUpbaseMember",
           payload:  {
-            ...introduce,...basic,...contact,...scale,type,
+            ...introduce,...basic,...contact,...scale,type:'personal',
             name,
             nickname:name,
             account:telephoe,
@@ -347,6 +374,7 @@ class Home extends Component {
             dptScale,
             purType,
             company,position,address,nameCard:photo,
+            levelApply,
             wxUser:{...userInfo},
             // levelNow,
             // levelApply,
@@ -427,7 +455,10 @@ class Home extends Component {
   };
 
   dicValue = (data,type) =>{
+
     const key = data.filter(item=>item.value == type);
+    console.log(data,type,key)
+
     return key[0] && key[0].label
   }
 
@@ -435,7 +466,7 @@ class Home extends Component {
     const {
       name,birthday,nativePlace,education,school,email,telephoe,qq,referrerName,
       wxId,sex,skilledField,industryType,companyProperty,companyScale,dptScale,
-      purType,reportTo,company,position,address,frontFilePath,submitLoading
+      purType,reportTo,company,position,address,frontFilePath,submitLoading,levelApply,
     }:any = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -449,6 +480,18 @@ class Home extends Component {
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
         </View>
+
+        <View className={styles.label}>
+          会员等级
+        </View>
+
+        <Picker value={''} mode='selector' range={this.props.VIP_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("levelApply",e,this.props.VIP_LEVEL)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.dicValue(this.props.VIP_LEVEL,levelApply)} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
 
         <View className={styles.label}>
           登记人姓名

@@ -43,7 +43,7 @@ interface Home {
 }
 
 @connect(({ myindex,loading }) => {
-  const {XCX_HOME_IMG=[],sysMenu=[],corporateData=[],portalNotice=[],jxhReqData=[],dataCount,Signin} = myindex;
+  const {XCX_HOME_IMG=[],sysMenu=[],corporateData=[],portalNotice=[],jxhReqData=[],dataCount,Signin,userInfo} = myindex;
   return {
     imgUrls:XCX_HOME_IMG,
     sysMenu,
@@ -52,6 +52,7 @@ interface Home {
     jxhReqData,
     dataCount,
     Signin,
+    userInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -74,12 +75,19 @@ class Home extends Component {
     {
       icon: industry4,
       title:'邀请企业',
-      star:5
+      star:5,
+      // onClick:()=>{
+      //   this.state.shareUrl = "MemberShipUpgrade"
+      // }
     },
     {
       icon: industry6,
       title:'邀请好友',
-      star:5
+      star:5,
+      // onClick:()=>{
+      //   console.log('1111')
+      //   this.state.shareUrl = "MemberShipPerson"
+      // }
     },
     {
       icon: industry3,
@@ -101,6 +109,7 @@ class Home extends Component {
 
   state = {
     current: 0,
+    shareUrl:''
   }
   config: Config = {
     navigationBarTitleText: "首页",
@@ -205,9 +214,11 @@ class Home extends Component {
 
   //转发
   onShareAppMessage (res) {
+    const {userInfo} = this.props;
+    console.log(userInfo)
     return {
         title: "升级会员",
-        path:'/packageA/pages/MemberShipPerson/index'
+        path:`/pages/Home/index?userId=${userInfo.id}&type=${res.target.id}`
     }
   }
     

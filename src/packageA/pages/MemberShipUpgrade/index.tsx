@@ -78,16 +78,33 @@ class Home extends Component {
   };
 
   componentWillMount() {
+    if(this.$router.params.userId){
+      const {dispatch} = this.props;
+      if(dispatch){
+        dispatch({
+          type: "user/getMyInfo",
+          payload: {
+            // user_id:Taro.getStorageSync('user_id')
+          }
+        }).then(()=>{
+          this.initData();
+        });
+      }
+    }else{
+      this.initData();
+    }
+  }
+
+  initData = ()=>{
     const {myInfo={basic:{},contact:{},introduce:{}}} = this.props;
     const { businessLicenseNo,name,logo,referrerName,levelNow,levelApply,levelNowName } = myInfo.basic;
     const { introduction } = myInfo.introduce || {};
 
     const { linkman,linkmanPhone } = myInfo.contact || {};
     this.setState({
-      businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,levelApply:levelNow,levelNowName
+      businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,levelApply:levelNow,levelNowName,
       frontFilePath:logo?`http://sz-spd.cn:889/${logo}`:'',account:linkmanPhone
     })
-    
   }
 
   handleClick (value) {
@@ -231,15 +248,10 @@ class Home extends Component {
       if(type){
         const {introduce,basic,contact,scale,type} = myInfo;
         console.log("升级会员");
-        await dispatch({
-          type: "global/getCode",
-          payload: {}
-        })
-        const {code} = this.props;
         dispatch({
           type: "user/levelUpbaseMember",
           payload:  {
-            ...introduce,...basic,...contact,...scale,type,
+            ...introduce,...basic,...contact,...scale,type:'enterprise',
             name,
             businessLicenseNo,
             introduction,
@@ -249,7 +261,6 @@ class Home extends Component {
             logo,
             isTop:'1',
             levelApply,
-            wxCode:code,
             wxUser:{...userInfo}
           }
         }).then((e)=>{

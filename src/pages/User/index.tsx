@@ -219,7 +219,7 @@ class User extends Component {
         </View>
         {type!=="enterprise" &&<ListItem 
           onClick={()=>{
-            if(status === "2"){
+            if(myInfo.type && (status === "2"||status === "1")){
               Taro.showToast({
                 'title': '您已经提交会员申请，目前正在审核中！',
               });
@@ -233,7 +233,8 @@ class User extends Component {
         ></ListItem>}
         <ListItem 
           onClick={()=>{
-            if(status === "2"){
+            
+            if(myInfo.type && (status === "2"||status === "1")){
               Taro.showToast({
                 'title': '您已经提交会员申请，目前正在审核中！',
               });
