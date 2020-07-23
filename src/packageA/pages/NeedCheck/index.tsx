@@ -53,6 +53,7 @@ class Home extends Component {
     selector: ['显示', '不显示'],
     selectorChecked: '显示',
     closeDesc:'',
+    isload:true
   }
   config: Config = {
     navigationBarTitleText: "需求审核",
@@ -61,7 +62,7 @@ class Home extends Component {
     // navigationStyle:"custom",
   };
 
-  componentDidShow() {
+  componentWillMount() {
     console.log(this.$router.params);
     this.fetchList()
   }
@@ -77,6 +78,8 @@ class Home extends Component {
       dispatch({
         type: "needcheck/getjxhReqDetail",
         payload: this.$router.params
+      }).then(()=>{
+        this.setState({isload:false})
       });
     }
   }
@@ -201,8 +204,13 @@ class Home extends Component {
   render() {
     // const {phone,frontFilePath,frontPagePath} = this.state;
     const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing,closeDesc} = this.props.jxhReqDetail;
+    console.log('this.props.jxhReqDetail',closeDesc)
     if(status==='2'){
-      this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示'
+      this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示';
+      this.state.closeDesc = closeDesc;
+    }
+    if(this.state.isload){
+      return null
     }
     return (
       <View className={styles.needdetail}>
@@ -282,7 +290,7 @@ class Home extends Component {
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
         </Picker>
-        {status === "1" ?<View className={styles.content} >
+        {status === "1" && <View className={styles.content} >
           <View className={styles.label} style="margin-bottom:12px">
             审核意见
           </View>
@@ -298,16 +306,16 @@ class Home extends Component {
             </View>
           </View>
         </View>
-        :
-        <View>
-          <View className={styles.label}>
-            审核意见
+        }
+        {(status==='2'|| status==='3') &&
+          <View>
+            <View className={styles.label}>
+              审核意见 
+            </View>
+            <View className={styles.formItem}>
+              {closeDesc}
+            </View>
           </View>
-          <View className={styles.formItem}>
-            {closeDesc}
-            {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
-          </View>
-        </View>
         }
 
         
