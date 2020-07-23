@@ -216,7 +216,7 @@ class Home extends Component {
     }
   }
 
-  onChange = (type,e)=>{
+  onChange = (type,e,data:any = undefined)=>{
     console.log(type,e);
     if(type === "industryType"){
       this.setState({
@@ -224,16 +224,24 @@ class Home extends Component {
         // [`${type}Name`]:e.detail.value,
       })
     }else{
-      this.setState({
-        [`${type}`]:e.detail.value,
-        // [`${type}Name`]:e.detail.value,
-      })
+      if(data){
+        this.setState({
+          [`${type}`]:data[e.detail.value].value,
+        })
+      }else{
+        this.setState({
+          [`${type}`]:e.detail.value,
+          // [`${type}Name`]:e.detail.value,
+        })
+      }
+      
     }
     
   }
 
   dicValue = (data,type) =>{
     const key = data.filter(item=>item.value == type);
+    console.log(data,type,key)
     return key[0] && key[0].label
   }
 
@@ -341,7 +349,7 @@ class Home extends Component {
               ))
             }
           </CheckboxGroup> */}
-          <Picker value={''} mode='selector' range={this.props.COMPANY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("companyType",e)}}>
+          <Picker value={''} mode='selector' range={this.props.COMPANY_TYPE}  range-key='label' onChange={(e)=>{this.onChange("companyType",e,this.props.COMPANY_TYPE)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.COMPANY_TYPE,this.state.companyType)} onChange={()=>{}}/>
@@ -365,7 +373,7 @@ class Home extends Component {
               ))
             }
           </CheckboxGroup> */}
-          <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
+          <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e,this.props.COMPANY_PROPERTY)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.COMPANY_PROPERTY,this.state.companyProperty)} onChange={()=>{}}/>
@@ -405,7 +413,7 @@ class Home extends Component {
             }
           </CheckboxGroup> */}
 
-          <Picker value={''} mode='selector' range={this.props.INDUSTRY_RANKING}  range-key='label' onChange={(e)=>{this.onChange("industryRanking",e)}}>
+          <Picker value={''} mode='selector' range={this.props.INDUSTRY_RANKING}  range-key='label' onChange={(e)=>{this.onChange("industryRanking",e,this.props.INDUSTRY_RANKING)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder=""  value={this.dicValue(this.props.INDUSTRY_RANKING,this.state.industryRanking)} onChange={()=>{}}/>

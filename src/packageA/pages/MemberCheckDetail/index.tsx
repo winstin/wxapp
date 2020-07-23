@@ -29,6 +29,7 @@ type PageStateProps = {
   COMPANY_PROPERTY:any;
   INDUSTRY_RANKING:any;
   COMPANY_TYPE:any;
+  personalInfo:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -45,10 +46,12 @@ interface Home {
 }
 
 @connect(({ membercheck,global,factory,loading }) => {
-  const {corporateDetail={}} = factory;
+  const {corporateDetail={},personalInfo={}} = factory;
   const {memberCheckDetail={}} = membercheck;
   const {SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
   ,COMPANY_PROPERTY=[],INDUSTRY_RANKING=[],COMPANY_TYPE=[]} = global;
+
+
   return {
     corporateDetail,
     SKILLED_FIELD,
@@ -61,6 +64,7 @@ interface Home {
     INDUSTRY_RANKING,
     COMPANY_TYPE,
     memberCheckDetail,
+    personalInfo,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -106,24 +110,31 @@ class Home extends Component {
   fetchList = ()=>{
     const {dispatch} = this.props;
     if(dispatch){
-      dispatch({
-        type: "factory/getcorporateDetail",
-        payload: this.$router.params
-      });
+      if(this.$router.params.type === "person"){
+        dispatch({
+          type: "factory/getBaseMemberInfo",
+          payload: this.$router.params
+        });
+      }else{
+        dispatch({
+          type: "factory/getcorporateDetail",
+          payload: this.$router.params
+        });
+      }
     }
   }
 
-  fetchalbimList = ()=>{
-    const {dispatch} = this.props;
-    if(dispatch){
-      dispatch({
-        type: "factory/getsrmbaseVendorAlbum",
-        payload:  this.$router.params
-      }).then(()=>{
-        this.manageCard("/pages/AlbumProduct/index")
-      });
-    }
-  }
+  // fetchalbimList = ()=>{
+  //   const {dispatch} = this.props;
+  //   if(dispatch){
+  //     dispatch({
+  //       type: "factory/getsrmbaseVendorAlbum",
+  //       payload:  this.$router.params
+  //     }).then(()=>{
+  //       this.manageCard("/pages/AlbumProduct/index")
+  //     });
+  //   }
+  // }
 
   handleClick (value) {
     this.setState({
@@ -243,12 +254,19 @@ class Home extends Component {
   }
 
   render() {
-    
+    let data:any = {};
+    if(this.$router.params.type === "person"){
+      data = this.props.personalInfo
+    }else{
+      data = this.props.corporateDetail
+    }
     const {
       name,productTechName,countryName,provinceName,factoryAreaName,logo,
       staffAmountName,introduction,businessLicenseNo,referrerOpinion,
-      address,companyTel,legalPerson,star,linkmanPhone,shortName,companyTypeName,companyPropertyName,industryType='',id
-    } = this.props.corporateDetail;
+      address,companyTel,legalPerson,star,linkmanPhone,shortName,companyTypeName,companyPropertyName,industryType='',id,
+      referrerName,sex,birthday,nativePlace,school,email,telephoe,wxId,qq,company,position,educationName,skilledFieldName,
+      purTypeName,companyScaleName,dptScaleName,referrerDate
+    } = data;
     const industryData = this.props.INDUSTRY_TYPE.filter((item)=>`${industryType}`.includes(item.value))||[];
     const industryarr = industryData && industryData.map((item)=>item.label) || '';
     const {createdDate,status} = this.props.memberCheckDetail;
@@ -273,7 +291,7 @@ class Home extends Component {
           </View>
         </View>
       </View>
-        <View className={styles.content} >
+      { this.$router.params.type !== "person" && <View className={styles.content} >
           <View className={styles.tips} >
             <View className={styles.tipicon} />
             <View className={styles.tipstext} >
@@ -285,144 +303,298 @@ class Home extends Component {
             {introduction}
             </View>
           </View>
-        </View>
+        </View>}
+
+        {this.$router.params.type !== "person" &&
+          <View className={styles.content} style="padding-bottom:0px" >
+            <View className={styles.tips} >
+              <View className={styles.tipicon} />
+              <View className={styles.tipstext} >
+                公司档案
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              企业简称
+              </View>
+              <View className={styles.conenttext} >
+              {shortName}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              企业类型
+              </View>
+              <View className={styles.conenttext} >
+              {companyTypeName}
+              </View>
+            </View>
+
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              企业性质
+              </View>
+              <View className={styles.conenttext} >
+              {companyPropertyName}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              行业类别
+              </View>
+              <View className={styles.conenttext} >
+              {industryarr.join(',')}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              国家地区
+              </View>
+              <View className={styles.conenttext} >
+              {countryName} {provinceName}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              详细地址
+              </View>
+              <View className={styles.conenttext} >
+              {address}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              统一税务登记号
+              </View>
+              <View className={styles.conenttext} >
+              {businessLicenseNo}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              企业电话
+              </View>
+              <View className={styles.conenttext} >
+              {companyTel}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              法人
+              </View>
+              <View className={styles.conenttext} >
+              {legalPerson}
+              </View>
+            </View>
+
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              联系人手机
+              </View>
+              <View className={styles.conenttext} >
+              {linkmanPhone}
+              </View>
+            </View>
+
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              星级
+              </View>
+              <View className={styles.conenttext} >
+              {star}
+              </View>
+            </View>
+            
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              工厂面积
+              </View>
+              <View className={styles.conenttext} >
+              {factoryAreaName}
+              </View>
+            </View>
+            <View className={styles.tips2} style="margin-bottom:10px">
+              <View className={styles.label} >
+              雇员数量
+              </View>
+              <View className={styles.conenttext} >
+              {staffAmountName}
+              </View>
+            </View>
+            <ListItem 
+            onClick={()=>{this.manageCard(`/pages/AlbumEnterprise/index?vendorId=${id}`)}}
+            cardIcon={qyxc}
+              title={'企业相册'}
+            ></ListItem>
+            <ListItem 
+              onClick={()=>{this.manageCard(`/packageA/pages/AlbumProductList/index?id=${id}`)}}
+              cardIcon={cpxc}
+              title={'产品相册'}
+            ></ListItem>
+          </View>
+        }
+        {this.$router.params.type === "person" &&
+          <View className={styles.content} style="padding-bottom:0px" >
+            <View className={styles.tips} >
+              <View className={styles.tipicon} />
+              <View className={styles.tipstext} >
+              个人档案
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              性别
+              </View>
+              <View className={styles.conenttext} >
+              {sex === 'male' ? '男':'女'}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              生日
+              </View>
+              <View className={styles.conenttext} >
+              {birthday}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              籍贯
+              </View>
+              <View className={styles.conenttext} >
+              {nativePlace}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              详细地址
+              </View>
+              <View className={styles.conenttext} >
+              {address}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              学历
+              </View>
+              <View className={styles.conenttext} >
+              {educationName}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              学校
+              </View>
+              <View className={styles.conenttext} >
+              {school}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              email
+              </View>
+              <View className={styles.conenttext} >
+              {email}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              电话
+              </View>
+              <View className={styles.conenttext} >
+              {telephoe}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              微信
+              </View>
+              <View className={styles.conenttext} >
+              {wxId}
+              </View>
+            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              QQ
+              </View>
+              <View className={styles.conenttext} >
+              {qq}
+              </View>
+            </View>
+
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              公司
+              </View>
+              <View className={styles.conenttext} >
+              {company}
+              </View>
+            </View>
+
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              职位
+              </View>
+              <View className={styles.conenttext} >
+              {position}
+              </View>
+            </View>
 
 
-        <View className={styles.content} style="padding-bottom:0px" >
-          <View className={styles.tips} >
-            <View className={styles.tipicon} />
-            <View className={styles.tipstext} >
-              公司档案
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              公司性质
+              </View>
+              <View className={styles.conenttext} >
+              {companyPropertyName}
+              </View>
             </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            企业简称
-            </View>
-            <View className={styles.conenttext} >
-            {shortName}
-            </View>
-          </View>
 
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            企业类型
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              行业类别
+              </View>
+              <View className={styles.conenttext} >
+              {industryarr.join(',')}
+              </View>
             </View>
-            <View className={styles.conenttext} >
-            {companyTypeName}
-            </View>
-          </View>
 
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            企业性质
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              擅长领域
+              </View>
+              <View className={styles.conenttext} >
+              {skilledFieldName}
+              </View>
             </View>
-            <View className={styles.conenttext} >
-            {companyPropertyName}
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              公司类型
+              </View>
+              <View className={styles.conenttext} >
+              {companyScaleName}
+              </View>
             </View>
-          </View>
 
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            行业类别
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              采购部门规模
+              </View>
+              <View className={styles.conenttext} >
+              {dptScaleName}
+              </View>
             </View>
-            <View className={styles.conenttext} >
-            {industryarr.join(',')}
-            </View>
-          </View>
 
-
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            国家地区
-            </View>
-            <View className={styles.conenttext} >
-            {countryName} {provinceName}
-            </View>
+            <View className={styles.tips2} >
+              <View className={styles.label} >
+              采购涉及工艺
+              </View>
+              <View className={styles.conenttext} >
+              {purTypeName}
+              </View>
+            </View>  
           </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            详细地址
-            </View>
-            <View className={styles.conenttext} >
-            {address}
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            统一税务登记号
-            </View>
-            <View className={styles.conenttext} >
-            {businessLicenseNo}
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            企业电话
-            </View>
-            <View className={styles.conenttext} >
-            {companyTel}
-            </View>
-          </View>
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            法人
-            </View>
-            <View className={styles.conenttext} >
-            {legalPerson}
-            </View>
-          </View>
-
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            联系人手机
-            </View>
-            <View className={styles.conenttext} >
-            {linkmanPhone}
-            </View>
-          </View>
-
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            星级
-            </View>
-            <View className={styles.conenttext} >
-            {star}
-            </View>
-          </View>
-          
-          <View className={styles.tips2} >
-            <View className={styles.label} >
-            工厂面积
-            </View>
-            <View className={styles.conenttext} >
-            {factoryAreaName}
-            </View>
-          </View>
-          <View className={styles.tips2} style="margin-bottom:10px">
-            <View className={styles.label} >
-            雇员数量
-            </View>
-            <View className={styles.conenttext} >
-            {staffAmountName}
-            </View>
-          </View>
-          <ListItem 
-          onClick={()=>{this.manageCard(`/pages/AlbumEnterprise/index?vendorId=${id}`)}}
-          cardIcon={qyxc}
-            title={'企业相册'}
-          ></ListItem>
-          <ListItem 
-            onClick={()=>{
-              this.fetchalbimList();
-              
-            }}
-            cardIcon={cpxc}
-            title={'产品相册'}
-          ></ListItem>
-        </View>
-
-
+        }
         <View className={styles.content} >
           <View className={styles.tips} >
             <View className={styles.tipicon} />
@@ -435,13 +607,12 @@ class Home extends Component {
             推荐人
             </View>
             <View className={styles.conenttext} >
-            刘永生
+            {referrerName}
             </View>
           </View>
           <View className={styles.tips2} >
-           
             <View className={styles.conenttext} style="margin-left:0px">
-            上海嘉协精密机械有限公司和上海乐荣机械模具有限公司成立于2001年，位于闵行区，是一家专业从事航天和外资企业的零部件及模具精密加工的制造型企业。公司现有厂区面积近3100平方米，有110多位员工，各类生产设备78台（详见附表），年销售额3000多万。 公司主要从事有色金属、黑色金属及镁合金、铝合金等材质的加工，尤其擅长做非标零件。公司拥有出色的生产管理部门，强大的销售队伍，尤其是我们的质量检验部是由多名经验丰富的技师组成，因此我们的产品质量得到了航天和外资企业的一致认可。 公司自成立以来，始终坚持“以人为本 质量第一“的经营理念，不断提升自我品质，不断探索新工艺，在成长中求进步，在进步中求发展。 我公司于2004年通过ISO9001：2000质量体系认证，同时获得航天、航空生产产品的相关资质。
+            {referrerOpinion}
             </View>
           </View>
           
@@ -460,24 +631,45 @@ class Home extends Component {
               签核人
               </View>
               <View className={styles.conenttext} >
-              刘永生
+              {referrerName}
               </View>
-              <View className={styles.conenttag} >
-              同意
-              </View>
+              {
+                status === '1' && 
+                <View className={styles.conenttag} >
+                  推荐人确认中
+                </View>
+              }
+              {
+                status === '2' && 
+                <View className={styles.conenttag} >
+                  审核中
+                </View>
+              }
+              {
+                status === '3' && 
+                <View className={styles.conenttag} >
+                  审核通过
+                </View>
+              }
+              {
+                status === '4' && 
+                <View className={styles.conenttag} >
+                  审核拒绝
+                </View>
+              }
               <View className={styles.conenttext} >
-              2020年4月15日 18:23
+              {referrerDate}
               </View>
             </View>
             <View className={styles.tips2}>
               <View className={styles.conentback}>
-                建议加入华东2群
+                {referrerOpinion}
               </View>
             </View>
           </View>
         </View>
 
-        <View className={styles.content} >
+        {status==='2' && <View className={styles.content} >
           <View className={styles.label} style="margin-bottom:12px">
             签核意见
           </View>
@@ -494,12 +686,13 @@ class Home extends Component {
           </View>
 
         
-          {status==='2'&&
+          
           <View className={styles.bottom}>
             <View className={classNames(styles.loginout,styles.agree)} onClick={()=>{this.submit('agree')}}>通过</View>
             <View className={styles.loginout} onClick={()=>{this.submit('reject')}}>拒绝</View>
-          </View>}
+          </View>
         </View>
+        }
       </View>
     );
   }

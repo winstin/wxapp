@@ -50,6 +50,12 @@ export default {
     // 详情
     *passAudit({payload}, { put,call }) {
       const res = yield call(passAudit,payload);
+      Taro.showToast({
+        'title': res.message,
+      });
+      if(res.status === 0){
+        Taro.navigateBack()
+      }
       // yield put({
       //   type:'updateState',
       //   payload:{jxhReqDetail:res.data}
@@ -58,6 +64,12 @@ export default {
 
     *rejectpassAudit({payload}, { put,call }) {
       const res = yield call(rejectpassAudit,payload);
+      Taro.showToast({
+        'title': res.message,
+      });
+      if(res.status === 0){
+        Taro.navigateBack()
+      }
       // yield put({
       //   type:'updateState',
       //   payload:{jxhReqDetail:res.data}

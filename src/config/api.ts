@@ -89,6 +89,10 @@ export const requestConfig = {
   getMycard:'/api/srm/baseMember/my-card', // # 获取国家列表 省份 城市
   getPhone:'/api/srm/wxapp/getPhone', // # 获取国家列表 省份 城市
 
+  levelUpbaseMember:'/api/srm/baseMember/level-up', // 升级会员
+  getBaseMemberInfo:'/api/srm/baseMember/get', // 获取个人会员明细
+
+  
   
   
 }

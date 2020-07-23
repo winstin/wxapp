@@ -73,10 +73,14 @@ class Home extends Component {
         title: "加载中",
         duration:500
       })
+      let supplierId = userInfo.supplierId
+      if(this.$router.params.id){
+        supplierId = this.$router.params.id
+      }
       dispatch({
         type: "factory/getbaseVendorAlbumList",
         payload: {
-          "vendorId":userInfo.supplierId,
+          "vendorId":supplierId,
           // "vendorId":'1140906925177778177',
           current:page,
           // industryType:industryObject.value
@@ -117,20 +121,26 @@ class Home extends Component {
     const scrollTop = 0
     const Threshold = 20
     const {dispatch} = this.props;
+    let isAdd = true
+    if(this.$router.params.id){
+      isAdd = false
+    }
     return (
       <View className={styles.need}>
         
-        <View className={styles.loginBtn} onClick={()=>{
-          Taro.navigateTo({
-            url: '/packageA/pages/MyAlbumProduct/index'
-          })
-        }}>
-          <Image src={btn_new} className={styles.addicon} onClick={()=>{
+        {isAdd && 
+          <View className={styles.loginBtn} onClick={()=>{
             Taro.navigateTo({
-              url: '/packageA/pages/MyAlbumProduct/index'
+              url: '/packageA/pages/MyAlbumProduct/index?add=true'
             })
-          }}/> 
-        新增产品</View>
+          }}>
+            <Image src={btn_new} className={styles.addicon} onClick={()=>{
+              Taro.navigateTo({
+                url: '/packageA/pages/MyAlbumProduct/index?add=true'
+              })
+            }}/> 
+          新增产品</View>
+        }
         <ScrollView
           className='scrollview'
           scrollY
@@ -143,7 +153,7 @@ class Home extends Component {
           onScrollToUpper={this.onScrollToUpper.bind(this)}  // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
         >
         {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-          { this.state.jxhReqData.map((item,idx) => (<NeedItem src={item} key={`FactoryItem${idx}`} onRemove={(e)=>{
+          { this.state.jxhReqData.map((item,idx) => (<NeedItem src={item} key={`FactoryItem${idx}`} isAdd={isAdd} onRemove={(e)=>{
             console.log(e);
             if(dispatch){
               dispatch({

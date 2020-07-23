@@ -1,7 +1,7 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Button } from "@tarojs/components";
+import { View,Image,Button,Picker } from "@tarojs/components";
 import { AtInput,AtButton,AtIcon,AtTag } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
@@ -18,6 +18,7 @@ type PageStateProps = {
   myInfo:any;
   code:any;
   userInfo:any;
+  CORPORATE_VIP_LEVEL:any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -35,11 +36,12 @@ interface Home {
 
 @connect(({ user,global,loading }) => {
   const {myInfo={}} = user;
-  const {code,userInfo={}} = global;
+  const {code,userInfo={},CORPORATE_VIP_LEVEL=[]} = global;
   return {
     myInfo,
     code,
     userInfo,
+    CORPORATE_VIP_LEVEL,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -62,6 +64,9 @@ class Home extends Component {
     drawingVo:{},
     linkman:'',
     logo:'',
+    levelNow:'',
+    levelApply:'',
+    levelNowName:'VIP会员',
     getUserInfoLoading:false,
     submitLoading:false
   }
@@ -72,14 +77,14 @@ class Home extends Component {
     navigationStyle:"custom",
   };
 
-  componentDidShow() {
-    const {myInfo={basic:{},contact:{}}} = this.props;
-    const { businessLicenseNo,name,logo,referrerName } = myInfo.basic;
-    const { introduction } = myInfo.introduce;
+  componentWillMount() {
+    const {myInfo={basic:{},contact:{},introduce:{}}} = this.props;
+    const { businessLicenseNo,name,logo,referrerName,levelNow,levelApply,levelNowName } = myInfo.basic;
+    const { introduction } = myInfo.introduce || {};
 
-    const { linkman,linkmanPhone } = myInfo.contact;
+    const { linkman,linkmanPhone } = myInfo.contact || {};
     this.setState({
-      businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,
+      businessLicenseNo,name,logo,introduction,referrerName,linkman,linkmanPhone,levelApply:levelNow,levelNowName
       frontFilePath:logo?`http://sz-spd.cn:889/${logo}`:'',account:linkmanPhone
     })
     
@@ -213,7 +218,7 @@ class Home extends Component {
 
   submit = async () =>{
     const {dispatch,myInfo,userInfo} = this.props;
-    const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo,submitLoading}:any = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,logo,submitLoading,levelApply}:any = this.state;
     const { type } = myInfo;
     
     if(submitLoading){
@@ -225,9 +230,14 @@ class Home extends Component {
       })
       if(type){
         const {introduce,basic,contact,scale,type} = myInfo;
-        console.log("升级会员")
+        console.log("升级会员");
+        await dispatch({
+          type: "global/getCode",
+          payload: {}
+        })
+        const {code} = this.props;
         dispatch({
-          type: "user/updatebaseMember",
+          type: "user/levelUpbaseMember",
           payload:  {
             ...introduce,...basic,...contact,...scale,type,
             name,
@@ -238,6 +248,8 @@ class Home extends Component {
             referrerName,
             logo,
             isTop:'1',
+            levelApply,
+            wxCode:code,
             wxUser:{...userInfo}
           }
         }).then((e)=>{
@@ -308,7 +320,7 @@ class Home extends Component {
 
 
   render() {
-    const {linkman,name,businessLicenseNo,introduction,account,referrerName,code,frontFilePath,submitLoading} = this.state;
+    const {linkman,name,businessLicenseNo,introduction,account,referrerName,frontFilePath,submitLoading,levelApply} = this.state;
 
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
@@ -324,6 +336,17 @@ class Home extends Component {
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
         </View>
+        <View className={styles.label}>
+          会员等级
+        </View>
+
+        <Picker value={''} mode='selector' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.Change("levelApply",e.detail.value)}}>
+          <View className={styles.formItem}>
+            <View>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.props.CORPORATE_VIP_LEVEL[levelApply] && this.props.CORPORATE_VIP_LEVEL[levelApply].label} onChange={()=>{}}/>
+            </View>
+          </View>
+        </Picker>
         <View className={styles.label}>
           公司名称
         </View>

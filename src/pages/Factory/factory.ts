@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { delbaseVendorAlbum,updatebaseVendorAlbum,getbaseVendorAlbumList,registerBaseMember,registerCorporate,addbaseVendorAlbum,getsrmbaseVendorAlbum,getbaseVendorAlbum,getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode,getcorporateDetail } from '@/services/fetch';
+import { getBaseMemberInfo,delbaseVendorAlbum,updatebaseVendorAlbum,getbaseVendorAlbumList,registerBaseMember,registerCorporate,addbaseVendorAlbum,getsrmbaseVendorAlbum,getbaseVendorAlbum,getBatchDictValues,baseMemberPoints,getsysMenu,getCorporateList,getJxhReq,getPortalNotice,getBatchDictValueByCode,getcorporateDetail } from '@/services/fetch';
 /**
  * 登录页面
  */
@@ -14,7 +14,8 @@ export default {
     INDUSTRY_TYPE:[],
     corporateDetail:{},
     albums:[],
-    srmalbums:{}
+    srmalbums:{},
+    personalInfo:{}
   },
 
   effects: {
@@ -139,6 +140,16 @@ export default {
         payload:{srmalbums:res.data}
       })
     },
+    // 产品说明
+    *getBaseMemberInfo({payload}, { put,call }) {
+      const res = yield call(getBaseMemberInfo,payload);
+      yield put({
+        type:'updateState',
+        payload:{personalInfo:res.data}
+      })
+    },
+
+    
 
 
     // 产品说明

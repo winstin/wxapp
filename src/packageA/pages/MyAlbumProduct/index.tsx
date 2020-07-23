@@ -272,7 +272,11 @@ class Home extends Component {
 
   render() {
     const {intro,desc,frontFilePath,frontPagePath,category} = this.state;
-
+    let isAdd = false
+    if(this.$router.params.add==="true"){
+      isAdd = true
+    }
+    
     return (
       <View className={styles.needdetail}>
         <View className={styles.backImageItem}>
@@ -350,7 +354,7 @@ class Home extends Component {
           }
           
         </View>
-        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
+        {isAdd && <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>}
       
       </View>
 

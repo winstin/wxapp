@@ -256,5 +256,11 @@ export const weappmnlogin = (params)=>{
   return Api.weappmnlogin(params,'POST');
 }
 
+export const levelUpbaseMember = (params)=>{
+  return Api.levelUpbaseMember(params,'POST');
+}
 
+export const getBaseMemberInfo = (params)=>{
+  return Api.getBaseMemberInfo(params);
+}
 

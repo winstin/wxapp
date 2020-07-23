@@ -42,6 +42,7 @@ const codeList = {
   FACTORY_AREA :[], // 工厂面积
   CONTRIBUTED_CAPITAL  :[],// 实缴资本
   REGISTERED_CAPITAL :[], // 注册资本
+  CORPORATE_VIP_LEVEL:[],// 个人会员等级
 };
 
 /**

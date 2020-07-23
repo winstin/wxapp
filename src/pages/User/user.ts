@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { getPhone,getMycard,updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
+import { levelUpbaseMember,getPhone,getMycard,updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
 
 /**
  * 登录页面
@@ -86,6 +86,21 @@ export default {
 
     *updatebaseMember({payload}, { put,call }) {
       const res = yield call(updatebaseMember,payload);
+      console.log(res)
+      if(res.status !== 0){
+        Taro.showToast({
+          'title': res.message,
+        });
+      }else{
+        Taro.showToast({
+          'title': res.message,
+        });
+        Taro.navigateBack()
+      }
+    },
+
+    *levelUpbaseMember({payload}, { put,call }) {
+      const res = yield call(levelUpbaseMember,payload);
       console.log(res)
       if(res.status !== 0){
         Taro.showToast({

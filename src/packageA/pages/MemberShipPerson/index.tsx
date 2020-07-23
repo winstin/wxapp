@@ -106,7 +106,7 @@ class Home extends Component {
     navigationStyle:"custom",
   };
 
-  componentDidShow() {
+  componentWillMount() {
     const {myInfo} = this.props;
     console.log(myInfo)
     const { photo,
@@ -289,15 +289,25 @@ class Home extends Component {
     })
   }
 
-  onChange = (type,e)=>{
+  onChange = (type,e,data:any=undefined)=>{
     console.log(type,e);
     let value = e.detail.value;
     if(value  instanceof Array){
       value = value.join(',')
     }
-    this.setState({
-      [`${type}`]:value
-    })
+    if(data){
+      this.setState({
+        [`${type}`]:data[e.detail.value].value,
+      })
+    }else{
+      this.setState({
+        [`${type}`]:value,
+        // [`${type}Name`]:e.detail.value,
+      })
+    }
+    // this.setState({
+    //   [`${type}`]:value
+    // })
   }
 
   submit = async () =>{
@@ -319,7 +329,7 @@ class Home extends Component {
         console.log("升级会员")
         
         dispatch({
-          type: "user/updatebaseMember",
+          type: "user/levelUpbaseMember",
           payload:  {
             ...introduce,...basic,...contact,...scale,type,
             name,
@@ -665,7 +675,7 @@ class Home extends Component {
             }
             </CheckboxGroup>
         </View> */}
-        <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e)}}>
+        <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY}  range-key='label' onChange={(e)=>{this.onChange("companyProperty",e,this.props.COMPANY_PROPERTY)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder="请选择公司性质"  value={this.dicValue(this.props.COMPANY_PROPERTY,companyProperty)} onChange={()=>{}}/>

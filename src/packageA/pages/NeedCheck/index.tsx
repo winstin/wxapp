@@ -187,10 +187,10 @@ class Home extends Component {
           isShowDrawing:this.state.selectorChecked==="显示"?'1':'0'
         }
       }).then(()=>{
-        Taro.showToast({
-          'title': '操作成功',
-        });
-        Taro.navigateBack()
+        // Taro.showToast({
+        //   'title': '操作成功',
+        // });
+        // Taro.navigateBack()
       });
     }
   }

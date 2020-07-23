@@ -13,6 +13,7 @@ let myEvent = new Event(); // 实例化一个事件管理器
 
 type PageOwnProps = {
   src?:any;
+  isAdd:any;
   onRemove?:any
 };
 
@@ -43,7 +44,7 @@ class IndustryItem extends Component {
 
   render() {
 
-    const {src,onRemove} = this.props;
+    const {src,onRemove,isAdd} = this.props;
     const {isShow} = this.state;
     return (
       <View style="position:relative">
@@ -74,14 +75,14 @@ class IndustryItem extends Component {
           <View  className={styles.bottomBtn} onClick={()=>{
               this.setState({isShow:false})
               Taro.navigateTo({
-                url: `/packageA/pages/MyAlbumProduct/index?id=${src.id}`
+                url: `/packageA/pages/MyAlbumProduct/index?id=${src.id}&add=${isAdd}`
               })
             }}>
-            编辑
+            {isAdd ? "编辑" : "详情"}
           </View>
-          <View  className={styles.bottomBtn} onClick={()=>{this.setState({isShow:false});onRemove(src)}}>
+          {isAdd && <View  className={styles.bottomBtn} onClick={()=>{this.setState({isShow:false});onRemove(src)}}>
             删除
-          </View>
+          </View>}
         </View>}
       </View>
     );
