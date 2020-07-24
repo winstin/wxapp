@@ -133,7 +133,7 @@ class Home extends Component {
     const scrollStyle = {
       height: '100vh',
       backgroundColor:"#fff",
-      padding:"0pt 16pt",
+      // padding:"0pt 16pt",
     }
     const scrollTop = 0
     const Threshold = 20
