@@ -37,46 +37,12 @@ interface Home {
 })
 class Home extends Component {
 
-  industryList = [
-    {
-      title:'找工厂',
-      star:2
-    },
-    {
-      title:'最新需求',
-      star:3
-    },
-    {
-      title:'会员审核',
-      star:4
-    },
-    {
-      title:'需求审核',
-      star:5
-    },
-    {
-      title:'邀请企业',
-      star:5
-    },
-    {
-      title:'邀请好友',
-      star:5
-    },
-    {
-      title:'签到',
-      star:5
-    },
-    {
-      icon: "",
-      title:''
-    },
-  ]
-
   state = {
     current: 0,
     show:false,
     sort:false,
-    industry:false
+    industry:false,
+    isload:true
   }
   config: Config = {
     navigationBarTitleText: "会员积分",
@@ -90,7 +56,7 @@ class Home extends Component {
     this.fetchList()
   }
 
-  fetchList = ()=>{
+  fetchList = async ()=>{
     const {dispatch} = this.props;
     if(dispatch){
       // Taro.showToast({
@@ -98,10 +64,13 @@ class Home extends Component {
       //   title: "加载中",
       //   duration:500
       // })
-      dispatch({
+      await dispatch({
         type: "factory/getcorporateDetail",
         payload: this.$router.params
       });
+      this.setState({
+        isload:false
+      })
     }
   }
 
@@ -126,7 +95,9 @@ class Home extends Component {
   }
 
   render() {
-
+    if(this.state.isload){
+      return null
+    }
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     const titletop = `margin-top:${MenuButtonBounding.top}px;`
