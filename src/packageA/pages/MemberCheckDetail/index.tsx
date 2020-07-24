@@ -271,7 +271,7 @@ class Home extends Component {
     const industryarr = industryData && industryData.map((item)=>item.label) || '';
     const {createdDate,status} = this.props.memberCheckDetail;
     if(status!=='2'){
-      this.state.referrerOpinion = referrerOpinion
+      // this.state.referrerOpinion = referrerOpinion
     }
     return (
       <View className={styles.needdetail}>

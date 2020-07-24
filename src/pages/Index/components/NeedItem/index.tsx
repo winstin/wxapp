@@ -5,6 +5,7 @@ import styles from "../../index.modules.less";
 import ico_comment from '../../../../assets/need/ico_comment@3x.png';
 import ico_share from '../../../../assets/need/ico_share@3x.png';
 import { isLogined } from '@/utils/utils'
+import classNames from 'classnames';
 
 
 
@@ -28,7 +29,15 @@ class IndustryItem extends Component {
   render() {
 
     const {data,type} = this.props;
-    const {itemName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs,statusName} = data;
+    const {itemName,qty,reqDesc,createdDate,drawings,id,jxhReqMsgs,statusName,status} = data;
+
+    let style = "conenttag";
+    if(status === "1"){
+      style = "conentprocess"
+    }else if(status === "3"){
+      style = "conentred"
+    }
+
     return (
       <View className={styles.list} onClick={()=>{
         if(isLogined()) return;
@@ -44,13 +53,13 @@ class IndustryItem extends Component {
           {itemName}
           </View>
           <View className={styles.tips} >
-          数量  {qty}台
+          数量：{qty}台
           </View>
           <View className={styles.tips} >
-          要求  {reqDesc}
+          要求：{reqDesc}
           </View>
-          {type && <View className={styles.tips} >
-          状态  {statusName}
+          {type && <View className={classNames(styles.tips)} >
+          状态：<View className={classNames(styles[style])} >  {statusName}</View>
           </View>}
           <View className={styles.tips} >
             {createdDate}

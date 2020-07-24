@@ -24,7 +24,13 @@ class IndustryItem extends Component {
   render() {
 
     const {data} = this.props;
-    const {itemName,qty,reqDesc,createdDate,drawings,statusName} = data;
+    const {itemName,qty,reqDesc,createdDate,drawings,statusName,status} = data;
+    let style = "conenttag";
+    if(status === "1"){
+      style = "conentprocess"
+    }else if(status === "3"){
+      style = "conentred"
+    }
     return (
       <View className={styles.list} onClick={()=>{
         Taro.navigateTo({
@@ -40,13 +46,13 @@ class IndustryItem extends Component {
           {itemName}
           </View>
           <View className={styles.tips} >
-          数量  {qty}台
+          数量：{qty}台
           </View>
           <View className={styles.tips} >
-          要求  {reqDesc}
+          要求：{reqDesc}
           </View>
           <View className={styles.tips} >
-          状态  {statusName}
+          状态：<View className={styles[style]} >  {statusName}</View>
           </View>
           <View className={styles.tips} >
             {createdDate}

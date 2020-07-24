@@ -125,7 +125,7 @@ class Home extends Component {
 
   render() {
 
-    const {name,desc,intro,category,reqName,createdDate,companyName,qty,reqDesc,drawings,id,jxhReqMsgs} = this.props.jxhReqDetail;
+    const {name,desc,intro,category,reqName,createdDate,companyName,qty,reqDesc,drawings,id,jxhReqMsgs,closeDesc,statusName,status} = this.props.jxhReqDetail;
     const {msg,parentsName} = this.state;
     return (
       <View className={styles.needdetail}>
@@ -146,6 +146,13 @@ class Home extends Component {
             <View className={styles.tips} >
             要求  {reqDesc}
             </View>
+
+            {status === "3" && <View className={styles.tips} >
+            状态  {statusName}
+            </View>}
+            {status === "3" && <View className={styles.tips} >
+            审核意见  {closeDesc}
+            </View>}
 
             <View className={styles.drawings}>
               {drawings && drawings.map((item)=>(<Image src={`http://sz-spd.cn:889/${item.url}`} className={styles.listimg} onClick={()=>{

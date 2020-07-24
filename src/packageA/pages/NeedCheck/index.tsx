@@ -204,10 +204,9 @@ class Home extends Component {
   render() {
     // const {phone,frontFilePath,frontPagePath} = this.state;
     const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing,closeDesc} = this.props.jxhReqDetail;
-    console.log('this.props.jxhReqDetail',closeDesc)
+    console.log('this.props.jxhReqDetail',closeDesc,reqDesc)
     if(status==='2'){
       this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示';
-      this.state.closeDesc = closeDesc;
     }
     if(this.state.isload){
       return null
@@ -310,10 +309,10 @@ class Home extends Component {
         {(status==='2'|| status==='3') &&
           <View>
             <View className={styles.label}>
-              审核意见 
+              审核意见
             </View>
             <View className={styles.formItem}>
-              {closeDesc}
+              {this.props.jxhReqDetail.closeDesc}
             </View>
           </View>
         }

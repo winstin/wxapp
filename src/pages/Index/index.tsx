@@ -217,7 +217,7 @@ class Home extends Component {
     const {userInfo} = this.props;
     console.log(userInfo)
     return {
-        title: "升级会员",
+        title: res.target.id === 'MemberShipUpgrade'? "注册企业会员" : "注册个人会员",
         path:`/pages/Home/index?userId=${userInfo.id}&type=${res.target.id}`
     }
   }
