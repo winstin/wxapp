@@ -61,7 +61,7 @@ export default {
       const res = yield call(addjxhReqMsg,payload);
       console.log(res)
       Taro.showToast({
-        'title': '评论成功',
+        'title': res.message,
       });
       // Taro.navigateBack()
 

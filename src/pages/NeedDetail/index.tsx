@@ -117,9 +117,11 @@ class Home extends Component {
 
   //转发
   onShareAppMessage (res) {
+    const { id } = this.props.jxhReqDetail;
+
     return {
         title: "需求详情",
-        path:'/pages/NeedDetail/index'
+        path:`/pages/NeedDetail/index?id=${id}`
     }
   }
 
