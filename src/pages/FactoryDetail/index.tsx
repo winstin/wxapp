@@ -9,6 +9,7 @@ import styles from "./index.modules.less";
 import location from '../../assets/factory/ico_location@3x.png';
 import arrowIcon from '../../assets/user/ico_arrow@3x.png';
 import "taro-ui/dist/style/components/icon.scss";
+import NoneData from '../../pages/Index/components/NoneData';
 
 type PageStateProps = {
   corporateDetail:any;
@@ -133,7 +134,7 @@ class Home extends Component {
     return (
       <View className={styles.factorydetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${photoCover.trim()}`} />
+        <Image className={styles.bg_img} src={photoCover && `http://sz-spd.cn:889/${photoCover.trim()}`||Index2} />
         <View className={styles.userInfo}  onClick={()=>{
             Taro.navigateTo({
               url: `/pages/AlbumEnterprise/index?vendorId=${id}`
@@ -178,7 +179,7 @@ class Home extends Component {
             <View className={styles.texttitle}>
               主要产品
             </View>
-
+            {products.length===0 && <NoneData/>}
             <View style='background-color:#fff' >
             { products.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`}/>))}
             </View>
