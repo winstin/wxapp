@@ -85,7 +85,8 @@ class Home extends Component {
     frontPagePath:"",
     selector: ['显示', '不显示'],
     selectorChecked: '显示',
-    referrerOpinion:''
+    referrerOpinion:'',
+    isload:true
 
   }
   config: Config = {
@@ -107,20 +108,21 @@ class Home extends Component {
     this.fetchList()
   }
 
-  fetchList = ()=>{
+  fetchList = async ()=>{
     const {dispatch} = this.props;
     if(dispatch){
       if(this.$router.params.type === "person"){
-        dispatch({
+        await dispatch({
           type: "factory/getBaseMemberInfo",
           payload: this.$router.params
         });
       }else{
-        dispatch({
+        await dispatch({
           type: "factory/getcorporateDetail",
           payload: this.$router.params
         });
       }
+      this.setState({isload:false})
     }
   }
 
@@ -255,6 +257,9 @@ class Home extends Component {
 
   render() {
     let data:any = {};
+    if(this.state.isload){
+      return null
+    }
     if(this.$router.params.type === "person"){
       data = this.props.personalInfo
     }else{

@@ -158,7 +158,19 @@ class Home extends Component {
           </View>
           <View className={styles.tips2} >
             <View className={styles.drawings}>
-              {photos.map((item)=>(<Image src={`http://sz-spd.cn:889/${item.photo}`} className={styles.listimg} />))}
+              {photos.map((item)=>(<Image src={`http://sz-spd.cn:889/${item.photo}`} className={styles.listimg} onClick={()=>{
+                const photosurl = photos.map((m)=>(`http://sz-spd.cn:889/${m.photo}`))
+                Taro.previewImage({
+                  current: `http://sz-spd.cn:889/${item.photo}`, // 当前显示图片的http链接
+                  urls: photosurl, // 需要预览的图片http链接列表
+                  success:(e)=>{
+                    console.log(e)
+                  },
+                  fail:(e)=>{
+                    console.log("fail",e)
+                  }
+                })
+              }}/>))}
             </View>
           </View>
         </View>

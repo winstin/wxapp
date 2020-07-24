@@ -204,12 +204,12 @@ class Home extends Component {
   submit = ()=>{
     const {dispatch,myInfo} = this.props;
     const {introduce,basic,contact,scale} = myInfo;
-    const {industryType,companyProperty,industryRanking,companyType,reportTo} = this.state;
+    const {industryType,companyProperty,industryRanking,companyType} = this.state;
     if(dispatch){
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType,reportTo
+          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType
           
         }
       });
@@ -246,12 +246,12 @@ class Home extends Component {
   }
 
   render() {
-    const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType,reportTo} = this.state;
+    const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType} = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
 
     const {myInfo={basic:{}}} = this.props;
-    const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic,birthday} = myInfo.basic;
+    const {code,name,companyTypeName,companyPropertyname,industryTypeName,industryRankingName,productTechName,businessLicenseNo,licenseDate,licensePic,birthday,reportTo} = myInfo.basic;
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
@@ -429,7 +429,8 @@ class Home extends Component {
               汇报对象
             </View>
             <View className={styles.formItem}>
-                <AtInput className={styles.input} name="reportTo" placeholder="请输入企业性质…"  value={reportTo} onChange={(e)=>{this.infoChange(e,'reportTo')}} /> 
+                <AtInput className={styles.input} name="reportTo" placeholder="请输入企业性质…"  value={reportTo} onChange={(e)=>{
+                  this.infoChange(e,'reportTo')}} /> 
             </View>
           </View>
         }

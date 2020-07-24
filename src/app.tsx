@@ -51,6 +51,7 @@ class App extends Component {
           "pages/AlbumProductList/index",// 企业相册
           "pages/MemberCheckList/index",// 会员审核
           "pages/MyBaseInfo/index",// 基本信息
+          "pages/MybasePerson/index",// 个人基本信息
           "pages/MyCompaniestIntroduce/index",// 企业介绍
           "pages/MyContactInfo/index",// 联系信息
           "pages/MyEnterpriseScale/index",// 企业规模

@@ -247,12 +247,22 @@ class User extends Component {
           title={'升级企业会员'}
         ></ListItem>
         {token && <ListItem 
-          onClick={()=>{this.manageCard("/packageA/pages/MyBaseInfo/index")}}
+          onClick={()=>{
+            if(type==="enterprise"){
+              this.manageCard("/packageA/pages/MyBaseInfo/index")
+            }else{
+              this.manageCard("/packageA/pages/MybasePerson/index")
+            }
+          }}
           cardIcon={jbxx}
           title={'基本信息'}
         ></ListItem>}
         {token && type==="enterprise" &&<ListItem 
-          onClick={()=>{this.manageCard("/packageA/pages/MyContactInfo/index")}}
+          onClick={()=>{
+           
+            this.manageCard("/packageA/pages/MyContactInfo/index")
+            }
+          }
           cardIcon={lxxx}
           title={'联系信息'}
         ></ListItem>}
