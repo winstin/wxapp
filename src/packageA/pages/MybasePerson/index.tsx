@@ -817,7 +817,7 @@ class Home extends Component {
           // onClick={this.submit}
           openType="getUserInfo"
           onGetUserInfo={this.getUserInfo}
-        >{this.props.myInfo.type?"升级":"注册"}</AtButton>
+        >保存</AtButton>
       
       </View>
 
