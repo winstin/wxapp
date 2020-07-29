@@ -43,6 +43,10 @@ interface Home {
   const {userInfo={},SKILLED_FIELD=[],EDUCATION_LEVEL=[],PROCUREMENT_CATEGORY_PROCESSES=[],PURCHASE_SIZE=[],STAFF_AMOUNT=[],INDUSTRY_TYPE=[]
   ,COMPANY_PROPERTY=[],code,VIP_LEVEL=[]} = global;
   const {myInfo} = user;
+  let vipadta = [];
+  if(VIP_LEVEL[0]){
+    vipadta = VIP_LEVEL.filter(item=>item.value!=='1'&&item.value!=='4')
+  }
   return {
     userInfo,
     SKILLED_FIELD,
@@ -54,7 +58,7 @@ interface Home {
     INDUSTRY_TYPE,
     myInfo,
     code,
-    VIP_LEVEL,
+    VIP_LEVEL:vipadta,
     loading: loading.effects['parent/getStudentList'],
   }
 })
@@ -592,7 +596,7 @@ class Home extends Component {
             src={phoneIcon}
           />
           <AtInput className={styles.input} name="telephoe" placeholder="请输入您的手机号…"  value={telephoe} onChange={(e)=>{this.Change('telephoe',e)}} />
-          <Button
+          {/* <Button
             className={styles.authBtn}
             openType="getPhoneNumber"
             onGetPhoneNumber={this.getPhoneNumber}
@@ -600,7 +604,7 @@ class Home extends Component {
             // loading={this.state.getUserInfoLoading}
           >
             获取手机号码
-          </Button>
+          </Button> */}
         </View>}
 
         <View className={styles.label}>

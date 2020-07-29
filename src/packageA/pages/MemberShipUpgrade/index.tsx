@@ -434,7 +434,7 @@ class Home extends Component {
             src={ico_mobilephone}
           />
           <AtInput className={styles.input} name="account" placeholder="请输入手机号码…"  value={account} onChange={(e)=>{this.Change('account',e)}} />
-          <Button
+          {/* <Button
             className={styles.authBtn}
             openType="getPhoneNumber"
             onGetPhoneNumber={this.getPhoneNumber}
@@ -442,7 +442,7 @@ class Home extends Component {
             // loading={this.state.getUserInfoLoading}
           >
             获取手机号码
-          </Button>
+          </Button> */}
         </View>}
 
         <View className={styles.label}>
