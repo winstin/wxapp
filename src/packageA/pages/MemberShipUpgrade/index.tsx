@@ -345,6 +345,13 @@ class Home extends Component {
       })
     }
   }
+  dicValue = (data,type) =>{
+
+    const key = data.filter(item=>item.value == type);
+    console.log(data,type,key)
+
+    return key[0] && key[0].label
+  }
 
   render() {
     const {linkman,name,businessLicenseNo,introduction,account,referrerName,frontFilePath,submitLoading,levelApply} = this.state;
@@ -370,7 +377,7 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("levelApply",e,this.props.CORPORATE_VIP_LEVEL)}}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.props.CORPORATE_VIP_LEVEL[levelApply] && this.props.CORPORATE_VIP_LEVEL[levelApply].label} onChange={()=>{}}/>
+                  <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.dicValue(this.props.CORPORATE_VIP_LEVEL,levelApply)} onChange={()=>{}}/>
             </View>
           </View>
         </Picker>
@@ -441,13 +448,13 @@ class Home extends Component {
 
         </View>
 
-        <View className={styles.label}>
+        <View className={styles.label} style="display:none">
           手机号码/登录账号
         </View>
-            {myInfo.type?<View className={classNames(styles.input,styles.formItem)}>{account}</View>:<View className={styles.formItem}>
+            {myInfo.type?<View className={classNames(styles.input,styles.formItem)} style="display:none">{account}</View>:<View className={styles.formItem} style="display:none">
           <Image
             className={styles.itemIcon}
-            src={ico_mobilephone}
+            src={ico_mobilephone} 
           />
           <AtInput className={styles.input} name="account" placeholder="请输入手机号码…"  value={account} onChange={(e)=>{this.Change('account',e)}} />
           {/* <Button
