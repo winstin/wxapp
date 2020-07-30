@@ -329,6 +329,22 @@ class Home extends Component {
     }
   };
 
+  onChange = (type,e,data:any=undefined)=>{
+    let value = e.detail.value;
+    if(value  instanceof Array){
+      value = value.join(',')
+    }
+    if(data){
+      this.setState({
+        [`${type}`]:data[e.detail.value].value,
+      })
+    }else{
+      this.setState({
+        [`${type}`]:value,
+        // [`${type}Name`]:e.detail.value,
+      })
+    }
+  }
 
   render() {
     const {linkman,name,businessLicenseNo,introduction,account,referrerName,frontFilePath,submitLoading,levelApply} = this.state;
@@ -351,7 +367,7 @@ class Home extends Component {
           会员等级
         </View>
 
-        <Picker value={''} mode='selector' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.Change("levelApply",e.detail.value)}}>
+        <Picker value={''} mode='selector' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("levelApply",e,this.props.CORPORATE_VIP_LEVEL)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.props.CORPORATE_VIP_LEVEL[levelApply] && this.props.CORPORATE_VIP_LEVEL[levelApply].label} onChange={()=>{}}/>
