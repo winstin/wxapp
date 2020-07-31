@@ -91,6 +91,7 @@ export const requestConfig = {
 
   levelUpbaseMember:'/api/srm/baseMember/level-up', // 升级会员
   getBaseMemberInfo:'/api/srm/baseMember/get', // 获取个人会员明细
+  getQrCode:'/api/srm/wx/userMultiBind/qrCodeJPG',//获取二维码
 
   
   

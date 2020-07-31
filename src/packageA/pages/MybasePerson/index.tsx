@@ -352,6 +352,7 @@ class Home extends Component {
 
 
   onDateChange = e => {
+    debugger
     this.setState({
       birthday: e.detail.value
     })

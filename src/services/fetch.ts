@@ -264,3 +264,9 @@ export const getBaseMemberInfo = (params)=>{
   return Api.getBaseMemberInfo(params);
 }
 
+
+export const getQrCode = (params)=>{
+  console.log('-----getQrCode---'+params)
+  return Api.getQrCode(params);
+}
+

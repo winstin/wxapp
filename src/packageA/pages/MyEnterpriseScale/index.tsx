@@ -1,8 +1,8 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Picker,Image,CheckboxGroup,Checkbox,RadioGroup,Radio } from "@tarojs/components";
-import { AtInput,AtButton } from 'taro-ui'
+import { View, Picker, Image, CheckboxGroup, Checkbox, RadioGroup, Radio } from "@tarojs/components";
+import { AtInput, AtButton } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
@@ -11,13 +11,13 @@ import "taro-ui/dist/style/components/tag.scss";
 import img_my_bg_corp from '../../../assets/factory/img_djb_bg_person.png';
 
 type PageStateProps = {
-  myInfo:any;
-  ANNUAL_VALUE:any;
-  SALES_AMOUNT:any;
-  FACTORY_AREA:any;
-  CONTRIBUTED_CAPITAL:any;
-  REGISTERED_CAPITAL:any;
-  STAFF_AMOUNT:any;
+  myInfo: any;
+  ANNUAL_VALUE: any;
+  SALES_AMOUNT: any;
+  FACTORY_AREA: any;
+  CONTRIBUTED_CAPITAL: any;
+  REGISTERED_CAPITAL: any;
+  STAFF_AMOUNT: any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -33,9 +33,9 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ user,global,loading }) => {
-  const {myInfo={}} = user;
-  const {ANNUAL_VALUE=[],SALES_AMOUNT=[],FACTORY_AREA=[],CONTRIBUTED_CAPITAL=[],REGISTERED_CAPITAL=[],STAFF_AMOUNT=[]} = global;
+@connect(({ user, global, loading }) => {
+  const { myInfo = {} } = user;
+  const { ANNUAL_VALUE = [], SALES_AMOUNT = [], FACTORY_AREA = [], CONTRIBUTED_CAPITAL = [], REGISTERED_CAPITAL = [], STAFF_AMOUNT = [] } = global;
   return {
     myInfo,
     ANNUAL_VALUE,
@@ -52,13 +52,13 @@ class Home extends Component {
 
   state = {
     current: 0,
-    show:false,
-    sort:false,
-    industry:false,
+    show: false,
+    sort: false,
+    industry: false,
     value: '',
-    phone:"",
-    code:'',
-    frontFilePath:'', // 正面照
+    phone: "",
+    code: '',
+    frontFilePath: '', // 正面照
     dateSel: '',
     selector: ['美国', '中国', '巴西', '日本'],
     selectorChecked: '美国',
@@ -66,14 +66,28 @@ class Home extends Component {
   }
   config: Config = {
     navigationBarTitleText: "企业规模",
-    navigationBarTextStyle:'black',
+    navigationBarTextStyle: 'black',
     navigationBarBackgroundColor: "#F2F3FE",
-    navigationStyle:"custom",
+    navigationStyle: "custom",
   };
+  componentWillMount() {
+    this.initData();
+  }
 
+  initData = () => {
+    const { myInfo } = this.props;
+    console.log(myInfo)
+    const {
+      photoCover
+    } = myInfo.basic;
+    this.setState({
+      frontFilePath: photoCover ? photoCover : '/xcxhome/img_my_bg_corp.png'
+    })
+
+  }
   componentDidShow() {
-    const {dispatch} = this.props;
-    if(dispatch){
+    const { dispatch } = this.props;
+    if (dispatch) {
       dispatch({
         type: "user/getMyInfo",
         payload: {
@@ -83,22 +97,22 @@ class Home extends Component {
     }
   }
 
-  handleClick (value) {
+  handleClick(value) {
     this.setState({
       current: value
     })
   }
 
-  onScrollToUpper() {}
+  onScrollToUpper() { }
 
   // or 使用箭头函数
   // onScrollToUpper = () => {}
 
-  onScroll(e){
+  onScroll(e) {
     console.log(e.detail)
   }
 
-  back=()=>{
+  back = () => {
     Taro.navigateBack()
   }
 
@@ -108,7 +122,7 @@ class Home extends Component {
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        console.log('----res:',res);
+        console.log('----res:', res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
         this.setState({
@@ -124,7 +138,7 @@ class Home extends Component {
     })
   }
 
-  onClick = (value)=>{
+  onClick = (value) => {
     console.log(value)
   }
 
@@ -140,37 +154,43 @@ class Home extends Component {
     })
   }
 
-  infoChange = (value,type) => {
-    
+  infoChange = (value, type) => {
+
   }
 
-  onChange = (type,e)=>{
-    console.log(type,e);
+  onChange = (type, e) => {
+    console.log(type, e);
 
-    const {dispatch,myInfo} = this.props;
+    const { dispatch, myInfo } = this.props;
     myInfo.scale[`${type}`] = e.detail.value;
-    if(dispatch){
+    if (dispatch) {
       dispatch({
         type: "user/updateState",
         payload: myInfo
       });
       this.setState({
-        [`${type}`]:e.detail.value
+        [`${type}`]: e.detail.value
       })
     }
-    
+
   }
 
 
-  submit = ()=>{
-    const {dispatch,myInfo} = this.props;
-    const {introduce,basic,contact,scale} = myInfo;
-    if(dispatch){
+  submit = () => {
+    const { dispatch, myInfo } = this.props;
+    const { introduce, basic, contact, scale } = myInfo;
+    if (dispatch) {
+      Taro.showLoading({
+        title: '提交中',
+        mask: true,
+      })
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale
+          ...introduce, ...basic, ...contact, ...scale
         }
+      }).then(() => {
+        Taro.hideLoading();
       });
     }
   }
@@ -180,13 +200,13 @@ class Home extends Component {
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
     // const titletop = `margin-top:${MenuButtonBounding.top}px;`
-    const {myInfo={scale:{}}} = this.props;
-    const {staffAmount,factoryArea,annualSale,registCapital,annualValue,paidinCapital} = myInfo.scale;
+    const { myInfo = { scale: {} } } = this.props;
+    const { staffAmount, factoryArea, annualSale, registCapital, annualValue, paidinCapital } = myInfo.scale;
 
     return (
       <View className={styles.needdetail}>
         <View className='at-icon at-icon-chevron-left goback' onClick={this.back} style={topstyle}></View>
-        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${myInfo.basic.photoCover}`} />
+        <Image className={styles.bg_img} src={`http://sz-spd.cn:889/${frontFilePath}`} />
 
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
@@ -197,15 +217,15 @@ class Home extends Component {
           注册资本
         </View>
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("registCapital",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("registCapital", e) }}>
             {
-              this.props.REGISTERED_CAPITAL && this.props.REGISTERED_CAPITAL.map((item)=>(
+              this.props.REGISTERED_CAPITAL && this.props.REGISTERED_CAPITAL.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${registCapital}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
         {/* <View className={styles.formItem}>
@@ -219,15 +239,15 @@ class Home extends Component {
           <AtInput className={styles.input} name="registCapital" placeholder="请输入实收资本…"  value={registCapital} onChange={(e)=>{this.infoChange(e,'introduction')}} />
         </View> */}
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("paidinCapital",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("paidinCapital", e) }}>
             {
-              this.props.CONTRIBUTED_CAPITAL && this.props.CONTRIBUTED_CAPITAL.map((item)=>(
+              this.props.CONTRIBUTED_CAPITAL && this.props.CONTRIBUTED_CAPITAL.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${paidinCapital}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
         <View className={styles.label}>
@@ -240,15 +260,15 @@ class Home extends Component {
         </View> */}
 
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("factoryArea",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("factoryArea", e) }}>
             {
-              this.props.FACTORY_AREA && this.props.FACTORY_AREA.map((item)=>(
+              this.props.FACTORY_AREA && this.props.FACTORY_AREA.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${factoryArea}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
 
@@ -262,15 +282,15 @@ class Home extends Component {
         </View> */}
 
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("staffAmount",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("staffAmount", e) }}>
             {
-              this.props.STAFF_AMOUNT && this.props.STAFF_AMOUNT.map((item)=>(
+              this.props.STAFF_AMOUNT && this.props.STAFF_AMOUNT.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${staffAmount}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
 
@@ -285,15 +305,15 @@ class Home extends Component {
         </View> */}
 
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("annualValue",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("annualValue", e) }}>
             {
-              this.props.ANNUAL_VALUE && this.props.ANNUAL_VALUE.map((item)=>(
+              this.props.ANNUAL_VALUE && this.props.ANNUAL_VALUE.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${annualValue}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
 
@@ -306,19 +326,19 @@ class Home extends Component {
           </View>
         </View> */}
         <View className={styles.formcheckboxItem}>
-            <RadioGroup onChange={(e)=>{this.onChange("annualSale",e)}}>
+          <RadioGroup onChange={(e) => { this.onChange("annualSale", e) }}>
             {
-              this.props.SALES_AMOUNT && this.props.SALES_AMOUNT.map((item)=>(
+              this.props.SALES_AMOUNT && this.props.SALES_AMOUNT.map((item) => (
                 <View className={styles.checkboxItem}>
                   <Radio value={item.value} style="flex:1" checked={`${annualSale}`.includes(item.value)}>{item.label}</Radio>
                 </View>
               ))
             }
-            </RadioGroup>
+          </RadioGroup>
         </View>
 
         <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>保存</AtButton>
-      
+
       </View>
 
     );

@@ -54,6 +54,7 @@ interface User {
 class User extends Component {
   state = {
     current: 1,
+    isOpened: false
   }
   config: Config = {
     navigationBarTitleText: "个人中心",
@@ -131,6 +132,20 @@ class User extends Component {
     })
   }
 
+  /**
+   * 获取二维码
+   */
+  qrCode = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: "user/getQrCode",
+        payload: {}
+      }).then((res) => {
+
+      })
+    }
+  }
   cancelLogin = () => {
     Taro.clearStorage();
     Taro.reLaunch({
@@ -156,7 +171,7 @@ class User extends Component {
     // }
 
     const { type = "person", status = '1', basic } = myInfo;
-
+    const { isOpened } = this.state;
     return (
       <View className={styles.user}>
         {/* 个人信息 */}
@@ -289,7 +304,7 @@ class User extends Component {
           title={'产品相册'}
         ></ListItem>}
         <ListItem
-          onClick={this.manageCard}
+          onClick={this.qrCode}
           cardIcon={gzgzh}
           title={'关注公众号'}
         ></ListItem>
@@ -310,6 +325,7 @@ class User extends Component {
           >登录</AtButton> : <View className={styles.loginout} onClick={this.cancelLogin} >退出登录</View>}
         </View>
       </View>
+
     );
   }
 }

@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import { levelUpbaseMember,getPhone,getMycard,updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList } from '@/services/fetch';
+import { levelUpbaseMember,getPhone,getMycard,updatebaseMember,fetchmakerDetails, makerIdentity, makerBank,getOssFile,getMyInfo,getMypointslist,getSysRegionAllList,getQrCode} from '@/services/fetch';
 
 /**
  * 登录页面
@@ -135,7 +135,12 @@ export default {
       // console.log(res)
       return res
     },
-    
+
+    *getQrCode({payload}, { get,call }) {
+      const res = yield call(getQrCode,payload);
+      // console.log(res)
+      return res
+    },    
     
 
     
