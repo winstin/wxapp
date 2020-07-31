@@ -176,7 +176,8 @@ class Home extends Component {
 
   deleteFontpage = () => {
     this.setState({
-      frontPagePath: ""
+      frontPagePath: "",
+      photoCover:''
     })
   }
 
@@ -205,14 +206,19 @@ class Home extends Component {
     const {dispatch,myInfo} = this.props;
     const {introduce,basic,contact,scale} = myInfo;
     const {industryType,companyProperty,industryRanking,companyType} = this.state;
+    Taro.showLoading({
+      title: '提交中',
+      mask: true,
+    })
     if(dispatch){
       dispatch({
         type: "user/updatebaseMember",
         payload: {
-          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType
+          ...introduce,...basic,...contact,...scale,photoCover:this.state.photoCover,industryType,companyProperty,industryRanking,companyType,
+          type:'enterprise'
           
         }
-      });
+      }).then((e)=>{Taro.hideLoading()});
     }
   }
 
@@ -246,7 +252,7 @@ class Home extends Component {
   }
 
   render() {
-    const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType} = this.state;
+    const {phone,frontPagePath,industryType,companyProperty,industryRanking,companyType,photoCover} = this.state;
     const MenuButtonBounding = Taro.getMenuButtonBoundingClientRect();
     const topstyle = `top:${MenuButtonBounding.top}px;`;
 
@@ -262,7 +268,7 @@ class Home extends Component {
 
         {myInfo.type==="enterprise" && <View className={styles.backImageItem}>
           {
-            frontPagePath&&(
+            photoCover&&(
               <View className={styles.imageView}>
                 <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFontpage.bind(this)}></AtIcon>
                 <Image mode="scaleToFill" src={frontPagePath} className={styles.image} />
@@ -270,7 +276,7 @@ class Home extends Component {
             )
           }
           {
-            !frontPagePath && <View className={styles.uploadBtn} onClick={this.chooseImageFontpage}>
+            !photoCover && <View className={styles.uploadBtn} onClick={this.chooseImageFontpage}>
               <View className={styles.addIcon}>+</View>
               <View className={styles.btnTitle}>点击上传封面图片</View>
             </View>
@@ -283,7 +289,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           <View className={styles.flex}>
-          <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.infoChange(e,'name')}} />
+          <AtInput className={styles.input} name="name" placeholder="请输入公司名称…" value={name}   onChange={(e)=>{this.infoChange(e,'name')}} />
           </View>
         </View>
         

@@ -100,7 +100,7 @@ class Home extends Component {
               </View>
 
               <View className={styles.banktip} >
-                  联系人: {cardInfo.linkMan}
+                  联系电话: {cardInfo.linkManPhone}
               </View>
 
               <View className={styles.bankacount} >

@@ -245,7 +245,12 @@ class Home extends Component {
       this.setState({
         submitLoading:true
       })
+
       if(type){
+        Taro.showLoading({
+          title: '提交中',
+          mask: true,
+        })
         const {introduce,basic,contact,scale,type} = myInfo;
         console.log("升级会员");
         dispatch({
@@ -267,6 +272,7 @@ class Home extends Component {
           this.setState({
             submitLoading:false
           })
+          Taro.hideLoading();
           // Taro.showToast({
           //   'title': '升级成功',
           // });
@@ -285,6 +291,10 @@ class Home extends Component {
           payload: {}
         })
         const {code} = this.props;
+        Taro.showLoading({
+          title: '提交中',
+          mask: true,
+        })
         dispatch({
           type: "factory/registerCorporate",
           payload:  {
@@ -303,6 +313,7 @@ class Home extends Component {
           this.setState({
             submitLoading:false
           })
+          Taro.hideLoading();
           // Taro.showToast({
           //   'title': '注册成功',
           // });
@@ -370,11 +381,11 @@ class Home extends Component {
         <View className={styles.userInfo} >
           {/* <View className={styles.tips} style={titletop}>产品展示</View> */}
         </View>
-        <View className={styles.label}>
+        <View className={styles.label} style='display:none'>
           会员等级
         </View>
 
-        <Picker value={''} mode='selector' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("levelApply",e,this.props.CORPORATE_VIP_LEVEL)}}>
+        <Picker value={''} mode='selector' style='display:none' range={this.props.CORPORATE_VIP_LEVEL}  range-key='label' onChange={(e)=>{this.onChange("levelApply",e,this.props.CORPORATE_VIP_LEVEL)}}>
           <View className={styles.formItem}>
             <View>
                   <AtInput className={styles.input} name="phone" placeholder="请选择会员等级"  value={this.dicValue(this.props.CORPORATE_VIP_LEVEL,levelApply)} onChange={()=>{}}/>
@@ -384,6 +395,18 @@ class Home extends Component {
         <View className={styles.label}>
           公司名称
         </View>
+        {myInfo.type==="personal" && 
+        <View className={styles.formItem}>
+          {/* <Image
+            className={styles.itemIcon}
+            src={phoneIcon}
+          /> */}
+          <View style={'flex:1'}>
+            <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value="" onChange={(e)=>{this.Change('name',e)}} />
+          </View>
+        </View>
+        }
+        {myInfo.type==="enterprise" && 
         <View className={styles.formItem}>
           {/* <Image
             className={styles.itemIcon}
@@ -393,6 +416,7 @@ class Home extends Component {
             <AtInput className={styles.input} name="name" placeholder="请输入公司名称…"  value={name} onChange={(e)=>{this.Change('name',e)}} />
           </View>
         </View>
+        }
         <View className={styles.label}>
           税务登记号
         </View>
