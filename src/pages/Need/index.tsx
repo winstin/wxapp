@@ -1,8 +1,8 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,ScrollView,Image } from "@tarojs/components";
-import { AtTabs, AtTabsPane  } from 'taro-ui'
+import { View, ScrollView, Image } from "@tarojs/components";
+import { AtTabs, AtTabsPane } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import NeedItem from '../Index/components/NeedItem/index';
 import styles from "./index.modules.less";
@@ -14,7 +14,7 @@ import { isLogined } from '@/utils/utils'
 import NoneData from '../Index/components/NoneData';
 
 type PageStateProps = {
-  userInfo:any;
+  userInfo: any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,8 +30,8 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ myindex,loading }) => {
-  const {userInfo={}} = myindex;
+@connect(({ myindex, loading }) => {
+  const { userInfo = {} } = myindex;
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
@@ -41,67 +41,73 @@ class Home extends Component {
 
   industryList = [
     {
-      title:'找工厂',
-      star:2
+      title: '找工厂',
+      star: 2
     },
     {
-      title:'最新需求',
-      star:3
+      title: '最新需求',
+      star: 3
     },
     {
-      title:'会员审核',
-      star:4
+      title: '会员审核',
+      star: 4
     },
     {
-      title:'需求审核',
-      star:5
+      title: '需求审核',
+      star: 5
     },
     {
-      title:'邀请企业',
-      star:5
+      title: '邀请企业',
+      star: 5
     },
     {
-      title:'邀请好友',
-      star:5
+      title: '邀请好友',
+      star: 5
     },
     {
-      title:'签到',
-      star:5
+      title: '签到',
+      star: 5
     },
     {
       icon: "",
-      title:''
+      title: ''
     },
   ]
 
   state = {
-    activeCurrent:0,
+    activeCurrent: 0,
     current: 1,
-    myCurrent:1,
-    show:false,
-    sort:false,
-    industry:false,
-    haveMore:true,
-    myhaveMore:true,
-    jxhReqData:[],
-    myjxhReqData:[],
+    myCurrent: 1,
+    show: false,
+    sort: false,
+    industry: false,
+    haveMore: true,
+    myhaveMore: true,
+    jxhReqData: [],
+    myjxhReqData: [],
 
   }
   config: Config = {
     navigationBarTitleText: "最新需求",
-    navigationBarTextStyle:'black',
+    navigationBarTextStyle: 'black',
     navigationBarBackgroundColor: "#F2F3FE",
-    
+
   };
 
   componentDidShow() {
-    this.fetchList(1)
+
+    const { activeCurrent } = this.state;
+    if (activeCurrent == 0) {
+      this.fetchList(1)
+    } else {
+      this.fetchMyList(1);
+    }
   }
 
-  handleClick (value) {
-    if(value === 0){
+  handleClick(value) {
+    if (value === 0) {
       this.fetchList(1)
-    }else{
+    } else {
       this.fetchMyList(1)
     }
     this.setState({
@@ -110,60 +116,60 @@ class Home extends Component {
   }
 
   // 最新需求
-  fetchList = (page=1)=>{
-    const {dispatch} = this.props;
+  fetchList = (page = 1) => {
+    const { dispatch } = this.props;
     const { jxhReqData } = this.state;
-    if(dispatch){
+    if (dispatch) {
       Taro.showToast({
-        icon:'loading',
+        icon: 'loading',
         title: "加载中",
-        duration:500
+        duration: 500
       })
       dispatch({
         type: "need/getjxhReqList",
         payload: {
-          isAsc:false,
-          current:page,
+          isAsc: false,
+          current: page,
           // industryType:industryObject.value
         }
-      }).then((e)=>{
-        if(e.length<20){
+      }).then((e) => {
+        if (e.length < 20) {
           this.state.haveMore = false;
         }
         this.state.current = page + 1;
         this.setState({
-          jxhReqData:page===1?e:jxhReqData.concat(e)
+          jxhReqData: page === 1 ? e : jxhReqData.concat(e)
         })
       });
     }
   }
 
   // 我的需求
-  fetchMyList = (page=1)=>{
+  fetchMyList = (page = 1) => {
     const token = Taro.getStorageSync('token');
-    if(!token) return; 
-    const {dispatch} = this.props;
+    if (!token) return;
+    const { dispatch } = this.props;
     const { myjxhReqData } = this.state;
-    if(dispatch){
+    if (dispatch) {
       Taro.showToast({
-        icon:'loading',
+        icon: 'loading',
         title: "加载中",
-        duration:500
+        duration: 500
       })
       dispatch({
         type: "need/getMyjxhReqList",
         payload: {
-          isAsc:false,
-          current:page,
+          isAsc: false,
+          current: page,
           // industryType:industryObject.value
         }
-      }).then((e)=>{
-        if(e.length<20){
+      }).then((e) => {
+        if (e.length < 20) {
           this.state.myhaveMore = false;
         }
         this.state.myCurrent = page + 1;
         this.setState({
-          myjxhReqData:page===1?e:myjxhReqData.concat(e)
+          myjxhReqData: page === 1 ? e : myjxhReqData.concat(e)
         })
       });
     }
@@ -178,7 +184,7 @@ class Home extends Component {
   // or 使用箭头函数
   onScrollToLower = () => {
     console.log("滚动到底部")
-    if(!this.state.haveMore) return
+    if (!this.state.haveMore) return
     this.fetchList(this.state.current)
   }
 
@@ -190,7 +196,7 @@ class Home extends Component {
   // or 使用箭头函数
   myonScrollToLower = () => {
     console.log("滚动到底部")
-    if(!this.state.haveMore) return
+    if (!this.state.haveMore) return
     this.fetchMyList(this.state.current)
   }
 
@@ -200,21 +206,21 @@ class Home extends Component {
     const tabList = [{ title: '最新需求' }, { title: '我的需求' }];
     const scrollStyle = {
       height: '100vh',
-      backgroundColor:"#fff",
+      backgroundColor: "#fff",
     }
     const scrollTop = 0
     const Threshold = 20
     return (
       <View className={styles.need}>
-        <Image src={btn_new} className={styles.addicon} onClick={()=>{
-          if(isLogined()) return;
+        <Image src={btn_new} className={styles.addicon} onClick={() => {
+          if (isLogined()) return;
           Taro.navigateTo({
             url: '/pages/NeedPublish/index'
           })
-        }}/>
+        }} />
         <AtTabs current={this.state.activeCurrent} tabList={tabList} onClick={this.handleClick.bind(this)}>
           <AtTabsPane current={this.state.activeCurrent} index={0} >
-            {this.state.jxhReqData.length===0 && <NoneData/>}
+            {this.state.jxhReqData.length === 0 && <NoneData />}
             <ScrollView
               className='scrollview'
               scrollY
@@ -225,16 +231,16 @@ class Home extends Component {
               upperThreshold={Threshold}
               onScrollToLower={this.onScrollToLower}
               onScrollToUpper={this.onScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
-              // onScroll={this.onScroll}
+            // onScroll={this.onScroll}
             >
-            {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.state.jxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} />))}
-            {/* </View> */}
+              {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
+              {this.state.jxhReqData.map((item, idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} />))}
+              {/* </View> */}
             </ScrollView>
 
           </AtTabsPane>
           <AtTabsPane current={this.state.activeCurrent} index={1}>
-            {this.state.myjxhReqData.length===0 && <NoneData/>}
+            {this.state.myjxhReqData.length === 0 && <NoneData />}
             <ScrollView
               className='scrollview'
               scrollY
@@ -245,17 +251,17 @@ class Home extends Component {
               upperThreshold={Threshold}
               onScrollToLower={this.myonScrollToLower}
               onScrollToUpper={this.myonScrollToUpper.bind(this)} // 使用箭头函数的时候 可以这样写 `onScrollToUpper={this.onScrollToUpper}`
-              // onScroll={this.onScroll}
+            // onScroll={this.onScroll}
             >
-            {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
-              { this.state.myjxhReqData.map((item,idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} type="myreq"/>))}
-            {/* </View> */}
+              {/* <View style='background-color:#fff;padding:0pt 16pt' > */}
+              {this.state.myjxhReqData.map((item, idx) => (<NeedItem data={item} key={`FactoryItem${idx}`} type="myreq" />))}
+              {/* </View> */}
             </ScrollView>
           </AtTabsPane>
         </AtTabs>
 
 
-        
+
       </View>
     );
   }

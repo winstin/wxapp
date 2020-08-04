@@ -1,8 +1,8 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image } from "@tarojs/components";
-import { AtInput,AtButton,AtIcon } from 'taro-ui'
+import { View, Image } from "@tarojs/components";
+import { AtInput, AtButton, AtIcon } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
@@ -10,7 +10,7 @@ import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
 
 type PageStateProps = {
-  userInfo:any;
+  userInfo: any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -26,8 +26,8 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ global,loading }) => {
-  const {userInfo={}} = global;
+@connect(({ global, loading }) => {
+  const { userInfo = {} } = global;
   return {
     userInfo,
     loading: loading.effects['parent/getStudentList'],
@@ -38,21 +38,22 @@ class Home extends Component {
 
   state = {
     current: 0,
-    show:false,
-    sort:false,
-    industry:false,
+    show: false,
+    sort: false,
+    industry: false,
     value: '',
-    phone:"",
-    code:'',
-    frontFilePath:[], // 正面照
-    photos:[],
-    reqDesc:'',
-    qty:'',
-    itemName:''
+    phone: "",
+    code: '',
+    frontFilePath: [], // 正面照
+    photos: [],
+    reqDesc: '',
+    qty: '',
+    itemName: '',
+    submitLoading: false
   }
   config: Config = {
     navigationBarTitleText: "发布需求",
-    navigationBarTextStyle:'black',
+    navigationBarTextStyle: 'black',
     navigationBarBackgroundColor: "#F2F3FE",
     // navigationStyle:"custom",
   };
@@ -60,22 +61,22 @@ class Home extends Component {
   componentDidShow() {
   }
 
-  handleClick (value) {
+  handleClick(value) {
     this.setState({
       current: value
     })
   }
 
-  onScrollToUpper() {}
+  onScrollToUpper() { }
 
   // or 使用箭头函数
   // onScrollToUpper = () => {}
 
-  onScroll(e){
+  onScroll(e) {
     console.log(e.detail)
   }
 
-  back=()=>{
+  back = () => {
     Taro.navigateBack()
   }
 
@@ -92,12 +93,12 @@ class Home extends Component {
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        console.log('----res:',res);
+        console.log('----res:', res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        let {frontFilePath,photos}:any = this.state;
+        let { frontFilePath, photos }: any = this.state;
         frontFilePath = frontFilePath.concat(tempFilePaths)
-        for(let i in tempFilePaths){
+        for (let i in tempFilePaths) {
           Taro.uploadFile({
             url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
             filePath: tempFilePaths[i],
@@ -109,7 +110,7 @@ class Home extends Component {
             success: (res) => {
               const data = res.data;
               const dataJson = JSON.parse(data);
-              console.log('-------success--dataJson:',dataJson);
+              console.log('-------success--dataJson:', dataJson);
               photos.push({
                 ...dataJson.data
               })
@@ -120,7 +121,7 @@ class Home extends Component {
               })
             },
             complete: (res: any) => {
-              console.log('-----complete:',res);
+              console.log('-----complete:', res);
             }
           })
         }
@@ -147,7 +148,7 @@ class Home extends Component {
         //       photos:JSON.parse(JSON.stringify(photos)),
         //       frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
         //     })
-            
+
         //   },
         //   fail: (res: any) => {
         //     Taro.showToast({
@@ -158,71 +159,101 @@ class Home extends Component {
         //     console.log('-----complete:',res);
         //   }
         // })
-      
+
       }
     })
   }
 
   deleteFont = (index) => {
-    const {frontFilePath}:any = this.state;
-    frontFilePath.splice(index,1)
+    const { frontFilePath }: any = this.state;
+    frontFilePath.splice(index, 1)
     this.setState({
       frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
     })
   }
 
-  onClick = (value)=>{
+  onClick = (value) => {
     console.log(value)
   }
 
-  Change = (type,value) => {
+  Change = (type, value) => {
     this.setState({
       [`${type}`]: value
     })
   }
 
-  submit = () =>{
-    const {dispatch} = this.props;
-    const {photos,reqDesc,qty,itemName} = this.state;
-
-    if(dispatch){
+  submit = () => {
+    const { dispatch } = this.props;
+    const { photos, reqDesc, qty, itemName, submitLoading } = this.state;
+    if (submitLoading) {
+      return
+    }
+    if (dispatch) {
+      if (itemName === '') {
+        Taro.showToast({
+          'title': '请输入产品描述',
+        });
+        return;
+      }
+      Taro.showLoading({
+        title: '提交中',
+        mask: true,
+      })
+      this.setState({
+        submitLoading: true
+      })
       dispatch({
         type: "need/addjxhReq",
-        payload:  {
-          drawings:photos,
+        payload: {
+          drawings: photos,
           reqDesc,
           qty,
           itemName
         }
+      }).then((res) => {
+        if (res.status == "0") {
+          Taro.showToast({
+            'title': res.message,
+          });
+          Taro.navigateBack()
+        } else {
+          Taro.showToast({
+            'title': '新增需求异常',
+          });
+        }
+        Taro.hideLoading();
+        this.setState({
+          submitLoading: false
+        })
       });
     }
   }
 
 
   render() {
-    const {frontFilePath,reqDesc,qty,itemName} = this.state;
+    const { frontFilePath, reqDesc, qty, itemName, submitLoading } = this.state;
 
     return (
       <View className={styles.needdetail}>
-       
+
         <View className={styles.label}>
           产品描述
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="itemName" placeholder="请输入产品描述…"  value={itemName} onChange={(e)=>{this.Change('itemName',e)}} />
+          <AtInput className={styles.input} name="itemName" placeholder="请输入产品描述…" value={itemName} onChange={(e) => { this.Change('itemName', e) }} />
         </View>
         <View className={styles.label}>
           需求数量
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="qty" placeholder="请输入需求数量…"  value={qty} onChange={(e)=>{this.Change('qty',e)}} />
+          <AtInput className={styles.input} name="qty" placeholder="请输入需求数量…" value={qty} onChange={(e) => { this.Change('qty', e) }} />
         </View>
 
         <View className={styles.label}>
           要求
         </View>
         <View className={styles.formItem}>
-          <AtInput className={styles.input} name="reqDesc" placeholder="请输入要求…"  value={reqDesc} onChange={(e)=>{this.Change('reqDesc',e)}} />
+          <AtInput className={styles.input} name="reqDesc" placeholder="请输入要求…" value={reqDesc} onChange={(e) => { this.Change('reqDesc', e) }} />
         </View>
 
         <View className={styles.label}>
@@ -230,23 +261,23 @@ class Home extends Component {
         </View>
         <View className={styles.formImageItem}>
           {
-            frontFilePath.map((item,index)=>(
+            frontFilePath.map((item, index) => (
               <View className={styles.imageView}>
-                <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this,index)}></AtIcon>
+                <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this, index)}></AtIcon>
                 <Image mode="scaleToFill" src={item} className={styles.image} />
               </View>
             ))
           }
-          {this.state.frontFilePath.length <6 &&
+          {this.state.frontFilePath.length < 6 &&
             <View className={styles.uploadBtn} onClick={this.chooseImageReverse}>
-            <View className={styles.addIcon}>+</View>
-            {/* <View className={styles.btnTitle}>点击上传</View> */}
-          </View>
+              <View className={styles.addIcon}>+</View>
+              {/* <View className={styles.btnTitle}>点击上传</View> */}
+            </View>
           }
-          
+
         </View>
-        <AtButton type='primary' className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
-      
+        <AtButton type='primary' loading={submitLoading} className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
+
       </View>
 
     );

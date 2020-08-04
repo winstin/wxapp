@@ -37,6 +37,7 @@ class App extends Component {
       "pages/AlbumProduct/index",// 产品相册
       "pages/NeedPublish/index",// 发布需求
       "pages/FactoryIntroduce/index",// 企业介绍
+      "pages/QrCodeWxMp/index",// 微信公众号
     ],
     subPackages:[
       { 

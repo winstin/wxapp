@@ -1,8 +1,8 @@
 import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
-import { View,Image,Picker } from "@tarojs/components";
-import { AtInput,AtButton,AtIcon,AtRadio,AtTextarea } from 'taro-ui'
+import { View, Image, Picker } from "@tarojs/components";
+import { AtInput, AtButton, AtIcon, AtRadio, AtTextarea } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import classNames from 'classnames';
@@ -14,7 +14,7 @@ import "taro-ui/dist/style/components/radio.scss";
 import "taro-ui/dist/style/components/textarea.scss";
 
 type PageStateProps = {
-  jxhReqDetail:any;
+  jxhReqDetail: any;
   dispatch?<K = any>(action: AnyAction): K;
 };
 
@@ -30,8 +30,8 @@ interface Home {
   props: IProps;
 }
 
-@connect(({ needcheck,loading }) => {
-  const {jxhReqDetail={}} = needcheck;
+@connect(({ needcheck, loading }) => {
+  const { jxhReqDetail = {} } = needcheck;
   return {
     jxhReqDetail,
     loading: loading.effects['parent/getStudentList'],
@@ -42,23 +42,23 @@ class Home extends Component {
 
   state = {
     current: 0,
-    show:false,
-    sort:false,
-    industry:false,
+    show: false,
+    sort: false,
+    industry: false,
     value: '',
-    phone:"",
-    code:'',
-    frontFilePath:[], // 正面照
-    photos:[],
-    frontPagePath:"",
+    phone: "",
+    code: '',
+    frontFilePath: [], // 正面照
+    photos: [],
+    frontPagePath: "",
     selector: ['显示', '不显示'],
     selectorChecked: '显示',
-    closeDesc:'',
-    isload:true
+    closeDesc: '',
+    isload: true
   }
   config: Config = {
     navigationBarTitleText: "需求审核",
-    navigationBarTextStyle:'black',
+    navigationBarTextStyle: 'black',
     navigationBarBackgroundColor: "#F2F3FE",
     // navigationStyle:"custom",
   };
@@ -68,9 +68,9 @@ class Home extends Component {
     this.fetchList()
   }
 
-  fetchList = ()=>{
-    const {dispatch} = this.props;
-    if(dispatch){
+  fetchList = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
       // Taro.showToast({
       //   icon:'loading',
       //   title: "加载中",
@@ -79,36 +79,38 @@ class Home extends Component {
       dispatch({
         type: "needcheck/getjxhReqDetail",
         payload: this.$router.params
-      }).then(()=>{
-        const {drawings} = this.props.jxhReqDetail;
-        const frontFilePath = drawings.map((item)=>`http://sz-spd.cn:889/${item.url}`)
-        this.setState({
-          photos:drawings,
-          frontFilePath,
-          isLoaded:true
-        })
-        this.setState({isload:false})
+      }).then(() => {
+        const { drawings } = this.props.jxhReqDetail;
+        if (drawings != null && drawings.length > 0) {
+          const frontFilePath = drawings.map((item) => `http://sz-spd.cn:889/${item.url}`)
+          this.setState({
+            photos: drawings,
+            frontFilePath,
+            isLoaded: true
+          })
+        }
+        this.setState({ isload: false })
       });
     }
   }
 
 
-  handleClick (value) {
+  handleClick(value) {
     this.setState({
       current: value
     })
   }
 
-  onScrollToUpper() {}
+  onScrollToUpper() { }
 
   // or 使用箭头函数
   // onScrollToUpper = () => {}
 
-  onScroll(e){
+  onScroll(e) {
     console.log(e.detail)
   }
 
-  back=()=>{
+  back = () => {
     Taro.navigateBack()
   }
 
@@ -125,12 +127,12 @@ class Home extends Component {
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        console.log('----res:',res);
+        console.log('----res:', res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
-        let {frontFilePath,photos}:any = this.state;
+        let { frontFilePath, photos }: any = this.state;
         frontFilePath = frontFilePath.concat(tempFilePaths)
-        for(let i in tempFilePaths){
+        for (let i in tempFilePaths) {
           Taro.uploadFile({
             url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
             filePath: tempFilePaths[i],
@@ -142,7 +144,7 @@ class Home extends Component {
             success: (res) => {
               const data = res.data;
               const dataJson = JSON.parse(data);
-              console.log('-------success--dataJson:',dataJson);
+              console.log('-------success--dataJson:', dataJson);
               photos.push({
                 ...dataJson.data
               })
@@ -153,7 +155,7 @@ class Home extends Component {
               })
             },
             complete: (res: any) => {
-              console.log('-----complete:',res);
+              console.log('-----complete:', res);
             }
           })
         }
@@ -180,7 +182,7 @@ class Home extends Component {
         //       photos:JSON.parse(JSON.stringify(photos)),
         //       frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
         //     })
-            
+
         //   },
         //   fail: (res: any) => {
         //     Taro.showToast({
@@ -191,18 +193,18 @@ class Home extends Component {
         //     console.log('-----complete:',res);
         //   }
         // })
-      
+
       }
     })
   }
 
   deleteFont = (index) => {
-    const {frontFilePath,photos}:any = this.state;
-    frontFilePath.splice(index,1);
-    photos.splice(index,1);
+    const { frontFilePath, photos }: any = this.state;
+    frontFilePath.splice(index, 1);
+    photos.splice(index, 1);
     this.setState({
       frontFilePath: JSON.parse(JSON.stringify(frontFilePath)),
-      photos:JSON.parse(JSON.stringify(photos))
+      photos: JSON.parse(JSON.stringify(photos))
     })
   }
 
@@ -212,7 +214,7 @@ class Home extends Component {
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        console.log('----res:',res);
+        console.log('----res:', res);
         // tempFilePath可以作为img标签的src属性显示图片
         const tempFilePaths = res.tempFilePaths;
         this.setState({
@@ -230,7 +232,7 @@ class Home extends Component {
     })
   }
 
-  onClick = (value)=>{
+  onClick = (value) => {
     console.log(value)
   }
 
@@ -240,30 +242,36 @@ class Home extends Component {
     })
   }
 
-  handleChange (value) {
+  handleChange(value) {
     this.setState({
       value
     })
   }
 
-  submit = (type) =>{
-    const {dispatch} = this.props;
-    const {reqDesc,qty,itemName,drawings,id} = this.props.jxhReqDetail;
+  submit = (type) => {
+    const { dispatch } = this.props;
+    const { reqDesc, qty, itemName, drawings, id } = this.props.jxhReqDetail;
 
-    if(dispatch){
+    if (dispatch) {
+      Taro.showToast({
+        icon: 'loading',
+        title: "提交中",
+        duration: 500
+      })
       dispatch({
-        type: type==="agree"?"needcheck/passAudit":"needcheck/rejectpassAudit",
+        type: type === "agree" ? "needcheck/passAudit" : "needcheck/rejectpassAudit",
         payload: {
           id,
           reqDesc,
           qty,
           itemName,
-          drawings:this.state.photos,
-          isTop:"1",
-          isShowDrawing:this.state.selectorChecked==="显示"?'1':'0',
-          closeDesc:this.state.closeDesc
+          drawings: this.state.photos,
+          isTop: "1",
+          isShowDrawing: this.state.selectorChecked === "显示" ? '1' : '0',
+          closeDesc: this.state.closeDesc
         }
-      }).then(()=>{
+      }).then(() => {
+        Taro.hideLoading();
         // Taro.showToast({
         //   'title': '操作成功',
         // });
@@ -272,10 +280,10 @@ class Home extends Component {
     }
   }
 
-  infoChange = (value,type) => {
-    const {dispatch,jxhReqDetail} = this.props;
+  infoChange = (value, type) => {
+    const { dispatch, jxhReqDetail } = this.props;
     jxhReqDetail[`${type}`] = value;
-    if(dispatch){
+    if (dispatch) {
       dispatch({
         type: "user/updateState",
         payload: jxhReqDetail
@@ -285,13 +293,13 @@ class Home extends Component {
 
   render() {
     // const {phone,frontFilePath,frontPagePath} = this.state;
-    const {reqDesc,qty,itemName,createdDate,drawings,reqName,status,isShowDrawing,closeDesc} = this.props.jxhReqDetail;
-    const {frontFilePath} = this.state;
-    console.log('this.props.jxhReqDetail',closeDesc,reqDesc)
-    if(status==='2'){
-      this.state.selectorChecked = isShowDrawing==="1"?'显示':'不显示';
+    const { reqDesc, qty, itemName, createdDate, drawings, reqName, status, isShowDrawing, closeDesc } = this.props.jxhReqDetail;
+    const { frontFilePath } = this.state;
+    console.log('this.props.jxhReqDetail', closeDesc, reqDesc)
+    if (status === '2') {
+      this.state.selectorChecked = isShowDrawing === "1" ? '显示' : '不显示';
     }
-    if(this.state.isload){
+    if (this.state.isload) {
       return null
     }
     return (
@@ -312,14 +320,14 @@ class Home extends Component {
             {createdDate}
           </View>
         </View>
-        <View className={styles.margin20}/>
+        <View className={styles.margin20} />
         <View className={styles.label}>
           产品描述
         </View>
         <View className={styles.formItem}>
           {/* {itemName} */}
           <View style="flex:1">
-          {status === '1'? <AtInput className={styles.input} name="itemName" placeholder=""  value={itemName} onChange={(e)=>{this.infoChange(e,'itemName')}} /> :itemName}
+            {status === '1' ? <AtInput className={styles.input} name="itemName" placeholder="" value={itemName} onChange={(e) => { this.infoChange(e, 'itemName') }} /> : itemName}
           </View>
           {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
         </View>
@@ -329,7 +337,7 @@ class Home extends Component {
         </View>
         <View className={styles.formItem}>
           {/* {qty} */}
-          {status === '1'? <AtInput className={styles.input} name="qty" placeholder=""  value={qty} onChange={(e)=>{this.infoChange(e,'qty')}} /> :qty}
+          {status === '1' ? <AtInput className={styles.input} name="qty" placeholder="" value={qty} onChange={(e) => { this.infoChange(e, 'qty') }} /> : qty}
 
           {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
         </View>
@@ -340,7 +348,7 @@ class Home extends Component {
         <View className={styles.formItem}>
           {/* {reqDesc} */}
           <View style="flex:1">
-          {status === '1'? <AtInput className={styles.input} name="reqDesc" placeholder=""  value={reqDesc} onChange={(e)=>{this.infoChange(e,'reqDesc')}} /> :reqDesc}
+            {status === '1' ? <AtInput className={styles.input} name="reqDesc" placeholder="" value={reqDesc} onChange={(e) => { this.infoChange(e, 'reqDesc') }} /> : reqDesc}
           </View>
           {/* <AtInput className={styles.input} name="phone" placeholder=""  value={phone} onChange={this.phoneChange} /> */}
         </View>
@@ -350,9 +358,9 @@ class Home extends Component {
         </View>
         <View className={styles.formImageItem}>
           {
-            frontFilePath && frontFilePath.map((item,index)=>(
+            frontFilePath && frontFilePath.map((item, index) => (
               <View className={styles.imageView}>
-                <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this,index)}></AtIcon>
+                <AtIcon value='close' size='20' color='#FF6461' className={styles.deleteBtn} onClick={this.deleteFont.bind(this, index)}></AtIcon>
                 <Image mode="scaleToFill" src={item} className={styles.image} />
               </View>
             ))
@@ -371,7 +379,7 @@ class Home extends Component {
         <Picker value={this.state.selectorChecked} mode='selector' range={this.state.selector} onChange={this.onPickerChange}>
           <View className={styles.formItem}>
             <View>
-                  <AtInput className={styles.input} name="phone" placeholder=""  value={this.state.selectorChecked} onChange={()=>{}}/>
+              <AtInput className={styles.input} name="phone" placeholder="" value={this.state.selectorChecked} onChange={() => { }} />
             </View>
             <Image
               className={styles.arrow}
@@ -387,9 +395,9 @@ class Home extends Component {
           <View className={styles.formItems}>
             <View className={styles.formItemwidth}>
               <AtTextarea
-                className={styles.textarea} 
+                className={styles.textarea}
                 value={this.state.closeDesc}
-                onChange={(e)=>{this.setState({closeDesc:e})}}
+                onChange={(e) => { this.setState({ closeDesc: e }) }}
                 maxLength={200}
                 placeholder='请输入审核意见…'
               />
@@ -397,7 +405,7 @@ class Home extends Component {
           </View>
         </View>
         }
-        {(status==='2'|| status==='3') &&
+        {(status === '2' || status === '3') &&
           <View>
             <View className={styles.label}>
               审核意见
@@ -408,12 +416,12 @@ class Home extends Component {
           </View>
         }
 
-        
-        {status!=='2'&& status!=='3' &&<View className={styles.bottom}>
-          <View className={classNames(styles.loginout,styles.agree)} onClick={()=>{this.submit('agree')}}>通过</View>
-          <View className={styles.loginout} onClick={()=>{this.submit('reject')}}>作废</View>
+
+        {status !== '2' && status !== '3' && <View className={styles.bottom}>
+          <View className={classNames(styles.loginout, styles.agree)} onClick={() => { this.submit('agree') }}>通过</View>
+          <View className={styles.loginout} onClick={() => { this.submit('reject') }}>作废</View>
         </View>}
-      
+
       </View>
 
     );

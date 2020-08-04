@@ -142,7 +142,17 @@ class User extends Component {
         type: "user/getQrCode",
         payload: {}
       }).then((res) => {
-
+        let photosurl = [res.data];
+        Taro.previewImage({
+          current: res.data, // 当前显示图片的http链接
+          urls: photosurl, // 需要预览的图片http链接列表
+          success: (e) => {
+            console.log(e)
+          },
+          fail: (e) => {
+            console.log("fail", e)
+          }
+        })
       })
     }
   }
