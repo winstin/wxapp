@@ -218,7 +218,8 @@ class Home extends Component {
           Taro.navigateBack()
         } else {
           Taro.showToast({
-            'title': '新增需求异常',
+            'title': res.message,
+            duration:3500,
           });
         }
         Taro.hideLoading();
