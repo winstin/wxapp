@@ -211,6 +211,8 @@ class Home extends Component {
           itemName
         }
       }).then((res) => {
+        console.log(res);
+        Taro.hideLoading();
         if (res.status == "0") {
           Taro.showToast({
             'title': res.message,
@@ -219,10 +221,9 @@ class Home extends Component {
         } else {
           Taro.showToast({
             'title': res.message,
-            duration:3500,
+            duration:3000
           });
         }
-        Taro.hideLoading();
         this.setState({
           submitLoading: false
         })
