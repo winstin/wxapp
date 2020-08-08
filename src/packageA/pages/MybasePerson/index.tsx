@@ -605,7 +605,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.EDUCATION_LEVEL} range-key='label' onChange={(e) => { this.onChange("education", e) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择学历" value={this.props.EDUCATION_LEVEL[education] && this.props.EDUCATION_LEVEL[education].label} onChange={() => { }} />
+            <div className={styles.input}>{this.props.EDUCATION_LEVEL[education] && this.props.EDUCATION_LEVEL[education].label}</div>
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择学历" value={this.props.EDUCATION_LEVEL[education] && this.props.EDUCATION_LEVEL[education].label} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>
@@ -771,7 +772,9 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY} range-key='label' onChange={(e) => { this.onChange("companyProperty", e, this.props.COMPANY_PROPERTY) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择公司性质" value={this.dicValue(this.props.COMPANY_PROPERTY, companyProperty)} onChange={() => { }} />
+            <div className={styles.input}>{this.dicValue(this.props.COMPANY_PROPERTY, companyProperty)}</div>
+
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择公司性质" value={this.dicValue(this.props.COMPANY_PROPERTY, companyProperty)} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>
@@ -793,7 +796,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.STAFF_AMOUNT} range-key='label' onChange={(e) => { this.onChange("companyScale", e) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择公司规模" value={this.props.STAFF_AMOUNT[companyScale] && this.props.STAFF_AMOUNT[companyScale].label} onChange={() => { }} />
+            <div className={styles.input}>{this.props.STAFF_AMOUNT[companyScale] && this.props.STAFF_AMOUNT[companyScale].label}</div>
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择公司规模" value={this.props.STAFF_AMOUNT[companyScale] && this.props.STAFF_AMOUNT[companyScale].label} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>
@@ -817,7 +821,9 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.PURCHASE_SIZE} range-key='label' onChange={(e) => { this.onChange("dptScale", e) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择采购部门规模" value={this.props.PURCHASE_SIZE[dptScale] && this.props.PURCHASE_SIZE[dptScale].label} onChange={() => { }} />
+            <div className={styles.input}>{this.props.PURCHASE_SIZE[dptScale] && this.props.PURCHASE_SIZE[dptScale].label}</div>
+
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择采购部门规模" value={this.props.PURCHASE_SIZE[dptScale] && this.props.PURCHASE_SIZE[dptScale].label} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>

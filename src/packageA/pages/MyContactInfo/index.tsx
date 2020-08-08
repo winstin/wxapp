@@ -297,7 +297,9 @@ class Home extends Component {
         <Picker value={this.state.countryObject.name} mode='selector' range={this.state.country} range-key='name' onChange={(e) => this.onPickerChange(e, "country", 0)}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="country" placeholder="" value={this.state.countryObject.name} onChange={() => { }} />
+            <div className={styles.input}>{this.state.countryObject.name}</div>
+
+              {/* <AtInput className={styles.input} name="country" placeholder="" value={this.state.countryObject.name} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>
@@ -307,7 +309,9 @@ class Home extends Component {
         <Picker value={this.state.provinceObject.name} mode='selector' range={this.state.province} range-key='name' onChange={(e) => this.onPickerChange(e, "province", 1)}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="province" placeholder="" value={this.state.provinceObject.name} onChange={() => { }} />
+            <div className={styles.input}>{this.state.provinceObject.name}</div>
+
+              {/* <AtInput className={styles.input} name="province" placeholder="" value={this.state.provinceObject.name} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>
@@ -322,7 +326,9 @@ class Home extends Component {
         <Picker value={this.state.cityObject.name} mode='selector' range={this.state.city} range-key='name' onChange={(e) => this.onPickerChange(e, "city", 2)}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="city" placeholder="" value={this.state.cityObject.name} onChange={() => { }} />
+            <div className={styles.input}>{this.state.cityObject.name}</div>
+
+              {/* <AtInput className={styles.input} name="city" placeholder="" value={this.state.cityObject.name} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>

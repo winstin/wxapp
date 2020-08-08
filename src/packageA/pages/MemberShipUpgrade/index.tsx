@@ -392,7 +392,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' style='display:none' range={this.props.CORPORATE_VIP_LEVEL} range-key='label' onChange={(e) => { this.onChange("levelApply", e, this.props.CORPORATE_VIP_LEVEL) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择会员等级" value={this.dicValue(this.props.CORPORATE_VIP_LEVEL, levelApply)} onChange={() => { }} />
+              <div className={styles.input}>{this.dicValue(this.props.CORPORATE_VIP_LEVEL, levelApply)}</div>
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择会员等级" value={this.dicValue(this.props.CORPORATE_VIP_LEVEL, levelApply)} onChange={() => { }} /> */}
             </View>
           </View>
         </Picker>

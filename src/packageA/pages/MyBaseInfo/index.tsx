@@ -360,7 +360,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.COMPANY_TYPE} range-key='label' onChange={(e) => { this.onChange("companyType", e, this.props.COMPANY_TYPE) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="companyType" placeholder="请选择企业类型..." value={this.dicValue(this.props.COMPANY_TYPE, this.state.companyType)} onChange={() => { }} />
+              <div className={styles.input}>{this.dicValue(this.props.COMPANY_TYPE, this.state.companyType)}</div>
+              {/* <AtInput className={styles.input} name="companyType" placeholder="请选择企业类型..." value={this.dicValue(this.props.COMPANY_TYPE, this.state.companyType)} onChange={() => { }} /> */}
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
@@ -384,7 +385,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.COMPANY_PROPERTY} range-key='label' onChange={(e) => { this.onChange("companyProperty", e, this.props.COMPANY_PROPERTY) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择企业性质..." value={this.dicValue(this.props.COMPANY_PROPERTY, this.state.companyProperty)} onChange={() => { }} />
+              <div className={styles.input}>{this.dicValue(this.props.COMPANY_PROPERTY, this.state.companyProperty)}</div>
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择企业性质..." value={this.dicValue(this.props.COMPANY_PROPERTY, this.state.companyProperty)} onChange={() => { }} /> */}
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
@@ -424,7 +426,8 @@ class Home extends Component {
         <Picker value={''} mode='selector' range={this.props.INDUSTRY_RANKING} range-key='label' onChange={(e) => { this.onChange("industryRanking", e, this.props.INDUSTRY_RANKING) }}>
           <View className={styles.formItem}>
             <View>
-              <AtInput className={styles.input} name="phone" placeholder="请选择行业排名..." value={this.dicValue(this.props.INDUSTRY_RANKING, this.state.industryRanking)} onChange={() => { }} />
+              <div className={styles.input}>{this.dicValue(this.props.INDUSTRY_RANKING, this.state.industryRanking)}</div>
+              {/* <AtInput className={styles.input} name="phone" placeholder="请选择行业排名..." value={this.dicValue(this.props.INDUSTRY_RANKING, this.state.industryRanking)} onChange={() => { }} /> */}
             </View>
             {/* <AtInput className={styles.input} name="phone" placeholder="请输入产品描述…"  value={phone} onChange={this.phoneChange} /> */}
           </View>
