@@ -519,16 +519,17 @@ class Home extends Component {
         <View className={styles.label}>
           生日
         </View>
-        <View className={styles.formItem}>
-          <View>
               <Picker value={""} mode='date' onChange={this.onDateChange}>
-                <AtInput className={styles.input} name="birthday" placeholder="请选择您的出生日期…"  value={birthday} onChange={(e)=>{
+              <View className={styles.formItem}>
+
+              <div className={styles.input}>{birthday}</div>
+              </View>
+
+                {/* <AtInput className={styles.input} name="birthday" placeholder="请选择您的出生日期…"  value={birthday} onChange={(e)=>{
                   this.Change('birthday',e)
-                  }}/>
+                  }}/> */}
               </Picker>
-          </View>
           
-        </View>
         <View className={styles.label}>
           籍贯
         </View>
