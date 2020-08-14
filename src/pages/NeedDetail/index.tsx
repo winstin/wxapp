@@ -2,13 +2,17 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View, Image, Button } from "@tarojs/components";
-import { AtInput, AtButton } from 'taro-ui'
+import { AtInput, AtButton, AtList, AtListItem, AtAvatar } from 'taro-ui'
 import classNames from 'classnames';
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
 import ico_comment from '../../assets/need/ico_comment@3x.png';
 import ico_share from '../../assets/need/ico_share@3x.png';
+import "taro-ui/dist/style/components/list.scss"
+import "taro-ui/dist/style/components/avatar.scss";
+import "taro-ui/dist/style/components/flex.scss";
+import "taro-ui/dist/style/components/article.scss";
 type PageStateProps = {
   jxhReqDetail: any;
   dispatch?<K = any>(action: AnyAction): K;
@@ -96,6 +100,11 @@ class Home extends Component {
   reqComment = () => {
     const { dispatch, jxhReqDetail } = this.props;
     const { msg, parentsId } = this.state;
+    Taro.showToast({
+      icon: 'loading',
+      title: "提交中",
+      duration: 500
+    })
     if (dispatch) {
       dispatch({
         type: "need/addjxhReqMsg",
@@ -111,6 +120,7 @@ class Home extends Component {
           msg: ''
         })
         this.fetchList();
+        Taro.hideLoading();
       });
     }
   }
@@ -127,7 +137,7 @@ class Home extends Component {
 
   render() {
 
-    const { name, desc, intro, category, reqName, itemName, createdDate, companyName, qty, reqDesc, drawings, id, jxhReqMsgs, closeDesc, statusName, status } = this.props.jxhReqDetail;
+    const { name, desc, intro, category, reqName, phone, itemName, levelName, createdDate, companyName, qty, reqDesc, drawings, id, jxhReqMsgs, closeDesc, statusName, status } = this.props.jxhReqDetail;
     const { msg, parentsName } = this.state;
     return (
       <View className={styles.needdetail}>
@@ -138,6 +148,9 @@ class Home extends Component {
           <View style='flex:1'>
             <View className={styles.title} >
               {itemName}
+            </View>
+            <View className={styles.tips} >
+              {reqName}/{phone} {levelName}
             </View>
             <View className={styles.tips} >
               {createdDate}
@@ -199,8 +212,19 @@ class Home extends Component {
                   parentsName: item.commentatorName,
                 })
               }}>
-                <View className={styles.commentatorTitle}>{item.commentatorTitle} </View>
-                <View className={styles.msg}>{item.msg}</View>
+
+                <View className='at-row'>
+                  <View className='at-col at-col-1 at-col--auto'>
+                    <AtAvatar circle image={`${item.avatarUrl}`}></AtAvatar>
+                  </View>
+                  <View className='at-col'>
+                    <View className={styles.article__h3}> {item.nickName}</View>
+                    <View className='at-article__info'>{item.dateTime}</View>
+                    <View className={styles.article__p} style="margin-top:1px!impportant;">
+                      {item.msg}
+                    </View>
+                  </View>
+                </View>
               </View>
             ))
           }

@@ -2,13 +2,13 @@ import { ComponentClass } from "react";
 import { AnyAction } from 'redux';
 import Taro, { Component, Config } from "@tarojs/taro";
 import { View, Image } from "@tarojs/components";
-import { AtInput, AtButton, AtIcon } from 'taro-ui'
+import { AtInput, AtButton, AtIcon, AtCheckbox } from 'taro-ui'
 import { connect } from "@tarojs/redux";
 import styles from "./index.modules.less";
 import "taro-ui/dist/style/components/icon.scss";
 import "taro-ui/dist/style/components/form.scss";
 import "taro-ui/dist/style/components/tag.scss";
-
+import "taro-ui/dist/style/components/checkbox.scss";
 type PageStateProps = {
   userInfo: any;
   dispatch?<K = any>(action: AnyAction): K;
@@ -49,7 +49,8 @@ class Home extends Component {
     reqDesc: '',
     qty: '',
     itemName: '',
-    submitLoading: false
+    submitLoading: false,
+    checkedList: []
   }
   config: Config = {
     navigationBarTitleText: "发布需求",
@@ -57,7 +58,10 @@ class Home extends Component {
     navigationBarBackgroundColor: "#F2F3FE",
     // navigationStyle:"custom",
   };
-
+  checkboxOption = [{
+    value: 'list1',
+    label: '《发布需求相关协议》'
+  }]
   componentDidShow() {
   }
 
@@ -98,6 +102,10 @@ class Home extends Component {
         const tempFilePaths = res.tempFilePaths;
         let { frontFilePath, photos }: any = this.state;
         frontFilePath = frontFilePath.concat(tempFilePaths)
+        Taro.showLoading({
+          title: '图片上传中',
+          mask: true,
+        })
         for (let i in tempFilePaths) {
           Taro.uploadFile({
             url: process.env.PREFIX_URL + '/api/upload/sysUpload/add', //仅为示例，非真实的接口地址
@@ -122,6 +130,7 @@ class Home extends Component {
             },
             complete: (res: any) => {
               console.log('-----complete:', res);
+              Taro.hideLoading();
             }
           })
         }
@@ -163,12 +172,18 @@ class Home extends Component {
       }
     })
   }
-
-  deleteFont = (index) => {
-    const { frontFilePath }: any = this.state;
-    frontFilePath.splice(index, 1)
+  handleChange(value) {
     this.setState({
-      frontFilePath: JSON.parse(JSON.stringify(frontFilePath))
+      checkedList: value
+    })
+  }
+  deleteFont = (index) => {
+    const { frontFilePath, photos }: any = this.state;
+    frontFilePath.splice(index, 1)
+    photos.splice(index, 1)
+    this.setState({
+      frontFilePath: JSON.parse(JSON.stringify(frontFilePath)),
+      photos: JSON.parse(JSON.stringify(photos))
     })
   }
 
@@ -184,7 +199,7 @@ class Home extends Component {
 
   submit = () => {
     const { dispatch } = this.props;
-    const { photos, reqDesc, qty, itemName, submitLoading } = this.state;
+    const { photos, reqDesc, qty, itemName, submitLoading, checkedList } = this.state;
     if (submitLoading) {
       return
     }
@@ -192,6 +207,12 @@ class Home extends Component {
       if (itemName === '') {
         Taro.showToast({
           'title': '请输入产品描述',
+        });
+        return;
+      }
+      if (checkedList.length == 0) {
+        Taro.showToast({
+          'title': '请勾选发布需求相关协议',
         });
         return;
       }
@@ -221,7 +242,7 @@ class Home extends Component {
         } else {
           Taro.showToast({
             'title': res.message,
-            duration:3000
+            duration: 3000
           });
         }
         this.setState({
@@ -278,6 +299,11 @@ class Home extends Component {
           }
 
         </View>
+        <AtCheckbox
+          options={this.checkboxOption}
+          selectedList={this.state.checkedList}
+          onChange={this.handleChange.bind(this)}
+        />
         <AtButton type='primary' loading={submitLoading} className={styles.loginBtn} onClick={this.submit}>发布</AtButton>
 
       </View>

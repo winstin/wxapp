@@ -432,7 +432,7 @@ class Home extends Component {
 
             <View className={styles.tips2} >
               <View className={styles.label} >
-              星级
+              推荐指数
               </View>
               <View className={styles.conenttext} >
               {star}

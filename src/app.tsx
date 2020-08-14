@@ -44,8 +44,8 @@ class App extends Component {
         "root":"packageA",
         "pages":[
           "pages/MemberCredits/index",// 会员积分
-          "pages/MemberShipUpgrade/index",// 升级企业会员
-          "pages/MemberShipPerson/index",// 升级个人会员
+          "pages/MemberShipUpgrade/index",// 升级战略合作企业会员
+          "pages/MemberShipPerson/index",// 升级专业采购供应链会员
           "pages/MyAlbumProduct/index",// 企业规模
           "pages/MyAlbumEnterprise/index",// 企业相册
           "pages/RecruitmentDetail/index",// 企业相册

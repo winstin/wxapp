@@ -242,11 +242,29 @@ class Home extends Component {
       return
     }
     if (dispatch) {
-      this.setState({
-        submitLoading: true
-      })
 
       if (type) {
+        if (name == '' || name == null) {
+          Taro.showToast({
+            title: "企业名称不能为空"
+          })
+          return;
+        }
+        if (businessLicenseNo == '' || businessLicenseNo == null) {
+          Taro.showToast({
+            title: "税务登记证不能为空"
+          })
+          return;
+        }
+        if (linkman == '' || linkman == null) {
+          Taro.showToast({
+            title: "登记人不能为空"
+          })
+          return;
+        }
+        this.setState({
+          submitLoading: true
+        })
         Taro.showLoading({
           title: '提交中',
           mask: true,
@@ -277,10 +295,18 @@ class Home extends Component {
           //   'title': '升级成功',
           // });
           // Taro.navigateBack()
-          Taro.showToast({
-            title: "升级成功!请在我的里面维护基本信息,联系信息,企业规模,企业介绍,企业图片,产片图片等,有助于提高审核通过率!",
-            duration: 8000
-          })
+          if (res.status == '0') {
+            Taro.showToast({
+              title: "升级成功!请在我的里面维护基本信息,联系信息,企业规模,企业介绍,企业图片,产片图片等,有助于提高审核通过率!",
+              duration: 8000
+            })
+            Taro.navigateBack()
+          } else {
+            Taro.showToast({
+              title: res.message,
+              duration: 8000
+            })
+          }
         });
       } else {
         if (account === '') {

@@ -253,7 +253,7 @@ class User extends Component {
             }
           }}
           cardIcon={sjhy}
-          title={'升级个人会员'}
+          title={'升级专业采购供应链会员'}
         ></ListItem>}
         <ListItem
           onClick={() => {
@@ -268,7 +268,7 @@ class User extends Component {
             }
           }}
           cardIcon={sjhy}
-          title={'升级企业会员'}
+          title={'升级战略合作企业会员'}
         ></ListItem>
         {token && <ListItem
           onClick={() => {
